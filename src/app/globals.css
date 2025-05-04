@@ -5,7 +5,7 @@
 
 :root {
   --primary: oklch(0.205 0 0);
-  --text: #171717;
+  --text: #dbd8cc;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -77,19 +77,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #020817;
-    --secondary: #213555;
-    --text: #ededed;
-  }
-}
-
-body {
-  background: var(--primary);
-  color: var(--text);
 }
 
 .dark {
