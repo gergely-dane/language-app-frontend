@@ -1,11 +1,8 @@
-import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { queryClient } from "@/lib/queryClient";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
-import { QueryProvider } from "@/components/queryProvider";
+import { QueryProvider } from "@/components/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="http://localhost:8097"></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

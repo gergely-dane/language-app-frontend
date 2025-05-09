@@ -6,29 +6,27 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-white border-b shadow-sm px-6 py-3 flex justify-center items-center">
       <div className="flex items-center gap-6">
-        <Link href="/">
-          <span className="text-xl font-semibold text-gray-800">
-            LanguageApp
-          </span>
+        <Link href="/" className="text-xl font-semibold text-gray-800">
+          LanguageApp
         </Link>
 
         <div className="flex gap-3">
           <Link href="/">
             <Button variant="ghost" className="text-gray-700 hover:text-black">
               <IconHome />
-              Home
+              <span className="hidden lg:block">Home</span>
             </Button>
           </Link>
           <Link href="/vocabulary">
             <Button variant="ghost" className="text-gray-700 hover:text-black">
               <IconList />
-              Vocabulary
+              <span className="hidden lg:block">Vocabulary</span>
             </Button>
           </Link>
           <Link href="/cards">
             <Button variant="ghost" className="text-gray-700 hover:text-black">
-              <IconCards />
-              Flashcards
+              <IconCards size={48} />
+              <span className="hidden lg:block">Flashcards</span>
             </Button>
           </Link>
         </div>
