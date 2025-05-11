@@ -23,7 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { LanguagePairSelector } from "@/components/language-pair-selector";
-import { IconX } from "@tabler/icons-react";
+import { IconPlus, IconX } from "@tabler/icons-react";
+import { LanguagePair } from "@/app/vocabulary/columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -72,7 +73,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant={null}
               size="icon"
-              className="-ml-9 cursor-pointer text-gray-400 hover:text-[var(--text-color)]"
+              className="-ml-9 cursor-pointer opacity-50 hover:opacity-100 "
               onClick={() => table.getColumn("word")?.setFilterValue("")}
               aria-label="Clear filter"
             >
@@ -82,7 +83,7 @@ export function DataTable<TData, TValue>({
         </div>
         <LanguagePairSelector
           value={
-            (table.getColumn("language")?.getFilterValue() as string) ?? ""
+            (table.getColumn("language")?.getFilterValue() as string) ?? null
           }
           onChange={(event) =>
             table.getColumn("language")?.setFilterValue(event)
@@ -95,6 +96,10 @@ export function DataTable<TData, TValue>({
               .toArray() || []
           }
         />
+        <Button variant="outline" className="ml-auto">
+          <IconPlus />
+          <span className="hidden lg:block">Add Word</span>
+        </Button>
       </div>
 
       <div className="rounded-md border">

@@ -16,7 +16,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { IconCheck, IconSelector } from "@tabler/icons-react";
+import {
+  IconArrowNarrowRight,
+  IconCheck,
+  IconSelector,
+} from "@tabler/icons-react";
+import { LANGUAGES } from "@/lib/constants";
+import { LanguagePair } from "@/app/vocabulary/columns";
 
 interface LanguagePairSelectorProps {
   value: string | null;
@@ -32,7 +38,13 @@ export function LanguagePairSelector({
   className,
 }: LanguagePairSelectorProps) {
   const [open, setOpen] = useState(false);
-
+  const pairs: LanguagePair = languagePairs.map((pair) => {
+    const [sourceLanguage, translationLanguage] = pair.split("-");
+    return {
+      sourceLanguage,
+      translationLanguage,
+    };
+  });
   return (
     <div className={className}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -43,11 +55,19 @@ export function LanguagePairSelector({
             aria-expanded={open}
             className="w-full justify-between"
           >
-            {value || "All language pairs"}
+            {value ? (
+              <>
+                {LANGUAGES[value.split("-")[0]]}
+                <IconArrowNarrowRight className="mt-1" />
+                {LANGUAGES[value.split("-")[1]]}
+              </>
+            ) : (
+              "All language pairs"
+            )}
             <IconSelector className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-40 lg:w-72 p-0">
+        <PopoverContent className="w-fit p-0">
           <Command>
             <CommandInput placeholder="Search languages..." />
             <CommandList>
@@ -63,27 +83,36 @@ export function LanguagePairSelector({
                   <IconCheck
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === null ? "opacity-100" : "opacity-0",
+                      !value ? "opacity-100" : "opacity-0",
+                      "text:[var(--text-color)]",
                     )}
                   />
                   All language pairs
                 </CommandItem>
-                {languagePairs.map((pair) => (
+                {pairs.map((pair, i) => (
                   <CommandItem
-                    key={pair}
-                    value={pair}
+                    key={i}
+                    value={`${pair.sourceLanguage}-${pair.translationLanguage}`}
                     onSelect={() => {
-                      onChange(pair);
+                      onChange(
+                        `${pair.sourceLanguage}-${pair.translationLanguage}`,
+                      );
                       setOpen(false);
                     }}
                   >
                     <IconCheck
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value == pair ? "opacity-100" : "opacity-0",
+                        value ==
+                          `${pair.sourceLanguage}-${pair.translationLanguage}`
+                          ? "opacity-100"
+                          : "opacity-0",
+                        "text:[var(--text-color)]",
                       )}
                     />
-                    {pair}
+                    <div className="">{LANGUAGES[pair.sourceLanguage]}</div>
+                    <IconArrowNarrowRight className="mt-1 text:[var(--text-color)]" />
+                    {LANGUAGES[pair.translationLanguage]}
                   </CommandItem>
                 ))}
               </CommandGroup>

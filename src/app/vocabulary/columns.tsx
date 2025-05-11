@@ -3,8 +3,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
-import { LANGUAGES } from "@/lib/constants";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
+import Flag from "react-flagpack";
+
+export interface LanguagePair {
+  sourceLanguage: string;
+  translationLanguage: string;
+}
 
 export const columns: ColumnDef<Translation>[] = [
   {
@@ -25,13 +30,26 @@ export const columns: ColumnDef<Translation>[] = [
   {
     id: "language",
     header: "Language",
-    accessorFn: (tr) =>
-      `${LANGUAGES[tr.sourceLanguageCode]} → ${LANGUAGES[tr.translationLanguageCode]}`,
+    accessorFn: (tr) => {
+      return `${tr.sourceLanguageCode}-${tr.translationLanguageCode}`;
+    },
     cell: ({ getValue }) => {
-      const [sourceLang, targetLang] = (getValue() as string).split(" → ");
+      let [sourceLanguage, translationLanguage] = (getValue() as string).split(
+        "-",
+      );
+      sourceLanguage = sourceLanguage == "en" ? "gb-ukm" : sourceLanguage;
+      translationLanguage =
+        translationLanguage == "en" ? "gb-ukm" : translationLanguage;
       return (
         <div className="flex gap-1">
-          {sourceLang} <IconArrowNarrowRight /> {targetLang}
+          <Flag code={sourceLanguage} size="m" hasDropShadow className="mt-1" />
+          <IconArrowNarrowRight />
+          <Flag
+            code={translationLanguage}
+            size="m"
+            hasDropShadow
+            className="mt-1"
+          />
         </div>
       );
     },
