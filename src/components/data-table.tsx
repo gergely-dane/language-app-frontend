@@ -20,8 +20,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import React from "react";
 import { LanguagePairSelector } from "@/components/language-pair-selector";
+import { IconX } from "@tabler/icons-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -57,14 +59,27 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex gap-2">
-        <Input
-          placeholder="Search for a word..."
-          value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("word")?.setFilterValue(event.target.value)
-          }
-          className="mb-4 lg:w-50"
-        />
+        <div className="flex">
+          <Input
+            placeholder="Search for a word..."
+            value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("word")?.setFilterValue(event.target.value)
+            }
+            className="mb-4 lg:w-50"
+          />
+          {(table.getColumn("word")?.getFilterValue() as string) && (
+            <Button
+              variant={null}
+              size="icon"
+              className="-ml-9 cursor-pointer text-gray-400 hover:text-[var(--text-color)]"
+              onClick={() => table.getColumn("word")?.setFilterValue("")}
+              aria-label="Clear filter"
+            >
+              <IconX />
+            </Button>
+          )}
+        </div>
         <LanguagePairSelector
           value={
             (table.getColumn("language")?.getFilterValue() as string) ?? ""

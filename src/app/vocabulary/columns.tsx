@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
 import { LANGUAGES } from "@/lib/constants";
-import { IconArrowNarrowRight, IconArrowRight } from "@tabler/icons-react";
+import { IconArrowNarrowRight } from "@tabler/icons-react";
 
 export const columns: ColumnDef<Translation>[] = [
   {
