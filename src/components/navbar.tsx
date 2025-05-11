@@ -4,28 +4,28 @@ import { IconCards, IconHome, IconList } from "@tabler/icons-react";
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-white border-b shadow-sm px-6 py-3 flex justify-center items-center">
+    <nav className="w-full bg-[var(--secondary)] border-b shadow-sm px-6 py-3 flex justify-center items-center">
       <div className="flex items-center gap-6">
-        <Link href="/" className="text-xl font-semibold text-gray-800">
+        <Link href="/" className="text-xl font-semibold">
           LanguageApp
         </Link>
 
         <div className="flex gap-3">
           <Link href="/">
-            <Button variant="ghost" className="text-gray-700 hover:text-black">
-              <IconHome />
+            <Button variant="ghost" className="hover:text-black">
+              <IconHome size={48} className="shrink-0" />
               <span className="hidden lg:block">Home</span>
             </Button>
           </Link>
           <Link href="/vocabulary">
-            <Button variant="ghost" className="text-gray-700 hover:text-black">
+            <Button variant="ghost" className="hover:text-black">
               <IconList />
               <span className="hidden lg:block">Vocabulary</span>
             </Button>
           </Link>
           <Link href="/cards">
-            <Button variant="ghost" className="text-gray-700 hover:text-black">
-              <IconCards size={48} />
+            <Button variant="ghost" className="hover:text-black">
+              <IconCards />
               <span className="hidden lg:block">Flashcards</span>
             </Button>
           </Link>

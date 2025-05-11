@@ -11,7 +11,7 @@ export default function Home() {
   if (!data) return <div>No words found</div>;
 
   return (
-    <div className="w-[95%] lg:w-[70%] mx-auto">
+    <div className="w-[95%] lg:w-[60%] mx-auto">
       <div className="text-3xl font-bold my-8">Word List</div>
       <DataTable columns={columns} data={data} />
     </div>
