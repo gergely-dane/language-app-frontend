@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react";
 import { LANGUAGES } from "@/lib/constants";
 import { LanguagePair } from "@/app/vocabulary/columns";
+import LanguagePairFlags from "@/components/language-pair-flags";
 
 interface LanguagePairSelectorProps {
   value: string | null;
@@ -56,13 +57,13 @@ export function LanguagePairSelector({
             className="w-full justify-between"
           >
             {value ? (
-              <>
-                {LANGUAGES[value.split("-")[0]]}
-                <IconArrowNarrowRight className="mt-1" />
-                {LANGUAGES[value.split("-")[1]]}
-              </>
+              <LanguagePairFlags
+                sourceLanguage={value.split("-")[0]}
+                translationLanguage={value.split("-")[1]}
+                iconMargin={true}
+              />
             ) : (
-              "All language pairs"
+              "All languages"
             )}
             <IconSelector className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -87,7 +88,7 @@ export function LanguagePairSelector({
                       "text:[var(--text-color)]",
                     )}
                   />
-                  All language pairs
+                  All languages
                 </CommandItem>
                 {pairs.map((pair, i) => (
                   <CommandItem

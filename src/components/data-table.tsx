@@ -24,7 +24,16 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { LanguagePairSelector } from "@/components/language-pair-selector";
 import { IconPlus, IconX } from "@tabler/icons-react";
-import { LanguagePair } from "@/app/vocabulary/columns";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -96,10 +105,42 @@ export function DataTable<TData, TValue>({
               .toArray() || []
           }
         />
-        <Button variant="outline" className="ml-auto">
-          <IconPlus />
-          <span className="hidden lg:block">Add Word</span>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              <IconPlus />
+              <span className="hidden lg:block">Add Word</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add word</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you&#39;re
+                done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Word
+                </Label>
+                <Input id="name" value="Pedro Duarte" className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Translation
+                </Label>
+                <Input className="col-span-3" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" type="submit">
+                Save changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="rounded-md border">

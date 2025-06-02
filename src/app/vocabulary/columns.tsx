@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
+import LanguagePairFlags from "@/components/language-pair-flags";
 import Flag from "react-flagpack";
 
 export interface LanguagePair {
@@ -37,20 +38,11 @@ export const columns: ColumnDef<Translation>[] = [
       let [sourceLanguage, translationLanguage] = (getValue() as string).split(
         "-",
       );
-      sourceLanguage = sourceLanguage == "en" ? "gb-ukm" : sourceLanguage;
-      translationLanguage =
-        translationLanguage == "en" ? "gb-ukm" : translationLanguage;
       return (
-        <div className="flex gap-1">
-          <Flag code={sourceLanguage} size="m" hasDropShadow className="mt-1" />
-          <IconArrowNarrowRight />
-          <Flag
-            code={translationLanguage}
-            size="m"
-            hasDropShadow
-            className="mt-1"
-          />
-        </div>
+        <LanguagePairFlags
+          sourceLanguage={sourceLanguage}
+          translationLanguage={translationLanguage}
+        />
       );
     },
   },
