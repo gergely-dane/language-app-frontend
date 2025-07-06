@@ -39,13 +39,15 @@ export function LanguagePairSelector({
   className,
 }: LanguagePairSelectorProps) {
   const [open, setOpen] = useState(false);
-  const pairs: LanguagePair = languagePairs.map((pair) => {
+
+  const pairs: LanguagePair[] = languagePairs.map((pair) => {
     const [sourceLanguage, translationLanguage] = pair.split("-");
     return {
       sourceLanguage,
       translationLanguage,
     };
   });
+
   return (
     <div className={className}>
       <Popover open={open} onOpenChange={setOpen}>
