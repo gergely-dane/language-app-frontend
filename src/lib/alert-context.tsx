@@ -1,0 +1,75 @@
+"use client";
+
+import React, { createContext, useState, useContext } from "react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { IconCircleCheck } from "@tabler/icons-react";
+
+type AlertType = "default" | "destructive";
+
+interface AlertState {
+  title: string;
+  description?: string;
+  variant?: AlertType;
+  open: boolean;
+}
+
+interface AlertContextProps {
+  showAlert: (options: Omit<AlertState, "open">) => void;
+}
+
+const AlertContext = createContext<AlertContextProps | undefined>(undefined);
+
+export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
+  const [alert, setAlert] = useState<AlertState>({
+    title: "",
+    description: "",
+    variant: "default",
+    open: false,
+  });
+
+  const [visible, setVisible] = useState(false);
+
+  const showAlert = (options: Omit<AlertState, "open">) => {
+    setAlert({ ...options, open: true });
+    setVisible(true);
+
+    setTimeout(() => {
+      setVisible(false);
+    }, 2500);
+
+    setTimeout(() => {
+      setAlert((prev) => ({ ...prev, open: false }));
+    }, 3000);
+  };
+
+  return (
+    <AlertContext.Provider value={{ showAlert }}>
+      {children}
+      {alert.open && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 transition-opacity duration-500 ${
+            visible ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <Alert variant={alert.variant}>
+            {alert.variant === "default" && (
+              <IconCircleCheck className="text-[var(--success)]" />
+            )}
+            <AlertTitle>{alert.title}</AlertTitle>
+            {alert.description && (
+              <AlertDescription>{alert.description}</AlertDescription>
+            )}
+          </Alert>
+        </div>
+      )}
+    </AlertContext.Provider>
+  );
+};
+
+export const useAlert = () => {
+  const context = useContext(AlertContext);
+  if (!context) {
+    throw new Error("useAlert must be used within an AlertProvider");
+  }
+  return context;
+};
