@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useContext } from "react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { IconCircleCheck } from "@tabler/icons-react";
+import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 
 type AlertType = "default" | "destructive";
 
@@ -47,13 +47,15 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       {alert.open && (
         <div
-          className={`fixed bottom-6 right-6 z-50 transition-opacity duration-500 ${
+          className={`fixed bottom-6 right-6 z-50 transition-opacity duration-700 ${
             visible ? "opacity-100" : "opacity-0"
           }`}
         >
           <Alert variant={alert.variant}>
-            {alert.variant === "default" && (
+            {alert.variant === "default" ? (
               <IconCircleCheck className="text-[var(--success)]" />
+            ) : (
+              <IconCircleX className="text-destructive" />
             )}
             <AlertTitle>{alert.title}</AlertTitle>
             {alert.description && (

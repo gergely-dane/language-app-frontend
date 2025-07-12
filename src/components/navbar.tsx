@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { IconCards, IconHome, IconList } from "@tabler/icons-react";
+import {
+  IconCards,
+  IconHome,
+  IconLanguage,
+  IconList,
+} from "@tabler/icons-react";
 
 export default function Navbar() {
   return (
@@ -27,6 +32,12 @@ export default function Navbar() {
             <Button variant="ghost" className="hover:text-black">
               <IconCards />
               <span className="hidden lg:block">Flashcards</span>
+            </Button>
+          </Link>
+          <Link href="/translate">
+            <Button variant="ghost" className="hover:text-black">
+              <IconLanguage />
+              <span className="hidden lg:block">Translate</span>
             </Button>
           </Link>
         </div>

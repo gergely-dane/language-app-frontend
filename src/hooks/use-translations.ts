@@ -22,6 +22,10 @@ export interface CreateTranslationRequest {
   translationLanguage: string;
 }
 
+export interface DeleteTranslationsBulkRequest {
+  ids: string[];
+}
+
 export interface TranslationsResponse extends Translation {}
 
 export interface TranslationsParams {}
@@ -62,6 +66,26 @@ export const useCreateTranslation = () => {
     },
     onError: (error) => {
       console.error("Failed to create translation:", error);
+    },
+  });
+};
+
+export const useDeleteTranslationsBulk = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: DeleteTranslationsBulkRequest) => {
+      await apiClient.post(`/translations/delete-bulk`, body);
+      return body;
+    },
+    onSuccess: ({ ids }) => {
+      queryClient.invalidateQueries({ queryKey: ["translations"] });
+      queryClient.setQueryData<Translation[]>(["translations"], (old = []) =>
+        old.filter((translation) => !ids.includes(translation.id)),
+      );
+    },
+    onError: (error) => {
+      console.error("Failed to delete translation:", error);
     },
   });
 };

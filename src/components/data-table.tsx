@@ -10,6 +10,7 @@ import {
   getFilteredRowModel,
   ColumnFiltersState,
   getFacetedUniqueValues,
+  RowSelectionState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -23,8 +24,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { LanguagePairSelector } from "@/components/language-pair-selector";
-import { IconX } from "@tabler/icons-react";
+import { IconTrash, IconX } from "@tabler/icons-react";
 import AddWordDialog from "@/components/add-word-dialog";
+import { Translation } from "@/hooks/use-translations";
+import { DeleteTranslationsButton } from "@/components/delete-translations-button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,6 +44,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
   const table = useReactTable({
     data,
@@ -49,12 +53,15 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
+      rowSelection,
     },
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    getRowId: (row: Translation) => row.id,
   });
 
   return (
@@ -96,6 +103,7 @@ export function DataTable<TData, TValue>({
               .toArray() || []
           }
         />
+        <DeleteTranslationsButton rowSelection={rowSelection} />
         <AddWordDialog />
       </div>
 

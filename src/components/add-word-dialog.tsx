@@ -47,11 +47,14 @@ export default function AddWordDialog() {
       });
 
       showAlert({
-        title: "Word added successfully",
+        title: "Translation added successfully",
         variant: "default",
       });
     } catch (error) {
-      console.error("Error creating translation:", error);
+      showAlert({
+        title: error.response?.data?.message || "Error adding translation",
+        variant: "destructive",
+      });
     }
   };
 
@@ -72,7 +75,7 @@ export default function AddWordDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="ml-auto">
+        <Button variant="outline">
           <IconPlus />
           <span className="hidden lg:block">Add Word</span>
         </Button>

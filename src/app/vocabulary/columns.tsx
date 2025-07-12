@@ -3,9 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
-import { IconArrowNarrowRight } from "@tabler/icons-react";
 import LanguagePairFlags from "@/components/language-pair-flags";
-import Flag from "react-flagpack";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export interface LanguagePair {
   sourceLanguage: string;
@@ -55,5 +54,27 @@ export const columns: ColumnDef<Translation>[] = [
       const date = new Date(getValue() as string);
       return date.toLocaleDateString();
     },
+  },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        className="pt-4"
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        className="pt-4"
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
   },
 ];
