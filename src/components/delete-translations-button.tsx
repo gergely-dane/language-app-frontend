@@ -4,11 +4,15 @@ import { useDeleteTranslationsBulk } from "@/hooks/use-translations";
 import { IconTrash } from "@tabler/icons-react";
 import { useAlert } from "@/lib/alert-context";
 
+type DeleteTranslationsButtonProps = {
+  rowSelection: Record<string, boolean>;
+  className?: string;
+};
+
 export function DeleteTranslationsButton({
   rowSelection,
-}: {
-  rowSelection: Record<string, boolean>;
-}) {
+  className,
+}: DeleteTranslationsButtonProps) {
   const deleteTranslation = useDeleteTranslationsBulk();
   const { showAlert } = useAlert();
 
@@ -22,7 +26,9 @@ export function DeleteTranslationsButton({
     }
 
     try {
-      await deleteTranslation.mutateAsync({ ids: Object.keys(rowSelection) });
+      await deleteTranslation.mutateAsync({
+        ids: Object.keys(rowSelection).map((key) => Number(key)),
+      });
       showAlert({
         title: "Translations deleted successfully",
         variant: "default",
@@ -33,7 +39,12 @@ export function DeleteTranslationsButton({
   };
 
   return (
-    <Button variant="outline" className="ml-auto" onClick={handleDelete}>
+    <Button
+      className={className}
+      variant="outline"
+      onClick={handleDelete}
+      disabled={!rowSelection || !Object.keys(rowSelection).length}
+    >
       <IconTrash className="text-destructive" />
     </Button>
   );

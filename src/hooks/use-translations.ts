@@ -7,12 +7,12 @@ export interface Word {
 }
 
 export interface Translation {
-  id: string;
+  id: number;
   word: Word;
   translations: Word[];
   sourceLanguageCode: string;
   translationLanguageCode: string;
-  createdDate: string;
+  createdAt: string;
 }
 
 export interface CreateTranslationRequest {
@@ -23,7 +23,7 @@ export interface CreateTranslationRequest {
 }
 
 export interface DeleteTranslationsBulkRequest {
-  ids: string[];
+  ids: number[];
 }
 
 export interface TranslationsResponse extends Translation {}

@@ -103,7 +103,10 @@ export function DataTable<TData, TValue>({
               .toArray() || []
           }
         />
-        <DeleteTranslationsButton rowSelection={rowSelection} />
+        <DeleteTranslationsButton
+          rowSelection={rowSelection}
+          className="ml-auto"
+        />
         <AddWordDialog />
       </div>
 

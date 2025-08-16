@@ -46,7 +46,7 @@ export const columns: ColumnDef<Translation>[] = [
     },
   },
   {
-    accessorKey: "createdDate",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return <SortableTableHeaderText headerName="Added on" column={column} />;
     },
