@@ -34,7 +34,7 @@ export const columns: ColumnDef<Translation>[] = [
       return `${tr.sourceLanguageCode}-${tr.translationLanguageCode}`;
     },
     cell: ({ getValue }) => {
-      let [sourceLanguage, translationLanguage] = (getValue() as string).split(
+      const [sourceLanguage, translationLanguage] = (getValue() as string).split(
         "-",
       );
       return (

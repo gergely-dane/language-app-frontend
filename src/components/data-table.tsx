@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { LanguagePairSelector } from "@/components/language-pair-selector";
-import { IconTrash, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import AddWordDialog from "@/components/add-word-dialog";
 import { Translation } from "@/hooks/use-translations";
 import { DeleteTranslationsButton } from "@/components/delete-translations-button";

@@ -1,10 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
-import {
-  Translation,
-  TranslationsParams,
-  TranslationsResponse,
-} from "@/hooks/use-translations";
+import { Translation } from "@/hooks/use-translations";
 
 export interface Flashcard {
   createdAt: Date;

@@ -9,7 +9,7 @@ import {
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-[var(--secondary)] border-b shadow-sm px-6 py-3 flex justify-center items-center">
+    <nav className="bg-muted-foreground/50 flex w-full items-center justify-center border-b px-6 py-3 shadow-sm">
       <div className="flex items-center gap-6">
         <Link href="/" className="text-xl font-semibold">
           LanguageApp
@@ -17,25 +17,25 @@ export default function Navbar() {
 
         <div className="flex gap-3">
           <Link href="/">
-            <Button variant="ghost" className="hover:text-black tex">
+            <Button variant="ghost">
               <IconHome size={48} className="shrink-0" />
               <span className="hidden lg:block">Home</span>
             </Button>
           </Link>
           <Link href="/vocabulary">
-            <Button variant="ghost" className="hover:text-black">
+            <Button variant="ghost">
               <IconList />
               <span className="hidden lg:block">Vocabulary</span>
             </Button>
           </Link>
           <Link href="/flashcards">
-            <Button variant="ghost" className="hover:text-black">
+            <Button variant="ghost">
               <IconCards />
               <span className="hidden lg:block">Flashcards</span>
             </Button>
           </Link>
           <Link href="/translate">
-            <Button variant="ghost" className="hover:text-black">
+            <Button variant="ghost">
               <IconLanguage />
               <span className="hidden lg:block">Translate</span>
             </Button>

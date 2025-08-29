@@ -16,11 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import {
-  IconArrowNarrowRight,
-  IconCheck,
-  IconSelector,
-} from "@tabler/icons-react";
+import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { LANGUAGES } from "@/lib/constants";
 import LanguageFlag from "@/components/language-flag";
 

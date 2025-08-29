@@ -9,8 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import React, { useEffect } from "react";
 import { useLanguages } from "@/hooks/use-languages";
 import { LanguageSelector } from "@/components/language-selector";
@@ -119,7 +117,7 @@ export default function AddWordDialog() {
         <DialogFooter className="flex items-center">
           <Button
             variant="outline"
-            className="w-30 mx-auto"
+            className="mx-auto w-30"
             disabled={createTranslation.isPending}
             onClick={handleSave}
           >
