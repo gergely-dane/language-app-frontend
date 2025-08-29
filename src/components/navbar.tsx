@@ -17,7 +17,7 @@ export default function Navbar() {
 
         <div className="flex gap-3">
           <Link href="/">
-            <Button variant="ghost" className="hover:text-black">
+            <Button variant="ghost" className="hover:text-black tex">
               <IconHome size={48} className="shrink-0" />
               <span className="hidden lg:block">Home</span>
             </Button>
@@ -28,7 +28,7 @@ export default function Navbar() {
               <span className="hidden lg:block">Vocabulary</span>
             </Button>
           </Link>
-          <Link href="/cards">
+          <Link href="/flashcards">
             <Button variant="ghost" className="hover:text-black">
               <IconCards />
               <span className="hidden lg:block">Flashcards</span>

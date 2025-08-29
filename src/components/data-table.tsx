@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant={null}
               size="icon"
-              className="-ml-9 cursor-pointer opacity-50 hover:opacity-100 "
+              className="-ml-9 cursor-pointer opacity-50 hover:opacity-100"
               onClick={() => table.getColumn("word")?.setFilterValue("")}
               aria-label="Clear filter"
             >
