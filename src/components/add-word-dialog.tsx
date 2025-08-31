@@ -14,6 +14,7 @@ import { useLanguages } from "@/hooks/use-languages";
 import { LanguageSelector } from "@/components/language-selector";
 import { useCreateTranslation } from "@/hooks/use-translations";
 import { useAlert } from "@/lib/alert-context";
+import { Input } from "@/components/ui/input";
 
 export default function AddWordDialog() {
   const { data: languages, isLoading, error } = useLanguages();
@@ -78,14 +79,14 @@ export default function AddWordDialog() {
           <span className="hidden lg:block">Add Word</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="px-4 lg:px-8">
         <DialogHeader>
           <DialogTitle>Add word</DialogTitle>
           <DialogDescription>
             Add a new word to your vocabulary.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-2">
           <div className="flex items-center gap-2">
             <Input
               id="name"
@@ -118,7 +119,7 @@ export default function AddWordDialog() {
           <Button
             variant="outline"
             className="mx-auto w-30"
-            disabled={createTranslation.isPending}
+            disabled={createTranslation.isPending || !word || !translation}
             onClick={handleSave}
           >
             Save

@@ -28,6 +28,7 @@ import { IconX } from "@tabler/icons-react";
 import AddWordDialog from "@/components/add-word-dialog";
 import { Translation } from "@/hooks/use-translations";
 import { DeleteTranslationsButton } from "@/components/delete-translations-button";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,6 +59,7 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       rowSelection,
+      columnVisibility: { createdAt: !useIsMobileScreen() },
     },
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),

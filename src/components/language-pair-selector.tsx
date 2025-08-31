@@ -23,7 +23,6 @@ import {
 } from "@tabler/icons-react";
 import { LANGUAGES } from "@/lib/constants";
 import { LanguagePair } from "@/app/vocabulary/columns";
-import LanguagePairFlags from "@/components/language-pair-flags";
 
 interface LanguagePairSelectorProps {
   value: string | null;
@@ -59,11 +58,11 @@ export function LanguagePairSelector({
             className="w-full justify-between"
           >
             {value ? (
-              <LanguagePairFlags
-                sourceLanguage={value.split("-")[0]}
-                translationLanguage={value.split("-")[1]}
-                iconMargin={true}
-              />
+              <>
+                <div className="">{LANGUAGES[value.split("-")[0]]}</div>
+                <IconArrowNarrowRight className="mt-1" />
+                {LANGUAGES[value.split("-")[1]]}
+              </>
             ) : (
               "All languages"
             )}
@@ -87,7 +86,6 @@ export function LanguagePairSelector({
                     className={cn(
                       "mr-2 h-4 w-4",
                       !value ? "opacity-100" : "opacity-0",
-                      "text:[var(--text-color)]",
                     )}
                   />
                   All languages
@@ -110,11 +108,10 @@ export function LanguagePairSelector({
                           `${pair.sourceLanguage}-${pair.translationLanguage}`
                           ? "opacity-100"
                           : "opacity-0",
-                        "text:[var(--text-color)]",
                       )}
                     />
                     <div className="">{LANGUAGES[pair.sourceLanguage]}</div>
-                    <IconArrowNarrowRight className="mt-1 text:[var(--text-color)]" />
+                    <IconArrowNarrowRight className="mt-1" />
                     {LANGUAGES[pair.translationLanguage]}
                   </CommandItem>
                 ))}

@@ -3,8 +3,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
-import LanguagePairFlags from "@/components/language-pair-flags";
 import { Checkbox } from "@/components/ui/checkbox";
+import { IconArrowNarrowRight } from "@tabler/icons-react";
+import { LANGUAGES } from "@/lib/constants";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 export interface LanguagePair {
   sourceLanguage: string;
@@ -34,14 +36,23 @@ export const columns: ColumnDef<Translation>[] = [
       return `${tr.sourceLanguageCode}-${tr.translationLanguageCode}`;
     },
     cell: ({ getValue }) => {
-      const [sourceLanguage, translationLanguage] = (getValue() as string).split(
-        "-",
-      );
+      const [sourceLanguage, translationLanguage] = (
+        getValue() as string
+      ).split("-");
+      const isMobileScreen = useIsMobileScreen();
+
       return (
-        <LanguagePairFlags
-          sourceLanguage={sourceLanguage}
-          translationLanguage={translationLanguage}
-        />
+        <div className="flex">
+          <div className={isMobileScreen ? "uppercase" : ""}>
+            {!isMobileScreen ? LANGUAGES[sourceLanguage] : sourceLanguage}
+          </div>
+          <IconArrowNarrowRight size={16} className="mx-0.5 mt-0.5" />
+          <div className={isMobileScreen ? "uppercase" : ""}>
+            {!isMobileScreen
+              ? LANGUAGES[translationLanguage]
+              : translationLanguage}
+          </div>
+        </div>
       );
     },
   },

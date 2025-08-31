@@ -18,7 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { LANGUAGES } from "@/lib/constants";
-import LanguageFlag from "@/components/language-flag";
 
 interface LanguageSelectorProps {
   value: string | null;
@@ -43,9 +42,9 @@ export function LanguageSelector({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-30 justify-between"
           >
-            <LanguageFlag language={value} />
+            <div>{value ? LANGUAGES[value] : "Select language"}</div>
             <IconSelector className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -68,7 +67,6 @@ export function LanguageSelector({
                       className={cn(
                         "mr-2 h-4 w-4",
                         value == language ? "opacity-100" : "opacity-0",
-                        "text:[var(--text-color)]",
                       )}
                     />
                     <div>{LANGUAGES[language]}</div>
