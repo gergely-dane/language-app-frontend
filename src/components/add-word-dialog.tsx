@@ -1,5 +1,6 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -8,13 +9,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { IconPlus } from "@tabler/icons-react";
+import { IconHelp, IconPlus } from "@tabler/icons-react";
 import React, { useEffect } from "react";
 import { useLanguages } from "@/hooks/use-languages";
 import { LanguageSelector } from "@/components/language-selector";
 import { useCreateTranslation } from "@/hooks/use-translations";
 import { useAlert } from "@/lib/alert-context";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AddWordDialog() {
   const { data: languages, isLoading, error } = useLanguages();
@@ -26,16 +34,26 @@ export default function AddWordDialog() {
     React.useState<string>();
   const [word, setWord] = React.useState<string>("");
   const [translation, setTranslation] = React.useState<string>("");
+  const [knowledgeLevel, setKnowledgeLevel] = React.useState<number[]>([0]);
 
   useEffect(() => {
     setSourceLanguage(languages?.[0]?.code);
     setTranslationLanguage(languages?.[1]?.code);
   }, [languages]);
 
+  const resetForm = () => {
+    setWord("");
+    setTranslation("");
+    setKnowledgeLevel([0]);
+    setSourceLanguage(languages?.[0]?.code);
+    setTranslationLanguage(languages?.[1]?.code);
+  };
+
   const handleSave = async () => {
     if (!word || !translation || !sourceLanguage || !translationLanguage) {
       return;
     }
+    resetForm();
 
     try {
       await createTranslation.mutateAsync({
@@ -43,6 +61,7 @@ export default function AddWordDialog() {
         translation,
         sourceLanguage,
         translationLanguage,
+        knowledgeLevel: knowledgeLevel[0],
       });
 
       showAlert({
@@ -86,7 +105,7 @@ export default function AddWordDialog() {
             Add a new word to your vocabulary.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-2">
+        <div className="grid gap-4 pt-2">
           <div className="flex items-center gap-2">
             <Input
               id="name"
@@ -115,15 +134,44 @@ export default function AddWordDialog() {
             />
           </div>
         </div>
+
+        <div className="flex">
+          <Label>How well do you know the word?</Label>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconHelp size={18} className="text-muted-foreground ml-1" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Adjust the slider according to your knowledge level</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+        <div>
+          <Slider
+            value={knowledgeLevel}
+            onValueChange={setKnowledgeLevel}
+            min={0}
+            max={4}
+            step={1}
+            className="-mt-4 h-6"
+          />
+          <div className="-mt-1 flex text-xs">
+            <div>Just learned it</div>
+            <div className="ml-auto">Know it very well</div>
+          </div>
+        </div>
+
         <DialogFooter className="flex items-center">
-          <Button
-            variant="outline"
-            className="mx-auto w-30"
-            disabled={createTranslation.isPending || !word || !translation}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
+          <DialogClose asChild className="w-full">
+            <Button
+              variant="outline"
+              className="mx-auto w-30"
+              disabled={createTranslation.isPending || !word || !translation}
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

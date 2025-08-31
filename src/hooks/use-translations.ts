@@ -20,6 +20,7 @@ export interface CreateTranslationRequest {
   translation: string;
   sourceLanguage: string;
   translationLanguage: string;
+  knowledgeLevel: number;
 }
 
 export interface DeleteTranslationsBulkRequest {
