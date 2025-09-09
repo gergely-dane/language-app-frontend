@@ -29,28 +29,33 @@ export default function AddWordDialog() {
   const createTranslation = useCreateTranslation();
   const { showAlert } = useAlert();
 
-  const [sourceLanguage, setSourceLanguage] = React.useState<string>();
-  const [translationLanguage, setTranslationLanguage] =
+  const [sourceLanguageCode, setSourceLanguageCode] = React.useState<string>();
+  const [translationLanguageCode, setTranslationLanguageCode] =
     React.useState<string>();
   const [word, setWord] = React.useState<string>("");
   const [translation, setTranslation] = React.useState<string>("");
   const [knowledgeLevel, setKnowledgeLevel] = React.useState<number[]>([0]);
 
   useEffect(() => {
-    setSourceLanguage(languages?.[0]?.code);
-    setTranslationLanguage(languages?.[1]?.code);
+    setSourceLanguageCode(languages?.[0]?.code);
+    setTranslationLanguageCode(languages?.[1]?.code);
   }, [languages]);
 
   const resetForm = () => {
     setWord("");
     setTranslation("");
     setKnowledgeLevel([0]);
-    setSourceLanguage(languages?.[0]?.code);
-    setTranslationLanguage(languages?.[1]?.code);
+    setSourceLanguageCode(languages?.[0]?.code);
+    setTranslationLanguageCode(languages?.[1]?.code);
   };
 
   const handleSave = async () => {
-    if (!word || !translation || !sourceLanguage || !translationLanguage) {
+    if (
+      !word ||
+      !translation ||
+      !sourceLanguageCode ||
+      !translationLanguageCode
+    ) {
       return;
     }
     resetForm();
@@ -59,8 +64,8 @@ export default function AddWordDialog() {
       await createTranslation.mutateAsync({
         word,
         translation,
-        sourceLanguage,
-        translationLanguage,
+        sourceLanguageCode,
+        translationLanguageCode,
         knowledgeLevel: knowledgeLevel[0],
       });
 
@@ -78,15 +83,15 @@ export default function AddWordDialog() {
 
   const handleLanguageChange = (value: string | null, translation: boolean) => {
     if (translation) {
-      if (value === sourceLanguage) {
-        setSourceLanguage(translationLanguage);
+      if (value === sourceLanguageCode) {
+        setSourceLanguageCode(translationLanguageCode);
       }
-      setTranslationLanguage(value);
+      setTranslationLanguageCode(value);
     } else {
-      if (value === translationLanguage) {
-        setTranslationLanguage(sourceLanguage);
+      if (value === translationLanguageCode) {
+        setTranslationLanguageCode(sourceLanguageCode);
       }
-      setSourceLanguage(value);
+      setSourceLanguageCode(value);
     }
   };
 
@@ -115,7 +120,7 @@ export default function AddWordDialog() {
               onChange={(e) => setWord(e.target.value)}
             />
             <LanguageSelector
-              value={sourceLanguage}
+              value={sourceLanguageCode}
               onChange={(value) => handleLanguageChange(value, false)}
               languages={languages?.map((lang) => lang.code) || []}
             />
@@ -128,7 +133,7 @@ export default function AddWordDialog() {
               onChange={(e) => setTranslation(e.target.value)}
             />
             <LanguageSelector
-              value={translationLanguage}
+              value={translationLanguageCode}
               onChange={(value) => handleLanguageChange(value, true)}
               languages={languages?.map((lang) => lang.code) || []}
             />

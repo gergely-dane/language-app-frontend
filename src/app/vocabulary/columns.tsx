@@ -4,9 +4,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
 import { Checkbox } from "@/components/ui/checkbox";
-import { IconArrowNarrowRight } from "@tabler/icons-react";
+import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
 import { LANGUAGES } from "@/lib/constants";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { cn } from "@/lib/utils";
 
 export interface LanguagePair {
   sourceLanguage: string;
@@ -58,19 +59,47 @@ export const columns: ColumnDef<Translation>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
-      return <SortableTableHeaderText headerName="Added on" column={column} />;
-    },
+    header: ({ column }) => (
+      <SortableTableHeaderText headerName="Added on" column={column} />
+    ),
     cell: ({ getValue }) => {
       const date = new Date(getValue() as string);
       return date.toLocaleDateString();
     },
   },
   {
+    accessorKey: "score",
+    header: ({ column }) => {
+      const isMobileScreen = useIsMobileScreen();
+
+      return (
+        <SortableTableHeaderText
+          headerName={!isMobileScreen ? "Knowledge level" : ""}
+          icon={
+            isMobileScreen ? <IconStar size={16} className="my-auto" /> : null
+          }
+          column={column}
+        />
+      );
+    },
+    cell: ({ getValue }) => {
+      const level = Math.round((getValue() as number) / 20);
+      const colors = [
+        "bg-orange-500",
+        "bg-yellow-500",
+        "bg-lime-500",
+        "bg-green-500",
+        "bg-green-500",
+      ];
+
+      return <div className={cn("h-4 w-4 rounded-full", colors[level])} />;
+    },
+  },
+  {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        className="pt-4"
+        className="mr-4 pt-4"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -81,7 +110,7 @@ export const columns: ColumnDef<Translation>[] = [
     ),
     cell: ({ row }) => (
       <Checkbox
-        className="pt-4"
+        className="mr-4 pt-4"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"

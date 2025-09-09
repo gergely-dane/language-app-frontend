@@ -70,7 +70,6 @@ export const LANGUAGES = {
   ii: "Sichuan Yi",
   ik: "Inupiaq",
   io: "Ido",
-  is: "Icelandic",
   it: "Italian",
   iu: "Inuktitut",
   ja: "Japanese",

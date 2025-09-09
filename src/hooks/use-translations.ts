@@ -18,8 +18,8 @@ export interface Translation {
 export interface CreateTranslationRequest {
   word: string;
   translation: string;
-  sourceLanguage: string;
-  translationLanguage: string;
+  sourceLanguageCode: string;
+  translationLanguageCode: string;
   knowledgeLevel: number;
 }
 

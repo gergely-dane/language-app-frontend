@@ -20,7 +20,6 @@ import {
   IconArrowNarrowRight,
   IconCheck,
   IconSelector,
-  IconX,
 } from "@tabler/icons-react";
 import { LANGUAGES } from "@/lib/constants";
 import { LanguagePair } from "@/app/vocabulary/columns";
