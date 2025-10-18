@@ -1,15 +1,15 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useFlashcard } from "@/hooks/use-flashcards";
+import { LANGUAGES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import {
   IconArrowRight,
   IconCheck,
   IconLanguage,
   IconX,
 } from "@tabler/icons-react";
-import { LANGUAGES } from "@/lib/constants";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 export default function Flashcards() {
   const { data: flashcard, isLoading, error } = useFlashcard();

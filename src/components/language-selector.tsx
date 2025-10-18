@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,9 +14,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
-import { LANGUAGES } from "@/lib/constants";
+import { useState } from "react";
 
 interface LanguageSelectorProps {
   value: string | null;

@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  SortingState,
-  getSortedRowModel,
-  getFilteredRowModel,
-  ColumnFiltersState,
-  getFacetedUniqueValues,
-  RowSelectionState,
-} from "@tanstack/react-table";
+import AddWordDialog from "@/components/add-word-dialog";
+import { DeleteTranslationsButton } from "@/components/delete-translations-button";
+import { LanguagePairSelector } from "@/components/language-pair-selector";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,15 +13,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import React from "react";
-import { LanguagePairSelector } from "@/components/language-pair-selector";
-import { IconX } from "@tabler/icons-react";
-import AddWordDialog from "@/components/add-word-dialog";
-import { Translation } from "@/hooks/use-translations";
-import { DeleteTranslationsButton } from "@/components/delete-translations-button";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Translation } from "@/hooks/use-translations";
+import { IconX } from "@tabler/icons-react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getSortedRowModel,
+  RowSelectionState,
+  SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
+import React from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

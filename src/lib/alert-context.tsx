@@ -1,8 +1,8 @@
 "use client";
 
-import React, { createContext, useState, useContext } from "react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
+import React, { createContext, useContext, useState } from "react";
 
 type AlertType = "default" | "destructive";
 

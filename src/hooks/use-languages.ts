@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Language {
   id: string;

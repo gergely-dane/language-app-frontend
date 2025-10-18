@@ -1,13 +1,13 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Translation, Word } from "@/hooks/use-translations";
 import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
 import { Checkbox } from "@/components/ui/checkbox";
-import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
-import { LANGUAGES } from "@/lib/constants";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Translation, Word } from "@/hooks/use-translations";
+import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
+import { ColumnDef } from "@tanstack/react-table";
 
 export interface LanguagePair {
   sourceLanguage: string;

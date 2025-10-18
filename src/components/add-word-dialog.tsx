@@ -1,3 +1,5 @@
+import { LanguageSelector } from "@/components/language-selector";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,21 +10,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { IconHelp, IconPlus } from "@tabler/icons-react";
-import React, { useEffect } from "react";
-import { useLanguages } from "@/hooks/use-languages";
-import { LanguageSelector } from "@/components/language-selector";
-import { useCreateTranslation } from "@/hooks/use-translations";
-import { useAlert } from "@/lib/alert-context";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useLanguages } from "@/hooks/use-languages";
+import { useCreateTranslation } from "@/hooks/use-translations";
+import { useAlert } from "@/lib/alert-context";
+import { IconHelp, IconPlus } from "@tabler/icons-react";
+import React, { useEffect } from "react";
 
 export default function AddWordDialog() {
   const { data: languages, isLoading, error } = useLanguages();

@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "@/hooks/use-translations";
-import { DataTable } from "@/components/data-table";
 import { columns } from "@/app/vocabulary/columns";
+import { DataTable } from "@/components/data-table";
+import { useTranslations } from "@/hooks/use-translations";
 
 export default function Home() {
   const { data: words, isLoading, error } = useTranslations({});
