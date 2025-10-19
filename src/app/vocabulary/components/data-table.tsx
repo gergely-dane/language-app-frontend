@@ -1,8 +1,6 @@
 "use client";
 
-import AddWordDialog from "@/components/add-word-dialog";
-import { DeleteTranslationsButton } from "@/components/delete-translations-button";
-import { LanguagePairSelector } from "@/components/language-pair-selector";
+import { Translation } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { Translation } from "@/hooks/use-translations";
 import { IconX } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -29,6 +26,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
+import { AddWordDialog } from "./add-word-dialog";
+import { DeleteTranslationsButton } from "./delete-translations-button";
+import { LanguagePairSelector } from "./language-pair-selector";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -71,18 +71,18 @@ export function DataTable<TData, TValue>({
       <div className="flex gap-2">
         <div className="flex">
           <Input
+            className="mb-4 lg:w-50"
             placeholder="Search for a word..."
             value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("word")?.setFilterValue(event.target.value)
             }
-            className="mb-4 lg:w-50"
           />
           {(table.getColumn("word")?.getFilterValue() as string) && (
             <Button
+              className="-ml-9 cursor-pointer opacity-50 hover:opacity-100"
               variant={null}
               size="icon"
-              className="-ml-9 cursor-pointer opacity-50 hover:opacity-100"
               onClick={() => table.getColumn("word")?.setFilterValue("")}
               aria-label="Clear filter"
             >
@@ -106,8 +106,8 @@ export function DataTable<TData, TValue>({
           }
         />
         <DeleteTranslationsButton
-          rowSelection={rowSelection}
           className="ml-auto"
+          rowSelection={rowSelection}
         />
         <AddWordDialog />
       </div>
@@ -152,8 +152,8 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
                   className="h-24 text-center"
+                  colSpan={columns.length}
                 >
                   No results.
                 </TableCell>

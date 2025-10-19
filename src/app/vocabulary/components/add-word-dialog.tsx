@@ -1,4 +1,5 @@
-import { LanguageSelector } from "@/components/language-selector";
+import { LanguageSelector } from "@/app/vocabulary/components/language-selector";
+import { useCreateTranslation } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,13 +19,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useLanguages } from "@/hooks/use-languages";
-import { useCreateTranslation } from "@/hooks/use-translations";
+import { useLanguages } from "@/hooks/languages-hooks";
 import { useAlert } from "@/lib/alert-context";
 import { IconHelp, IconPlus } from "@tabler/icons-react";
 import React, { useEffect } from "react";
 
-export default function AddWordDialog() {
+export function AddWordDialog() {
   const { data: languages, isLoading, error } = useLanguages();
   const createTranslation = useCreateTranslation();
   const { showAlert } = useAlert();
@@ -113,8 +113,8 @@ export default function AddWordDialog() {
         <div className="grid gap-4 pt-2">
           <div className="flex items-center gap-2">
             <Input
-              id="name"
               className="w-full"
+              id="name"
               placeholder="Enter the word"
               value={word}
               onChange={(e) => setWord(e.target.value)}
@@ -144,7 +144,7 @@ export default function AddWordDialog() {
           <Label>How well do you know the word?</Label>
           <Tooltip>
             <TooltipTrigger asChild>
-              <IconHelp size={18} className="text-muted-foreground ml-1" />
+              <IconHelp className="text-muted-foreground ml-1" size={18} />
             </TooltipTrigger>
             <TooltipContent>
               <p>Adjust the slider according to your knowledge level</p>
@@ -153,12 +153,12 @@ export default function AddWordDialog() {
         </div>
         <div>
           <Slider
+            className="-mt-4 h-6"
             value={knowledgeLevel}
             onValueChange={setKnowledgeLevel}
             min={0}
             max={4}
             step={1}
-            className="-mt-4 h-6"
           />
           <div className="-mt-1 flex text-xs">
             <div>Just learned it</div>
@@ -167,12 +167,12 @@ export default function AddWordDialog() {
         </div>
 
         <DialogFooter className="flex items-center">
-          <DialogClose asChild className="w-full">
+          <DialogClose className="w-full" asChild>
             <Button
-              variant="outline"
               className="mx-auto w-30"
-              disabled={createTranslation.isPending || !word || !translation}
+              variant="outline"
               onClick={handleSave}
+              disabled={createTranslation.isPending || !word || !translation}
             >
               Save
             </Button>

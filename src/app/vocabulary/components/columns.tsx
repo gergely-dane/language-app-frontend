@@ -1,18 +1,13 @@
 "use client";
 
-import { SortableTableHeaderText } from "@/components/sortable-table-header-text";
+import { Translation, Word } from "@/app/vocabulary/hooks";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { Translation, Word } from "@/hooks/use-translations";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
-
-export interface LanguagePair {
-  sourceLanguage: string;
-  translationLanguage: string;
-}
+import { SortableTableHeaderText } from "./sortable-table-header-text";
 
 export const columns: ColumnDef<Translation>[] = [
   {
@@ -47,7 +42,7 @@ export const columns: ColumnDef<Translation>[] = [
           <div className={isMobileScreen ? "uppercase" : ""}>
             {!isMobileScreen ? LANGUAGES[sourceLanguage] : sourceLanguage}
           </div>
-          <IconArrowNarrowRight size={16} className="mx-0.5 mt-0.5" />
+          <IconArrowNarrowRight className="mx-0.5 mt-0.5" size={16} />
           <div className={isMobileScreen ? "uppercase" : ""}>
             {!isMobileScreen
               ? LANGUAGES[translationLanguage]
@@ -76,7 +71,7 @@ export const columns: ColumnDef<Translation>[] = [
         <SortableTableHeaderText
           headerName={!isMobileScreen ? "Knowledge level" : ""}
           icon={
-            isMobileScreen ? <IconStar size={16} className="my-auto" /> : null
+            isMobileScreen ? <IconStar className="my-auto" size={16} /> : null
           }
           column={column}
         />
@@ -100,19 +95,19 @@ export const columns: ColumnDef<Translation>[] = [
     header: ({ table }) => (
       <Checkbox
         className="mr-4 pt-4"
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         className="mr-4 pt-4"
-        checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={row.getIsSelected()}
         aria-label="Select row"
       />
     ),

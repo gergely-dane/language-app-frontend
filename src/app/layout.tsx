@@ -1,5 +1,5 @@
-import Navbar from "@/components/navbar";
-import { QueryProvider } from "@/components/query-provider";
+import Navbar from "@/app/components/navbar";
+import { QueryProvider } from "@/app/components/query-provider";
 import { AlertProvider } from "@/lib/alert-context";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";

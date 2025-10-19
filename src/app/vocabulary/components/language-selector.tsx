@@ -36,13 +36,13 @@ export function LanguageSelector({
 
   return (
     <div className={cn("", className)}>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger asChild>
           <Button
+            className="w-30 justify-between"
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-30 justify-between"
           >
             <div>{value ? LANGUAGES[value] : "Select language"}</div>
             <IconSelector className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -56,12 +56,12 @@ export function LanguageSelector({
               <CommandGroup>
                 {languages.map((language, i) => (
                   <CommandItem
-                    key={i}
                     value={language}
                     onSelect={() => {
                       onChange(language);
                       setOpen(false);
                     }}
+                    key={i}
                   >
                     <IconCheck
                       className={cn(

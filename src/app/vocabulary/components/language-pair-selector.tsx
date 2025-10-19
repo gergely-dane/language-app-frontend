@@ -1,6 +1,5 @@
 "use client";
 
-import { LanguagePair } from "@/app/vocabulary/columns";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -23,6 +22,11 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import { useState } from "react";
+
+interface LanguagePair {
+  sourceLanguage: string;
+  translationLanguage: string;
+}
 
 interface LanguagePairSelectorProps {
   value: string | null;
@@ -49,13 +53,13 @@ export function LanguagePairSelector({
 
   return (
     <div className={className}>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger asChild>
           <Button
+            className="w-full justify-between"
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
           >
             {value ? (
               <>
@@ -92,7 +96,6 @@ export function LanguagePairSelector({
                 </CommandItem>
                 {pairs.map((pair, i) => (
                   <CommandItem
-                    key={i}
                     value={`${pair.sourceLanguage}-${pair.translationLanguage}`}
                     onSelect={() => {
                       onChange(
@@ -100,6 +103,7 @@ export function LanguagePairSelector({
                       );
                       setOpen(false);
                     }}
+                    key={i}
                   >
                     <IconCheck
                       className={cn(

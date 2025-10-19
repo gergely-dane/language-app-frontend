@@ -1,4 +1,4 @@
-import { Translation } from "@/hooks/use-translations";
+import { Translation } from "@/app/vocabulary/hooks";
 import { apiClient } from "@/lib/api-client";
 import { useQuery } from "@tanstack/react-query";
 

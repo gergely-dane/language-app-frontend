@@ -1,5 +1,5 @@
+import { useDeleteTranslationsBulk } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
-import { useDeleteTranslationsBulk } from "@/hooks/use-translations";
 import { useAlert } from "@/lib/alert-context";
 import { IconTrash } from "@tabler/icons-react";
 

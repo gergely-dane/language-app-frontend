@@ -11,14 +11,14 @@ export default function Navbar() {
   return (
     <nav className="bg-muted-foreground/50 flex w-full items-center justify-center border-b px-6 py-3 shadow-sm">
       <div className="flex items-center gap-6">
-        <Link href="/" className="text-xl font-semibold">
+        <Link className="text-xl font-semibold" href="/">
           LanguageApp
         </Link>
 
         <div className="flex gap-3">
           <Link href="/">
             <Button variant="ghost">
-              <IconHome size={48} className="shrink-0" />
+              <IconHome className="shrink-0" size={48} />
               <span className="hidden lg:block">Home</span>
             </Button>
           </Link>
