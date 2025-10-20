@@ -1,0 +1,15 @@
+{
+  "addNewWord": "Add a new word to your vocabulary.",
+  "addWord": "Add Word",
+  "adjustTheSlider": "Adjust the slider according to your knowledge level",
+  "enterTheTranslation": "Enter the translation",
+  "enterTheWord": "Enter the word",
+  "howWellDoYouKnowTheWord": "How well do you know the word?",
+  "justLearnedIt": "Just learned it",
+  "knowItVeryWell": "Know it very well",
+  "noLanguagePairsFound": "No language pairs found.",
+  "searchForAWord": "Search for a word...",
+  "searchLanguages": "Search languages...",
+  "title": "Word List",
+  "translationsDeletedSuccessfully": "Translations deleted successfully"
+}

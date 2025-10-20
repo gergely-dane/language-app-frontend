@@ -29,6 +29,7 @@ import React from "react";
 import { AddWordDialog } from "./add-word-dialog";
 import { DeleteTranslationsButton } from "./delete-translations-button";
 import { LanguagePairSelector } from "./language-pair-selector";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,6 +40,8 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const t = useI18n();
+
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "createdAt", desc: true },
   ]);
@@ -72,7 +75,7 @@ export function DataTable<TData, TValue>({
         <div className="flex">
           <Input
             className="mb-4 lg:w-50"
-            placeholder="Search for a word..."
+            placeholder={t("vocabulary.searchForAWord")}
             value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("word")?.setFilterValue(event.target.value)

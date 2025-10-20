@@ -10,6 +10,7 @@
     "^variant$",
     "^size$",
     "^(id|name)$",
+    "^key$",
     "^placeholder$",
     "^value$",
     "^onChange$",

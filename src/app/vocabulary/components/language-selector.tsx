@@ -18,6 +18,7 @@ import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface LanguageSelectorProps {
   value: string | null;
@@ -32,6 +33,8 @@ export function LanguageSelector({
   languages,
   className,
 }: LanguageSelectorProps) {
+  const t = useI18n();
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -50,18 +53,18 @@ export function LanguageSelector({
         </PopoverTrigger>
         <PopoverContent className="w-fit p-0">
           <Command>
-            <CommandInput placeholder="Search languages..." />
+            <CommandInput placeholder={t("vocabulary.searchLanguages")} />
             <CommandList>
               <CommandEmpty>No languages found.</CommandEmpty>
               <CommandGroup>
                 {languages.map((language, i) => (
                   <CommandItem
+                    key={i}
                     value={language}
                     onSelect={() => {
                       onChange(language);
                       setOpen(false);
                     }}
-                    key={i}
                   >
                     <IconCheck
                       className={cn(

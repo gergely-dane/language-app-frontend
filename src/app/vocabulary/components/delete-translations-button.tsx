@@ -2,6 +2,7 @@ import { useDeleteTranslationsBulk } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
 import { useAlert } from "@/lib/alert-context";
 import { IconTrash } from "@tabler/icons-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 type DeleteTranslationsButtonProps = {
   rowSelection: Record<string, boolean>;
@@ -12,6 +13,8 @@ export function DeleteTranslationsButton({
   rowSelection,
   className,
 }: DeleteTranslationsButtonProps) {
+  const t = useI18n();
+
   const deleteTranslation = useDeleteTranslationsBulk();
   const { showAlert } = useAlert();
 
@@ -29,7 +32,7 @@ export function DeleteTranslationsButton({
         ids: Object.keys(rowSelection).map((key) => Number(key)),
       });
       showAlert({
-        title: "Translations deleted successfully",
+        title: t("vocabulary.translationsDeletedSuccessfully"),
         variant: "default",
       });
     } catch (error) {

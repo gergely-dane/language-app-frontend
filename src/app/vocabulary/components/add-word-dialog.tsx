@@ -23,8 +23,11 @@ import { useLanguages } from "@/hooks/languages-hooks";
 import { useAlert } from "@/lib/alert-context";
 import { IconHelp, IconPlus } from "@tabler/icons-react";
 import React, { useEffect } from "react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function AddWordDialog() {
+  const t = useI18n();
+
   const { data: languages, isLoading, error } = useLanguages();
   const createTranslation = useCreateTranslation();
   const { showAlert } = useAlert();
@@ -100,22 +103,20 @@ export function AddWordDialog() {
       <DialogTrigger asChild>
         <Button variant="outline">
           <IconPlus />
-          <span className="hidden lg:block">Add Word</span>
+          <span className="hidden lg:block">{t("vocabulary.addWord")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="px-4 lg:px-8">
         <DialogHeader>
-          <DialogTitle>Add word</DialogTitle>
-          <DialogDescription>
-            Add a new word to your vocabulary.
-          </DialogDescription>
+          <DialogTitle>{t("vocabulary.addWord")}</DialogTitle>
+          <DialogDescription>{t("vocabulary.addNewWord")}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 pt-2">
           <div className="flex items-center gap-2">
             <Input
               className="w-full"
               id="name"
-              placeholder="Enter the word"
+              placeholder={t("vocabulary.enterTheWord")}
               value={word}
               onChange={(e) => setWord(e.target.value)}
             />
@@ -128,7 +129,7 @@ export function AddWordDialog() {
           <div className="flex items-center gap-2">
             <Input
               className="w-full"
-              placeholder="Enter the translation"
+              placeholder={t("vocabulary.enterTheTranslation")}
               value={translation}
               onChange={(e) => setTranslation(e.target.value)}
             />
@@ -141,19 +142,22 @@ export function AddWordDialog() {
         </div>
 
         <div className="flex">
-          <Label>How well do you know the word?</Label>
+          <Label htmlFor="knowledgeLevelSlider">
+            {t("vocabulary.howWellDoYouKnowTheWord")}
+          </Label>
           <Tooltip>
             <TooltipTrigger asChild>
               <IconHelp className="text-muted-foreground ml-1" size={18} />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Adjust the slider according to your knowledge level</p>
+              <p>{t("vocabulary.adjustTheSlider")}</p>
             </TooltipContent>
           </Tooltip>
         </div>
         <div>
           <Slider
-            className="-mt-4 h-6"
+            className="-mt-4 h-4"
+            id="knowledgeLevelSlider"
             value={knowledgeLevel}
             onValueChange={setKnowledgeLevel}
             min={0}
@@ -161,8 +165,8 @@ export function AddWordDialog() {
             step={1}
           />
           <div className="-mt-1 flex text-xs">
-            <div>Just learned it</div>
-            <div className="ml-auto">Know it very well</div>
+            <div>{t("vocabulary.justLearnedIt")}</div>
+            <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>
           </div>
         </div>
 
@@ -174,7 +178,7 @@ export function AddWordDialog() {
               onClick={handleSave}
               disabled={createTranslation.isPending || !word || !translation}
             >
-              Save
+              {t("general.save")}
             </Button>
           </DialogClose>
         </DialogFooter>

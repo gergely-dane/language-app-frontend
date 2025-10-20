@@ -10,6 +10,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface FlashcardCompProps {
   className?: string;
@@ -17,6 +18,8 @@ interface FlashcardCompProps {
 }
 
 export function FlashcardComp({ className, flashcard }: FlashcardCompProps) {
+  const t = useI18n();
+
   const [wasFlipped, setWasFlipped] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -82,11 +85,15 @@ export function FlashcardComp({ className, flashcard }: FlashcardCompProps) {
       <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-6">
         <Button className="flex" variant="outline">
           <IconCheck className="text-green-500" />
-          <div>{!wasFlipped ? "Know it" : "Knew it"}</div>
+          <div>
+            {!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}
+          </div>
         </Button>
         <Button className="flex" variant="outline">
           <IconX className="text-red-500" />
-          <div>{!wasFlipped ? "Don't know" : "Didn't know"}</div>
+          <div>
+            {!wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow")}
+          </div>
         </Button>
       </div>
     </div>

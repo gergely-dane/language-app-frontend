@@ -6,28 +6,69 @@ import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, HeaderContext } from "@tanstack/react-table";
 import { SortableTableHeaderText } from "./sortable-table-header-text";
+import { useI18n } from "@/hooks/use-i18n";
+
+const WordHeader = ({ column }: HeaderContext<Translation, unknown>) => {
+  const t = useI18n();
+  return (
+    <SortableTableHeaderText headerName={t("general.word")} column={column} />
+  );
+};
+
+const TranslationsHeader = () => {
+  const t = useI18n();
+  return <p>{t("general.translations")}</p>;
+};
+
+const LanguageHeader = () => {
+  const t = useI18n();
+  return <p>{t("general.language")}</p>;
+};
+
+const AddedOnHeader = ({ column }: HeaderContext<Translation, unknown>) => {
+  const t = useI18n();
+  return (
+    <SortableTableHeaderText
+      headerName={t("general.addedOn")}
+      column={column}
+    />
+  );
+};
+
+const KnowledgeLevelHeader = ({
+  column,
+}: HeaderContext<Translation, unknown>) => {
+  const t = useI18n();
+  const isMobileScreen = useIsMobileScreen();
+
+  return (
+    <SortableTableHeaderText
+      headerName={!isMobileScreen ? t("general.knowledgeLevel") : ""}
+      icon={isMobileScreen ? <IconStar className="my-auto" size={16} /> : null}
+      column={column}
+    />
+  );
+};
 
 export const columns: ColumnDef<Translation>[] = [
   {
     id: "word",
     accessorFn: (tr) => tr.word?.word,
-    header: ({ column }) => (
-      <SortableTableHeaderText headerName="Word" column={column} />
-    ),
+    header: WordHeader,
     filterFn: "includesString",
   },
   {
     accessorKey: "translations",
-    header: "Translation(s)",
+    header: TranslationsHeader,
     cell: ({ getValue }) => {
       return (getValue() as Word[])?.map((w: Word) => w.word)?.join(", ");
     },
   },
   {
     id: "language",
-    header: "Language",
+    header: LanguageHeader,
     accessorFn: (tr) => {
       return `${tr.sourceLanguageCode}-${tr.translationLanguageCode}`;
     },
@@ -54,9 +95,7 @@ export const columns: ColumnDef<Translation>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => (
-      <SortableTableHeaderText headerName="Added on" column={column} />
-    ),
+    header: AddedOnHeader,
     cell: ({ getValue }) => {
       const date = new Date(getValue() as string);
       return date.toLocaleDateString();
@@ -64,19 +103,7 @@ export const columns: ColumnDef<Translation>[] = [
   },
   {
     accessorKey: "score",
-    header: ({ column }) => {
-      const isMobileScreen = useIsMobileScreen();
-
-      return (
-        <SortableTableHeaderText
-          headerName={!isMobileScreen ? "Knowledge level" : ""}
-          icon={
-            isMobileScreen ? <IconStar className="my-auto" size={16} /> : null
-          }
-          column={column}
-        />
-      );
-    },
+    header: KnowledgeLevelHeader,
     cell: ({ getValue }) => {
       const level = Math.round((getValue() as number) / 20);
       const colors = [

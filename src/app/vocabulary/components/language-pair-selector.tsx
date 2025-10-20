@@ -22,6 +22,7 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface LanguagePair {
   sourceLanguage: string;
@@ -41,6 +42,8 @@ export function LanguagePairSelector({
   languagePairs,
   className,
 }: LanguagePairSelectorProps) {
+  const t = useI18n();
+
   const [open, setOpen] = useState(false);
 
   const pairs: LanguagePair[] = languagePairs.map((pair) => {
@@ -75,9 +78,11 @@ export function LanguagePairSelector({
         </PopoverTrigger>
         <PopoverContent className="w-fit p-0">
           <Command>
-            <CommandInput placeholder="Search languages..." />
+            <CommandInput placeholder={t("vocabulary.searchLanguages")} />
             <CommandList>
-              <CommandEmpty>No language pairs found.</CommandEmpty>
+              <CommandEmpty>
+                {t("vocabulary.noLanguagePairsFound")}
+              </CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   value="all"
@@ -96,6 +101,7 @@ export function LanguagePairSelector({
                 </CommandItem>
                 {pairs.map((pair, i) => (
                   <CommandItem
+                    key={i}
                     value={`${pair.sourceLanguage}-${pair.translationLanguage}`}
                     onSelect={() => {
                       onChange(
@@ -103,7 +109,6 @@ export function LanguagePairSelector({
                       );
                       setOpen(false);
                     }}
-                    key={i}
                   >
                     <IconCheck
                       className={cn(
