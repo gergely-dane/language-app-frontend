@@ -1,8 +1,8 @@
 import { useDeleteTranslationsBulk } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/hooks/use-i18n";
 import { useAlert } from "@/lib/alert-context";
 import { IconTrash } from "@tabler/icons-react";
-import { useI18n } from "@/hooks/use-i18n";
 
 type DeleteTranslationsButtonProps = {
   rowSelection: Record<string, boolean>;

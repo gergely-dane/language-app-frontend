@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { IconX } from "@tabler/icons-react";
 import {
@@ -29,17 +30,16 @@ import React from "react";
 import { AddWordDialog } from "./add-word-dialog";
 import { DeleteTranslationsButton } from "./delete-translations-button";
 import { LanguagePairSelector } from "./language-pair-selector";
-import { useI18n } from "@/hooks/use-i18n";
 
-interface DataTableProps<TData, TValue> {
+interface VocabularyTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function VocabularyTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: VocabularyTableProps<TData, TValue>) {
   const t = useI18n();
 
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -158,7 +158,7 @@ export function DataTable<TData, TValue>({
                   className="h-24 text-center"
                   colSpan={columns.length}
                 >
-                  No results.
+                  {t("vocabulary.noResults")}
                 </TableCell>
               </TableRow>
             )}

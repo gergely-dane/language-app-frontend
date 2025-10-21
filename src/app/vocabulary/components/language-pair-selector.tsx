@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useI18n } from "@/hooks/use-i18n";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {
@@ -22,7 +23,6 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { useI18n } from "@/hooks/use-i18n";
 
 interface LanguagePair {
   sourceLanguage: string;

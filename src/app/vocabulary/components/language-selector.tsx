@@ -14,11 +14,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useI18n } from "@/hooks/use-i18n";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
-import { useI18n } from "@/hooks/use-i18n";
 
 interface LanguageSelectorProps {
   value: string | null;

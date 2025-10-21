@@ -2,22 +2,7 @@
   "trailingComma": "all",
   "plugins": [
     "prettier-plugin-tailwindcss",
-    "prettier-plugin-organize-imports",
-    "@xeonlink/prettier-plugin-organize-attributes"
-  ],
-  "attributeGroups": [
-    "^className$",
-    "^variant$",
-    "^size$",
-    "^(id|name)$",
-    "^key$",
-    "^placeholder$",
-    "^value$",
-    "^onChange$",
-    "^on",
-    "$DEFAULT",
-    "^disabled$",
-    "^aria-"
+    "prettier-plugin-organize-imports"
   ],
   "tailwindFunctions": ["cn"]
 }

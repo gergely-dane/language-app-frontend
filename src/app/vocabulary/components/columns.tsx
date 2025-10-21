@@ -2,13 +2,13 @@
 
 import { Translation, Word } from "@/app/vocabulary/hooks";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
 import { ColumnDef, HeaderContext } from "@tanstack/react-table";
 import { SortableTableHeaderText } from "./sortable-table-header-text";
-import { useI18n } from "@/hooks/use-i18n";
 
 const WordHeader = ({ column }: HeaderContext<Translation, unknown>) => {
   const t = useI18n();
@@ -105,7 +105,7 @@ export const columns: ColumnDef<Translation>[] = [
     accessorKey: "score",
     header: KnowledgeLevelHeader,
     cell: ({ getValue }) => {
-      const level = Math.round((getValue() as number) / 20);
+      const level = Math.ceil((getValue() as number) / 25);
       const colors = [
         "bg-orange-500",
         "bg-yellow-500",

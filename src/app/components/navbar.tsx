@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/hooks/use-i18n";
 import {
   IconCards,
   IconHome,
@@ -6,7 +7,6 @@ import {
   IconList,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { useI18n } from "@/hooks/use-i18n";
 
 export default function Navbar() {
   const t = useI18n();

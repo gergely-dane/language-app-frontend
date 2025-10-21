@@ -2,9 +2,9 @@ import Navbar from "@/app/components/navbar";
 import { QueryProvider } from "@/app/components/query-provider";
 import { AlertProvider } from "@/lib/alert-context";
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { NextIntlClientProvider } from "next-intl";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

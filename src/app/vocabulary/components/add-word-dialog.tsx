@@ -20,10 +20,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLanguages } from "@/hooks/languages-hooks";
+import { useI18n } from "@/hooks/use-i18n";
 import { useAlert } from "@/lib/alert-context";
 import { IconHelp, IconPlus } from "@tabler/icons-react";
 import React, { useEffect } from "react";
-import { useI18n } from "@/hooks/use-i18n";
 
 export function AddWordDialog() {
   const t = useI18n();
@@ -156,7 +156,7 @@ export function AddWordDialog() {
         </div>
         <div>
           <Slider
-            className="-mt-4 h-4"
+            className="-mt-4 h-8"
             id="knowledgeLevelSlider"
             value={knowledgeLevel}
             onValueChange={setKnowledgeLevel}
