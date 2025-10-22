@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
@@ -38,6 +39,7 @@ export function AddWordDialog() {
   const [word, setWord] = React.useState<string>("");
   const [translation, setTranslation] = React.useState<string>("");
   const [knowledgeLevel, setKnowledgeLevel] = React.useState<number[]>([0]);
+  const [definition, setDefinition] = React.useState<string>("");
 
   useEffect(() => {
     setSourceLanguageCode(languages?.[0]?.code);
@@ -50,6 +52,7 @@ export function AddWordDialog() {
     setKnowledgeLevel([0]);
     setSourceLanguageCode(languages?.[0]?.code);
     setTranslationLanguageCode(languages?.[1]?.code);
+    setDefinition("");
   };
 
   const handleSave = async () => {
@@ -70,6 +73,7 @@ export function AddWordDialog() {
         sourceLanguageCode,
         translationLanguageCode,
         knowledgeLevel: knowledgeLevel[0],
+        definition,
       });
 
       showAlert({
@@ -111,6 +115,7 @@ export function AddWordDialog() {
           <DialogTitle>{t("vocabulary.addWord")}</DialogTitle>
           <DialogDescription>{t("vocabulary.addNewWord")}</DialogDescription>
         </DialogHeader>
+
         <div className="grid gap-4 pt-2">
           <div className="flex items-center gap-2">
             <Input
@@ -120,12 +125,14 @@ export function AddWordDialog() {
               value={word}
               onChange={(e) => setWord(e.target.value)}
             />
+
             <LanguageSelector
               value={sourceLanguageCode}
               onChange={(value) => handleLanguageChange(value, false)}
               languages={languages?.map((lang) => lang.code) || []}
             />
           </div>
+
           <div className="flex items-center gap-2">
             <Input
               className="w-full"
@@ -133,18 +140,27 @@ export function AddWordDialog() {
               value={translation}
               onChange={(e) => setTranslation(e.target.value)}
             />
+
             <LanguageSelector
               value={translationLanguageCode}
               onChange={(value) => handleLanguageChange(value, true)}
               languages={languages?.map((lang) => lang.code) || []}
             />
           </div>
+
+          <Textarea
+            placeholder={t("vocabulary.enterDefinition")}
+            value={definition}
+            onChange={(e) => setDefinition(e.target.value)}
+            maxLength={500}
+          />
         </div>
 
         <div className="flex">
           <Label htmlFor="knowledgeLevelSlider">
             {t("vocabulary.howWellDoYouKnowTheWord")}
           </Label>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <IconHelp className="text-muted-foreground ml-1" size={18} />
@@ -164,6 +180,7 @@ export function AddWordDialog() {
             max={4}
             step={1}
           />
+
           <div className="-mt-1 flex text-xs">
             <div>{t("vocabulary.justLearnedIt")}</div>
             <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>

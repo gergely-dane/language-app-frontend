@@ -21,6 +21,7 @@ export interface CreateTranslationRequest {
   sourceLanguageCode: string;
   translationLanguageCode: string;
   knowledgeLevel: number;
+  definition?: string;
 }
 
 export interface DeleteTranslationsBulkRequest {
