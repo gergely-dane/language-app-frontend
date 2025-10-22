@@ -112,7 +112,7 @@ export const columns: ColumnDef<Translation>[] = [
         "bg-lime-500",
         "bg-green-500",
         "bg-green-500",
-      ];
+      ] as const;
 
       return <div className={cn("h-4 w-4 rounded-full", colors[level])} />;
     },

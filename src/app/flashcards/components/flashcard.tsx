@@ -8,6 +8,7 @@ interface FlashcardCompProps {
   className?: string;
   flashcard: Flashcard;
   flipped: boolean;
+  isSubmittingResponse: boolean;
   startFlip: () => void;
 }
 
@@ -15,6 +16,7 @@ export function FlashcardComp({
   className,
   flashcard,
   flipped,
+  isSubmittingResponse,
   startFlip,
 }: FlashcardCompProps) {
   return (
@@ -23,6 +25,7 @@ export function FlashcardComp({
         className={cn(
           `relative rounded-xl h-60 mx-auto mt-18 cursor-pointer transition-all duration-1000 [transform-style:preserve-3d]`,
           flipped && "[transform:rotateY(180deg)]",
+          isSubmittingResponse && "duration-0",
         )}
         onClick={() => startFlip()}
       >

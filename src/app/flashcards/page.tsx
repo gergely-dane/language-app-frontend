@@ -32,7 +32,7 @@ export default function Flashcards() {
   };
 
   const sendResponse = async (knewIt: boolean) => {
-    if (isSubmittingResponse) return;
+    if (isSubmittingResponse || isAnimating) return;
     setIsSubmittingResponse(true);
 
     await respondToFlashcard.mutateAsync({
@@ -53,6 +53,7 @@ export default function Flashcards() {
         flashcard={flashcard}
         flipped={flipped}
         startFlip={startFlip}
+        isSubmittingResponse={isSubmittingResponse}
       />
 
       <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-6">
