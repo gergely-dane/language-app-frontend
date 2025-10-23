@@ -2,7 +2,9 @@
 
 import { FlashcardComp } from "@/app/flashcards/components/flashcard";
 import { useFlashcard, useRespondToFlashcard } from "@/app/flashcards/hooks";
+import { LanguagePairSelector } from "@/app/vocabulary/components/language-pair-selector";
 import { Button } from "@/components/ui/button";
+import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useState } from "react";
@@ -12,10 +14,16 @@ export default function Flashcards() {
   const [flipped, setFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
+  const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
 
   const t = useI18n();
   const respondToFlashcard = useRespondToFlashcard();
-  const { data: flashcard, isLoading, error, refetch } = useFlashcard();
+  const {
+    data: flashcard,
+    isLoading,
+    error,
+    refetch,
+  } = useFlashcard(languagePair);
 
   if (isLoading) return <div>Loading flashcard...</div>;
   if (error) return <div>Error loading flashcard</div>;
@@ -48,15 +56,22 @@ export default function Flashcards() {
   };
 
   return (
-    <div className="lg:w-120 lg:mx-auto">
+    <div className="flex flex-col mt-6 mx-auto gap-4 lg:w-120">
+      <LanguagePairSelector
+        className="mx-2 w-fit lg:mx-0"
+        value={languagePair}
+        onChange={setLanguagePair}
+      />
+
       <FlashcardComp
+        className="mx-2 lg:mx-0"
         flashcard={flashcard}
         flipped={flipped}
         startFlip={startFlip}
         isSubmittingResponse={isSubmittingResponse}
       />
 
-      <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-6">
+      <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-4">
         <Button
           className="flex"
           variant="outline"

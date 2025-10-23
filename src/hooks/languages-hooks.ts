@@ -8,6 +8,11 @@ export interface Language {
   code: string;
 }
 
+export interface LanguagePair {
+  sourceLanguageCode: string;
+  translationLanguageCode: string;
+}
+
 export interface LanguagesResponse extends Language {}
 
 export const useLanguages = () => {
@@ -18,5 +23,15 @@ export const useLanguages = () => {
       return data;
     },
     staleTime: 24 * 60 * 60 * 1000,
+  });
+};
+
+export const useLanguagePairs = () => {
+  return useQuery({
+    queryKey: ["language-pairs"],
+    queryFn: async () => {
+      const { data } = await apiClient.get<LanguagePair[]>("/languages/pairs");
+      return data;
+    },
   });
 };

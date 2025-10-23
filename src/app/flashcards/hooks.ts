@@ -1,4 +1,5 @@
 import { Translation } from "@/app/vocabulary/hooks";
+import { LanguagePair } from "@/hooks/languages-hooks";
 import { apiClient } from "@/lib/api-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -16,14 +17,9 @@ export interface RespondToFlashcardRequest {
   };
 }
 
-export interface FlashcardParams {
-  sourceLanguageCode: string;
-  translationLanguageCode: string;
-}
-
 export interface FlashcardResponse extends Flashcard {}
 
-export const useFlashcard = (params?: FlashcardParams) => {
+export const useFlashcard = (params?: LanguagePair) => {
   return useQuery({
     queryKey: ["flashcards", params],
     queryFn: async () => {

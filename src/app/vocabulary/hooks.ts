@@ -58,13 +58,9 @@ export const useCreateTranslation = () => {
       );
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translations"] });
-
-      queryClient.setQueryData<Translation[]>(["translations"], (old = []) => [
-        ...old,
-        data,
-      ]);
+      queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
     },
     onError: (error) => {
       console.error("Failed to create translation:", error);

@@ -20,10 +20,10 @@ export function FlashcardComp({
   startFlip,
 }: FlashcardCompProps) {
   return (
-    <div className={cn("select-none mx-2 lg:mx-0", className)}>
+    <div className={cn("select-none", className)}>
       <div
         className={cn(
-          `relative rounded-xl h-60 mx-auto mt-18 cursor-pointer transition-all duration-1000 [transform-style:preserve-3d]`,
+          `relative rounded-xl h-60 cursor-pointer transition-all duration-1000 [transform-style:preserve-3d]`,
           flipped && "[transform:rotateY(180deg)]",
           isSubmittingResponse && "duration-0",
         )}

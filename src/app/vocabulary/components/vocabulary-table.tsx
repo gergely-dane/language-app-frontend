@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { IconX } from "@tabler/icons-react";
@@ -69,6 +70,30 @@ export function VocabularyTable<TData, TValue>({
     getRowId: (row: Translation) => row.id,
   });
 
+  const getFilterValue: LanguagePair | null = () => {
+    const filterValue = table.getColumn("language")?.getFilterValue() as string;
+    if (!filterValue) {
+      return null;
+    }
+
+    const [sourceLanguageCode, translationLanguageCode] =
+      filterValue.split("-");
+    return {
+      sourceLanguageCode,
+      translationLanguageCode,
+    };
+  };
+
+  const setLanguageFilter = (languagePair: LanguagePair | null) => {
+    table
+      .getColumn("language")
+      ?.setFilterValue(
+        languagePair
+          ? `${languagePair.sourceLanguageCode}-${languagePair.translationLanguageCode}`
+          : null,
+      );
+  };
+
   return (
     <div>
       <div className="flex gap-2">
@@ -81,6 +106,7 @@ export function VocabularyTable<TData, TValue>({
               table.getColumn("word")?.setFilterValue(event.target.value)
             }
           />
+
           {(table.getColumn("word")?.getFilterValue() as string) && (
             <Button
               className="-ml-9 cursor-pointer opacity-50 hover:opacity-100"
@@ -93,25 +119,17 @@ export function VocabularyTable<TData, TValue>({
             </Button>
           )}
         </div>
+
         <LanguagePairSelector
-          value={
-            (table.getColumn("language")?.getFilterValue() as string) ?? null
-          }
-          onChange={(event) =>
-            table.getColumn("language")?.setFilterValue(event)
-          }
-          languagePairs={
-            table
-              .getColumn("language")
-              ?.getFacetedUniqueValues()
-              .keys()
-              .toArray() || []
-          }
+          value={getFilterValue()}
+          onChange={setLanguageFilter}
         />
+
         <DeleteTranslationsButton
           className="ml-auto"
           rowSelection={rowSelection}
         />
+
         <AddWordDialog />
       </div>
 
@@ -135,6 +153,7 @@ export function VocabularyTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

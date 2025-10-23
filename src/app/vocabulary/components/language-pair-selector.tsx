@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { LanguagePair, useLanguagePairs } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -24,35 +25,25 @@ import {
 } from "@tabler/icons-react";
 import { useState } from "react";
 
-interface LanguagePair {
-  sourceLanguage: string;
-  translationLanguage: string;
-}
-
 interface LanguagePairSelectorProps {
-  value: string | null;
-  onChange: (value: string | null) => void;
-  languagePairs: string[];
+  value: LanguagePair | null;
+  onChange: (value: LanguagePair | null) => void;
   className?: string;
 }
 
 export function LanguagePairSelector({
   value,
   onChange,
-  languagePairs,
   className,
 }: LanguagePairSelectorProps) {
-  const t = useI18n();
-
   const [open, setOpen] = useState(false);
 
-  const pairs: LanguagePair[] = languagePairs.map((pair) => {
-    const [sourceLanguage, translationLanguage] = pair.split("-");
-    return {
-      sourceLanguage,
-      translationLanguage,
-    };
-  });
+  const t = useI18n();
+
+  let { data: languagePairs } = useLanguagePairs();
+  if (!languagePairs) {
+    languagePairs = [];
+  }
 
   return (
     <div className={className}>
@@ -66,23 +57,27 @@ export function LanguagePairSelector({
           >
             {value ? (
               <>
-                <div className="">{LANGUAGES[value.split("-")[0]]}</div>
+                <div className="">{LANGUAGES[value.sourceLanguageCode]}</div>
                 <IconArrowNarrowRight className="mt-1" />
-                {LANGUAGES[value.split("-")[1]]}
+                {LANGUAGES[value.translationLanguageCode]}
               </>
             ) : (
-              "All languages"
+              <p>{t("vocabulary.allLanguages")}</p>
             )}
+
             <IconSelector className="ml-2 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
+
         <PopoverContent className="w-fit p-0">
           <Command>
             <CommandInput placeholder={t("vocabulary.searchLanguages")} />
+
             <CommandList>
               <CommandEmpty>
                 {t("vocabulary.noLanguagePairsFound")}
               </CommandEmpty>
+
               <CommandGroup>
                 <CommandItem
                   value="all"
@@ -97,31 +92,27 @@ export function LanguagePairSelector({
                       !value ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  All languages
+                  {t("vocabulary.allLanguages")}
                 </CommandItem>
-                {pairs.map((pair, i) => (
+
+                {languagePairs.map((pair, i) => (
                   <CommandItem
                     key={i}
-                    value={`${pair.sourceLanguage}-${pair.translationLanguage}`}
+                    value={`${pair.sourceLanguageCode}-${pair.translationLanguageCode}`}
                     onSelect={() => {
-                      onChange(
-                        `${pair.sourceLanguage}-${pair.translationLanguage}`,
-                      );
+                      onChange(pair);
                       setOpen(false);
                     }}
                   >
                     <IconCheck
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value ==
-                          `${pair.sourceLanguage}-${pair.translationLanguage}`
-                          ? "opacity-100"
-                          : "opacity-0",
+                        value === pair ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    <div className="">{LANGUAGES[pair.sourceLanguage]}</div>
+                    <div className="">{LANGUAGES[pair.sourceLanguageCode]}</div>
                     <IconArrowNarrowRight className="mt-1" />
-                    {LANGUAGES[pair.translationLanguage]}
+                    {LANGUAGES[pair.translationLanguageCode]}
                   </CommandItem>
                 ))}
               </CommandGroup>
