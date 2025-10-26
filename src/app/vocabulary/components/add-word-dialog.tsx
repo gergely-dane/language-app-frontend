@@ -1,5 +1,6 @@
 import { LanguageSelector } from "@/app/vocabulary/components/language-selector";
 import { useCreateTranslation } from "@/app/vocabulary/hooks";
+import { InputWithKbd } from "@/components/input-with-kbd";
 import { MultiSelectChipList } from "@/components/multi-select-chip-list";
 import { Button } from "@/components/ui/button";
 import {
@@ -152,9 +153,10 @@ export function AddWordDialog() {
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Input
+              <InputWithKbd
                 className="w-full"
                 placeholder={t("vocabulary.enterTheTranslation")}
+                kbd="Enter"
                 value={translation}
                 onChange={(e) => setTranslation(e.target.value)}
                 onKeyDown={translationInputOnKeyDown}
