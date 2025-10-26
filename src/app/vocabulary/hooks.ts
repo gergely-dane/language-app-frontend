@@ -17,7 +17,7 @@ export interface Translation {
 
 export interface CreateTranslationRequest {
   word: string;
-  translation: string;
+  translations: string[];
   sourceLanguageCode: string;
   translationLanguageCode: string;
   knowledgeLevel: number;

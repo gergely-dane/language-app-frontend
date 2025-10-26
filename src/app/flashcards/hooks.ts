@@ -19,7 +19,7 @@ export interface RespondToFlashcardRequest {
 
 export interface FlashcardResponse extends Flashcard {}
 
-export const useFlashcard = (params?: LanguagePair) => {
+export const useFlashcard = (params?: LanguagePair | null) => {
   return useQuery({
     queryKey: ["flashcards", params],
     queryFn: async () => {

@@ -1,5 +1,6 @@
 import { LanguageSelector } from "@/app/vocabulary/components/language-selector";
 import { useCreateTranslation } from "@/app/vocabulary/hooks";
+import { MultiSelectChipList } from "@/components/multi-select-chip-list";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,7 +25,7 @@ import { useLanguages } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAlert } from "@/lib/alert-context";
 import { IconHelp, IconPlus } from "@tabler/icons-react";
-import React, { useEffect } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 
 export function AddWordDialog() {
   const t = useI18n();
@@ -33,32 +34,48 @@ export function AddWordDialog() {
   const createTranslation = useCreateTranslation();
   const { showAlert } = useAlert();
 
-  const [sourceLanguageCode, setSourceLanguageCode] = React.useState<string>();
-  const [translationLanguageCode, setTranslationLanguageCode] =
-    React.useState<string>();
-  const [word, setWord] = React.useState<string>("");
-  const [translation, setTranslation] = React.useState<string>("");
-  const [knowledgeLevel, setKnowledgeLevel] = React.useState<number[]>([0]);
-  const [definition, setDefinition] = React.useState<string>("");
+  const [sourceLanguageCode, setSourceLanguageCode] = useState<string | null>(
+    "",
+  );
+  const [translationLanguageCode, setTranslationLanguageCode] = useState<
+    string | null
+  >("");
+  const [word, setWord] = useState<string>("");
+  const [translation, setTranslation] = useState<string>("");
+  const [translationList, setTranslationList] = useState<string[]>([]);
+  const [knowledgeLevel, setKnowledgeLevel] = useState<number[]>([0]);
+  const [definition, setDefinition] = useState<string>("");
 
   useEffect(() => {
-    setSourceLanguageCode(languages?.[0]?.code);
-    setTranslationLanguageCode(languages?.[1]?.code);
+    setSourceLanguageCode(languages?.[0]?.code ?? null);
+    setTranslationLanguageCode(languages?.[1]?.code ?? null);
   }, [languages]);
 
   const resetForm = () => {
     setWord("");
     setTranslation("");
     setKnowledgeLevel([0]);
-    setSourceLanguageCode(languages?.[0]?.code);
-    setTranslationLanguageCode(languages?.[1]?.code);
+    setSourceLanguageCode(languages?.[0]?.code ?? null);
+    setTranslationLanguageCode(languages?.[1]?.code ?? null);
+    setTranslationList([]);
     setDefinition("");
+  };
+
+  const translationInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const trimmedTranslation = translation.trim();
+      if (trimmedTranslation && !translationList.includes(trimmedTranslation)) {
+        setTranslationList([...translationList, trimmedTranslation]);
+        setTranslation("");
+      }
+    }
   };
 
   const handleSave = async () => {
     if (
       !word ||
-      !translation ||
+      (!translationList.length && !translation) ||
       !sourceLanguageCode ||
       !translationLanguageCode
     ) {
@@ -69,7 +86,7 @@ export function AddWordDialog() {
     try {
       await createTranslation.mutateAsync({
         word,
-        translation,
+        translations: translationList.length ? translationList : [translation],
         sourceLanguageCode,
         translationLanguageCode,
         knowledgeLevel: knowledgeLevel[0],
@@ -80,7 +97,7 @@ export function AddWordDialog() {
         title: "Translation added successfully",
         variant: "default",
       });
-    } catch (error) {
+    } catch (error: any) {
       showAlert({
         title: error.response?.data?.message || "Error adding translation",
         variant: "destructive",
@@ -133,18 +150,26 @@ export function AddWordDialog() {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <Input
-              className="w-full"
-              placeholder={t("vocabulary.enterTheTranslation")}
-              value={translation}
-              onChange={(e) => setTranslation(e.target.value)}
-            />
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Input
+                className="w-full"
+                placeholder={t("vocabulary.enterTheTranslation")}
+                value={translation}
+                onChange={(e) => setTranslation(e.target.value)}
+                onKeyDown={translationInputOnKeyDown}
+              />
 
-            <LanguageSelector
-              value={translationLanguageCode}
-              onChange={(value) => handleLanguageChange(value, true)}
-              languages={languages?.map((lang) => lang.code) || []}
+              <LanguageSelector
+                value={translationLanguageCode}
+                onChange={(value) => handleLanguageChange(value, true)}
+                languages={languages?.map((lang) => lang.code) || []}
+              />
+            </div>
+
+            <MultiSelectChipList
+              items={translationList}
+              onChange={(items) => setTranslationList(items)}
             />
           </div>
 
@@ -193,7 +218,11 @@ export function AddWordDialog() {
               className="mx-auto w-30"
               variant="outline"
               onClick={handleSave}
-              disabled={createTranslation.isPending || !word || !translation}
+              disabled={
+                createTranslation.isPending ||
+                !word ||
+                (!translationList.length && !translation)
+              }
             >
               {t("general.save")}
             </Button>
