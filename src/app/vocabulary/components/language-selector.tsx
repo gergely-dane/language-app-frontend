@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
@@ -34,45 +35,58 @@ export function LanguageSelector({
   className,
 }: LanguageSelectorProps) {
   const t = useI18n();
+  const isMobile = useIsMobileScreen();
 
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={cn("", className)}>
+    <div>
       <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger asChild>
           <Button
-            className="w-30 justify-between"
+            className={cn("justify-between", className)}
             variant="outline"
             role="combobox"
             aria-expanded={open}
           >
-            <div>{value ? LANGUAGES[value] : "Select language"}</div>
-            <IconSelector className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <p>
+              {value
+                ? !isMobile
+                  ? LANGUAGES[value]
+                  : value.toUpperCase()
+                : t("vocabulary.selectLanguage")}
+            </p>
+            <IconSelector className="opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-fit p-0">
           <Command>
-            <CommandInput placeholder={t("vocabulary.searchLanguages")} />
+            <CommandInput
+              className="w-20 lg:w-30"
+              placeholder={
+                !isMobile
+                  ? t("vocabulary.searchLanguages")
+                  : t("general.search")
+              }
+            />
             <CommandList>
-              <CommandEmpty>No languages found.</CommandEmpty>
+              <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
               <CommandGroup>
                 {languages.map((language, i) => (
                   <CommandItem
                     key={i}
-                    value={language}
+                    value={LANGUAGES[language]}
                     onSelect={() => {
                       onChange(language);
                       setOpen(false);
                     }}
                   >
                     <IconCheck
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value == language ? "opacity-100" : "opacity-0",
-                      )}
+                      className={
+                        value == language ? "opacity-100" : "opacity-0"
+                      }
                     />
-                    <div>{LANGUAGES[language]}</div>
+                    <p>{LANGUAGES[language]}</p>
                   </CommandItem>
                 ))}
               </CommandGroup>

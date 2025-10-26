@@ -17,7 +17,6 @@ import {
 import { LanguagePair, useLanguagePairs } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { LANGUAGES } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 import {
   IconArrowNarrowRight,
   IconCheck,
@@ -86,33 +85,34 @@ export function LanguagePairSelector({
                     setOpen(false);
                   }}
                 >
-                  <IconCheck
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      !value ? "opacity-100" : "opacity-0",
-                    )}
-                  />
+                  <IconCheck className={!value ? "opacity-100" : "opacity-0"} />
                   {t("vocabulary.allLanguages")}
                 </CommandItem>
 
                 {languagePairs.map((pair, i) => (
                   <CommandItem
                     key={i}
-                    value={`${pair.sourceLanguageCode}-${pair.translationLanguageCode}`}
+                    value={pair}
                     onSelect={() => {
                       onChange(pair);
                       setOpen(false);
                     }}
                   >
                     <IconCheck
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === pair ? "opacity-100" : "opacity-0",
-                      )}
+                      className={
+                        value?.sourceLanguageCode === pair.sourceLanguageCode &&
+                        value?.translationLanguageCode ===
+                          pair.translationLanguageCode
+                          ? "opacity-100"
+                          : "opacity-0"
+                      }
                     />
-                    <div className="">{LANGUAGES[pair.sourceLanguageCode]}</div>
+
+                    <p>{LANGUAGES[pair.sourceLanguageCode]}</p>
+
                     <IconArrowNarrowRight className="mt-1" />
-                    {LANGUAGES[pair.translationLanguageCode]}
+
+                    <p>{LANGUAGES[pair.translationLanguageCode]}</p>
                   </CommandItem>
                 ))}
               </CommandGroup>

@@ -41,12 +41,12 @@ const KnowledgeLevelHeader = ({
   column,
 }: HeaderContext<Translation, unknown>) => {
   const t = useI18n();
-  const isMobileScreen = useIsMobileScreen();
+  const isMobile = useIsMobileScreen();
 
   return (
     <SortableTableHeaderText
-      headerName={!isMobileScreen ? t("general.knowledgeLevel") : ""}
-      icon={isMobileScreen ? <IconStar className="my-auto" size={16} /> : null}
+      headerName={!isMobile ? t("general.knowledgeLevel") : ""}
+      icon={isMobile ? <IconStar className="my-auto" size={16} /> : null}
       column={column}
     />
   );
@@ -76,18 +76,16 @@ export const columns: ColumnDef<Translation>[] = [
       const [sourceLanguage, translationLanguage] = (
         getValue() as string
       ).split("-");
-      const isMobileScreen = useIsMobileScreen();
+      const isMobile = useIsMobileScreen();
 
       return (
         <div className="flex">
-          <div className={isMobileScreen ? "uppercase" : ""}>
-            {!isMobileScreen ? LANGUAGES[sourceLanguage] : sourceLanguage}
+          <div className={isMobile ? "uppercase" : ""}>
+            {!isMobile ? LANGUAGES[sourceLanguage] : sourceLanguage}
           </div>
           <IconArrowNarrowRight className="mx-0.5 mt-0.5" size={16} />
-          <div className={isMobileScreen ? "uppercase" : ""}>
-            {!isMobileScreen
-              ? LANGUAGES[translationLanguage]
-              : translationLanguage}
+          <div className={isMobile ? "uppercase" : ""}>
+            {!isMobile ? LANGUAGES[translationLanguage] : translationLanguage}
           </div>
         </div>
       );

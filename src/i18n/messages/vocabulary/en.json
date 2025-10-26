@@ -10,9 +10,11 @@
   "justLearnedIt": "Just learned it",
   "knowItVeryWell": "Know it very well",
   "noLanguagePairsFound": "No language pairs found.",
+  "noLanguagesFound": "No languages found.",
   "noResults": "No results.",
   "searchForAWord": "Search for a word...",
   "searchLanguages": "Search languages...",
+  "selectLanguage": "Select language",
   "title": "Word List",
   "translationsDeletedSuccessfully": "Translations deleted successfully"
 }

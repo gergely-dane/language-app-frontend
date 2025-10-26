@@ -25,7 +25,7 @@ import {
 import { useLanguages } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAlert } from "@/lib/alert-context";
-import { IconHelp, IconPlus } from "@tabler/icons-react";
+import { IconCornerDownLeft, IconHelp, IconPlus } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 
 export function AddWordDialog() {
@@ -137,7 +137,6 @@ export function AddWordDialog() {
         <div className="grid gap-4 pt-2">
           <div className="flex items-center gap-2">
             <Input
-              className="w-full"
               id="name"
               placeholder={t("vocabulary.enterTheWord")}
               value={word}
@@ -145,6 +144,7 @@ export function AddWordDialog() {
             />
 
             <LanguageSelector
+              className="w-14 lg:w-32"
               value={sourceLanguageCode}
               onChange={(value) => handleLanguageChange(value, false)}
               languages={languages?.map((lang) => lang.code) || []}
@@ -154,15 +154,19 @@ export function AddWordDialog() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <InputWithKbd
-                className="w-full"
                 placeholder={t("vocabulary.enterTheTranslation")}
-                kbd="Enter"
+                kbd={
+                  <>
+                    Enter <IconCornerDownLeft />
+                  </>
+                }
                 value={translation}
                 onChange={(e) => setTranslation(e.target.value)}
                 onKeyDown={translationInputOnKeyDown}
               />
 
               <LanguageSelector
+                className="w-14 lg:w-32"
                 value={translationLanguageCode}
                 onChange={(value) => handleLanguageChange(value, true)}
                 languages={languages?.map((lang) => lang.code) || []}
