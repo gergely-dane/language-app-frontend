@@ -1,8 +1,10 @@
 "use client";
 import { Flashcard } from "@/app/flashcards/hooks";
+import { Kbd } from "@/components/ui/kbd";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { IconArrowRight, IconLanguage } from "@tabler/icons-react";
+import { useEffect } from "react";
 
 interface FlashcardCompProps {
   className?: string;
@@ -10,6 +12,7 @@ interface FlashcardCompProps {
   flipped: boolean;
   isSubmittingResponse: boolean;
   startFlip: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
 export function FlashcardComp({
@@ -18,7 +21,15 @@ export function FlashcardComp({
   flipped,
   isSubmittingResponse,
   startFlip,
+  onKeyDown,
 }: FlashcardCompProps) {
+  useEffect(() => {
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onKeyDown]);
+
   return (
     <div className={cn("select-none", className)}>
       <div
@@ -33,43 +44,54 @@ export function FlashcardComp({
           <div className="flex h-full">
             <div className="m-auto text-center">
               <div className="flex w-fit mx-auto">
-                <IconLanguage className="mt-0.5 mr-1" />
+                <IconLanguage className="my-auto mr-1" />
 
-                <div className="text-sm my-auto">
+                <p className="text-sm my-auto">
                   {LANGUAGES[flashcard.translation.sourceLanguageCode]}
-                </div>
+                </p>
 
                 <IconArrowRight className="mx-2 mt-1.5" size={16} />
 
-                <div className="text-sm my-auto">
+                <p className="text-sm my-auto">
                   {LANGUAGES[flashcard.translation.translationLanguageCode]}
-                </div>
+                </p>
               </div>
 
-              <div className="text-xl">{flashcard.translation.word.word}</div>
+              <p className="text-xl">{flashcard.translation.word.word}</p>
+
+              <p className="absolute left-0 bottom-5 w-full text-muted/40">
+                Click on the card or press{" "}
+                <Kbd className="bg-muted/40">Space</Kbd> to flip it
+              </p>
             </div>
           </div>
         </div>
 
         <div className="absolute inset-0 bg-muted-foreground rounded-xl border border-black [backface-visibility:hidden] [transform:rotateY(180deg)]">
-          <div className="flex h-full">
+          <div className="flex flex-col h-full">
             <div className="m-auto text-center">
               <div className="flex w-fit mx-auto">
-                <IconLanguage className="mt-0.5 mr-1" />
+                <IconLanguage className="my-auto mr-1" />
 
-                <div className="text-sm my-auto">
+                <p className="text-sm my-auto">
                   {LANGUAGES[flashcard.translation.translationLanguageCode]}
-                </div>
+                </p>
 
                 <IconArrowRight className="mx-2 mt-1.5" size={16} />
 
-                <div className="text-sm my-auto">
+                <p className="text-sm my-auto">
                   {LANGUAGES[flashcard.translation.sourceLanguageCode]}
-                </div>
+                </p>
               </div>
-              <div className="text-xl">
+
+              <p className="text-xl">
                 {flashcard.translation.translations[0].word}
-              </div>
+              </p>
+
+              <p className="absolute left-0 bottom-5 w-full text-muted/40">
+                Click on the card or press{" "}
+                <Kbd className="bg-muted/40">Space</Kbd> to flip it
+              </p>
             </div>
           </div>
         </div>

@@ -4,10 +4,11 @@ import { FlashcardComp } from "@/app/flashcards/components/flashcard";
 import { useFlashcard, useRespondToFlashcard } from "@/app/flashcards/hooks";
 import { LanguagePairSelector } from "@/app/vocabulary/components/language-pair-selector";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { IconCheck, IconX } from "@tabler/icons-react";
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 
 export default function Flashcards() {
   const [wasFlipped, setWasFlipped] = useState(false);
@@ -29,14 +30,30 @@ export default function Flashcards() {
   if (error) return <div>Error loading flashcard</div>;
   if (!flashcard) return <div>No flashcards found</div>;
 
-  const startFlip = () => {
+  const startFlip = (e?: KeyboardEvent<HTMLDivElement>) => {
     if (isAnimating) return;
+
     setFlipped(!flipped);
     setWasFlipped(true);
     setIsAnimating(true);
     setTimeout(() => {
       setIsAnimating(false);
     }, 1000);
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    e.preventDefault();
+    switch (e.key) {
+      case " ":
+        startFlip();
+        break;
+      case "ArrowLeft":
+        sendResponse(true);
+        break;
+      case "ArrowRight":
+        sendResponse(false);
+        break;
+    }
   };
 
   const sendResponse = async (knewIt: boolean) => {
@@ -69,6 +86,7 @@ export default function Flashcards() {
         flipped={flipped}
         startFlip={startFlip}
         isSubmittingResponse={isSubmittingResponse}
+        onKeyDown={onKeyDown}
       />
 
       <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-4">
@@ -79,6 +97,7 @@ export default function Flashcards() {
           disabled={isSubmittingResponse}
         >
           <IconCheck className="text-green-500" />
+
           <div>
             {!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}
           </div>
@@ -91,11 +110,17 @@ export default function Flashcards() {
           disabled={isSubmittingResponse}
         >
           <IconX className="text-red-500" />
+
           <div>
             {!wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow")}
           </div>
         </Button>
       </div>
+
+      <p className="text-muted-foreground/40 mx-auto">
+        Hint: you can use the arrow keys (<Kbd>◀</Kbd> and <Kbd>▶</Kbd>) to
+        respond.
+      </p>
     </div>
   );
 }
