@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { IconCheck, IconX } from "@tabler/icons-react";
-import { KeyboardEvent, useState } from "react";
+import { useState } from "react";
 
 export default function Flashcards() {
   const [wasFlipped, setWasFlipped] = useState(false);
@@ -18,6 +19,8 @@ export default function Flashcards() {
   const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
 
   const t = useI18n();
+  const isMobile = useIsMobileScreen();
+
   const respondToFlashcard = useRespondToFlashcard();
   const {
     data: flashcard,
@@ -30,7 +33,7 @@ export default function Flashcards() {
   if (error) return <div>Error loading flashcard</div>;
   if (!flashcard) return <div>No flashcards found</div>;
 
-  const startFlip = (e?: KeyboardEvent<HTMLDivElement>) => {
+  const startFlip = () => {
     if (isAnimating) return;
 
     setFlipped(!flipped);
@@ -41,7 +44,7 @@ export default function Flashcards() {
     }, 1000);
   };
 
-  const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+  const onKeyDown = (e: globalThis.KeyboardEvent) => {
     e.preventDefault();
     switch (e.key) {
       case " ":
@@ -117,10 +120,12 @@ export default function Flashcards() {
         </Button>
       </div>
 
-      <p className="text-muted-foreground/40 mx-auto">
-        Hint: you can use the arrow keys (<Kbd>◀</Kbd> and <Kbd>▶</Kbd>) to
-        respond.
-      </p>
+      {!isMobile && (
+        <p className="text-muted-foreground/40 mx-auto text-center">
+          Hint: you can use the arrow keys (<Kbd>◀</Kbd> and <Kbd>▶</Kbd>) to
+          respond.
+        </p>
+      )}
     </div>
   );
 }
