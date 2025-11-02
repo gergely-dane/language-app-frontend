@@ -5,9 +5,9 @@
   "knowledgeLevel": "Knowledge level",
   "language": "Language",
   "save": "Save",
+  "search": "Search...",
   "translate": "Translate",
   "translations": "Translation(s)",
   "vocabulary": "Vocabulary",
-  "word": "Word",
-  "search": "Search..."
+  "word": "Word"
 }

@@ -14,7 +14,7 @@ import {
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { IconX } from "@tabler/icons-react";
+import { IconPlus, IconX } from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -28,7 +28,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
-import { AddWordDialog } from "./add-word-dialog";
+import { AddEditWordDialog } from "./add-edit-word-dialog";
 import { DeleteTranslationsButton } from "./delete-translations-button";
 import { LanguagePairSelector } from "./language-pair-selector";
 
@@ -42,6 +42,7 @@ export function VocabularyTable<TData, TValue>({
   data,
 }: VocabularyTableProps<TData, TValue>) {
   const t = useI18n();
+  const isMobile = useIsMobileScreen();
 
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "createdAt", desc: true },
@@ -50,6 +51,7 @@ export function VocabularyTable<TData, TValue>({
     [],
   );
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const [addWordDialogOpen, setAddWordDialogOpen] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -63,7 +65,7 @@ export function VocabularyTable<TData, TValue>({
       sorting,
       columnFilters,
       rowSelection,
-      columnVisibility: { createdAt: !useIsMobileScreen() },
+      columnVisibility: { createdAt: !isMobile, select: !isMobile },
     },
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -130,7 +132,15 @@ export function VocabularyTable<TData, TValue>({
           rowSelection={rowSelection}
         />
 
-        <AddWordDialog />
+        <Button variant="outline" onClick={() => setAddWordDialogOpen(true)}>
+          <IconPlus />
+          <span className="hidden lg:block">{t("vocabulary.addWord")}</span>
+        </Button>
+
+        <AddEditWordDialog
+          open={addWordDialogOpen}
+          onOpenChange={(open) => setAddWordDialogOpen(open)}
+        />
       </div>
 
       <div className="rounded-md border">

@@ -7,7 +7,7 @@ import { Kbd } from "@/components/ui/kbd";
 import React from "react";
 
 interface InputWithKbdProps {
-  kbd: string;
+  kbd: string | Element;
 }
 
 export function InputWithKbd({

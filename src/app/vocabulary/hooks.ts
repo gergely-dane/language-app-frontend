@@ -15,13 +15,16 @@ export interface Translation {
   createdAt: string;
 }
 
-export interface CreateTranslationRequest {
+export interface UpdateTranslationRequest {
   word: string;
   translations: string[];
   sourceLanguageCode: string;
   translationLanguageCode: string;
-  knowledgeLevel: number;
   definition?: string;
+}
+
+export interface CreateTranslationRequest extends UpdateTranslationRequest {
+  knowledgeLevel: number;
 }
 
 export interface DeleteTranslationsBulkRequest {
@@ -68,6 +71,24 @@ export const useCreateTranslation = () => {
   });
 };
 
+export const useUpdateTranslation = (id: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (updatedTranslation: UpdateTranslationRequest) => {
+      const { data } = await apiClient.put<Translation>(
+        `/translations/${id}`,
+        updatedTranslation,
+      );
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["translations"] });
+      queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+    },
+  });
+};
+
 export const useDeleteTranslationsBulk = () => {
   const queryClient = useQueryClient();
 
@@ -78,9 +99,7 @@ export const useDeleteTranslationsBulk = () => {
     },
     onSuccess: ({ ids }) => {
       queryClient.invalidateQueries({ queryKey: ["translations"] });
-      queryClient.setQueryData<Translation[]>(["translations"], (old = []) =>
-        old.filter((translation) => !ids.includes(translation.id)),
-      );
+      queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
     },
     onError: (error) => {
       console.error("Failed to delete translation:", error);

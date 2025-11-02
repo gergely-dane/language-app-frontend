@@ -1,13 +1,20 @@
 "use client";
 
+import { AddEditWordDialog } from "@/app/vocabulary/components/add-edit-word-dialog";
 import { Translation, Word } from "@/app/vocabulary/hooks";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { IconArrowNarrowRight, IconStar } from "@tabler/icons-react";
+import {
+  IconArrowNarrowRight,
+  IconPencil,
+  IconStar,
+} from "@tabler/icons-react";
 import { ColumnDef, HeaderContext } from "@tanstack/react-table";
+import { useState } from "react";
 import { SortableTableHeaderText } from "./sortable-table-header-text";
 
 const WordHeader = ({ column }: HeaderContext<Translation, unknown>) => {
@@ -113,6 +120,37 @@ export const columns: ColumnDef<Translation>[] = [
       ] as const;
 
       return <div className={cn("h-4 w-4 rounded-full", colors[level])} />;
+    },
+  },
+  {
+    id: "edit",
+    cell: ({ row }) => {
+      const [dialogOpen, setDialogOpen] = useState(false);
+      const rowData = row.original;
+
+      return (
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setDialogOpen(true)}
+          >
+            <IconPencil />
+          </Button>
+
+          <AddEditWordDialog
+            open={dialogOpen}
+            onOpenChange={(open) => setDialogOpen(open)}
+            id={rowData.id}
+            editMode={true}
+            currentSourceLanguageCode={rowData.sourceLanguageCode}
+            currentTranslationLanguageCode={rowData.translationLanguageCode}
+            currentWord={rowData.word?.word}
+            currentTranslationList={rowData.translations.map((t) => t.word)}
+            currentDefinition={rowData.definition ?? ""}
+          />
+        </>
+      );
     },
   },
   {

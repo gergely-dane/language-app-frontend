@@ -45,15 +45,17 @@ export default function Flashcards() {
   };
 
   const onKeyDown = (e: globalThis.KeyboardEvent) => {
-    e.preventDefault();
     switch (e.key) {
       case " ":
+        e.preventDefault();
         startFlip();
         break;
       case "ArrowLeft":
+        e.preventDefault();
         sendResponse(true);
         break;
       case "ArrowRight":
+        e.preventDefault();
         sendResponse(false);
         break;
     }
@@ -99,11 +101,9 @@ export default function Flashcards() {
           onClick={() => sendResponse(true)}
           disabled={isSubmittingResponse}
         >
-          <IconCheck className="text-green-500" />
+          <IconCheck className="mt-0.5 text-success" />
 
-          <div>
-            {!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}
-          </div>
+          <p>{!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}</p>
         </Button>
 
         <Button
@@ -112,11 +112,11 @@ export default function Flashcards() {
           onClick={() => sendResponse(false)}
           disabled={isSubmittingResponse}
         >
-          <IconX className="text-red-500" />
+          <IconX className="mt-0.5 text-destructive" />
 
-          <div>
+          <p>
             {!wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow")}
-          </div>
+          </p>
         </Button>
       </div>
 
