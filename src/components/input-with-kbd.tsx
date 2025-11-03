@@ -4,10 +4,10 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface InputWithKbdProps {
-  kbd: string | Element;
+  kbd: ReactNode;
 }
 
 export function InputWithKbd({

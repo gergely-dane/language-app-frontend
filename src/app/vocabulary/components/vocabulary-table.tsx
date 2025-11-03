@@ -1,6 +1,7 @@
 "use client";
 
-import { Translation } from "@/app/vocabulary/hooks";
+import { DeleteWordDialog } from "@/app/vocabulary/components/delete-word-dialog";
+import { Translation, useDeleteTranslationsBulk } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,7 +15,8 @@ import {
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { IconPlus, IconX } from "@tabler/icons-react";
+import { useAlert } from "@/lib/alert-context";
+import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -27,9 +29,8 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { AddEditWordDialog } from "./add-edit-word-dialog";
-import { DeleteTranslationsButton } from "./delete-translations-button";
 import { LanguagePairSelector } from "./language-pair-selector";
 
 interface VocabularyTableProps<TData, TValue> {
@@ -43,6 +44,8 @@ export function VocabularyTable<TData, TValue>({
 }: VocabularyTableProps<TData, TValue>) {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
+  const deleteTranslation = useDeleteTranslationsBulk();
+  const { showAlert } = useAlert();
 
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "createdAt", desc: true },
@@ -52,6 +55,8 @@ export function VocabularyTable<TData, TValue>({
   );
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [addWordDialogOpen, setAddWordDialogOpen] = React.useState(false);
+  const [deleteWordDialogOpen, setDeleteWordDialogOpen] = React.useState(false);
+  const [selectedRowCount, setSelectedRowCount] = React.useState(0);
 
   const table = useReactTable({
     data,
@@ -72,7 +77,11 @@ export function VocabularyTable<TData, TValue>({
     getRowId: (row: Translation) => row.id,
   });
 
-  const getFilterValue: LanguagePair | null = () => {
+  useEffect(() => {
+    setSelectedRowCount(Object.keys(rowSelection).length);
+  }, [rowSelection]);
+
+  const getFilterValue = (): LanguagePair | null => {
     const filterValue = table.getColumn("language")?.getFilterValue() as string;
     if (!filterValue) {
       return null;
@@ -94,6 +103,37 @@ export function VocabularyTable<TData, TValue>({
           ? `${languagePair.sourceLanguageCode}-${languagePair.translationLanguageCode}`
           : null,
       );
+  };
+
+  const handleDelete = async () => {
+    if (!selectedRowCount) {
+      return;
+    }
+
+    const ids = Object.keys(rowSelection)
+      .filter((key) => rowSelection[key])
+      .map((key) => Number(key));
+
+    try {
+      await deleteTranslation.mutateAsync({ ids });
+
+      setRowSelection({});
+      showAlert({
+        title: t("vocabulary.translationsDeletedSuccessfully"),
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Failed to delete translations:", error);
+    }
+  };
+
+  const deleteClicked = () => {
+    if (selectedRowCount > 1) {
+      setDeleteWordDialogOpen(true);
+      return;
+    }
+
+    handleDelete();
   };
 
   return (
@@ -127,9 +167,20 @@ export function VocabularyTable<TData, TValue>({
           onChange={setLanguageFilter}
         />
 
-        <DeleteTranslationsButton
+        <Button
           className="ml-auto"
-          rowSelection={rowSelection}
+          variant="outline"
+          onClick={deleteClicked}
+          disabled={!rowSelection || !Object.keys(rowSelection).length}
+        >
+          <IconTrash className="text-destructive" />
+        </Button>
+
+        <DeleteWordDialog
+          open={deleteWordDialogOpen}
+          onOpenChange={(open) => setDeleteWordDialogOpen(open)}
+          wordCount={selectedRowCount}
+          onDelete={handleDelete}
         />
 
         <Button variant="outline" onClick={() => setAddWordDialogOpen(true)}>

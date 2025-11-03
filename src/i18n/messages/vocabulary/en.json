@@ -3,6 +3,11 @@
   "addWord": "Add Word",
   "adjustTheSlider": "Adjust the slider according to your knowledge level",
   "allLanguages": "All Languages",
+  "deleteWords": {
+    "areYouSure": "Are you sure?",
+    "delete": "Delete",
+    "description": "You are about to delete {count} words from your vocabulary."
+  },
   "editWord": "Edit Word",
   "enterDefinition": "Enter a definition (optional) ",
   "enterTheTranslation": "Enter the translation(s)",
