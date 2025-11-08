@@ -9,19 +9,24 @@ import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { IconCheck, IconX } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Flashcards() {
-  const [wasFlipped, setWasFlipped] = useState(false);
-  const [flipped, setFlipped] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
-  const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
-
   const t = useI18n();
+  const respondToFlashcard = useRespondToFlashcard();
   const isMobile = useIsMobileScreen();
 
-  const respondToFlashcard = useRespondToFlashcard();
+  const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
+
+  const [currentFlashcard, setCurrentFlashcard] = useState(null);
+  const [wasFlipped, setWasFlipped] = useState(false);
+  const [flipped, setFlipped] = useState(false);
+  const [flipAnimationPlaying, setFlipAnimationPlaying] = useState(false);
+  const [swipeAnimationDirection, setSwipeAnimationDirection] = useState<
+    "left" | "right" | null
+  >(null);
+  const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
+
   const {
     data: flashcard,
     isLoading,
@@ -29,18 +34,24 @@ export default function Flashcards() {
     refetch,
   } = useFlashcard(languagePair);
 
+  useEffect(() => {
+    if (flashcard && !currentFlashcard) {
+      setCurrentFlashcard(flashcard);
+    }
+  }, [flashcard]);
+
   if (isLoading) return <div>Loading flashcard...</div>;
   if (error) return <div>Error loading flashcard</div>;
   if (!flashcard) return <div>No flashcards found</div>;
 
   const startFlip = () => {
-    if (isAnimating) return;
+    if (flipAnimationPlaying) return;
 
     setFlipped(!flipped);
     setWasFlipped(true);
-    setIsAnimating(true);
+    setFlipAnimationPlaying(true);
     setTimeout(() => {
-      setIsAnimating(false);
+      setFlipAnimationPlaying(false);
     }, 1000);
   };
 
@@ -52,29 +63,35 @@ export default function Flashcards() {
         break;
       case "ArrowLeft":
         e.preventDefault();
-        sendResponse(true);
+        sendResponse(false);
         break;
       case "ArrowRight":
         e.preventDefault();
-        sendResponse(false);
+        sendResponse(true);
         break;
     }
   };
 
   const sendResponse = async (knewIt: boolean) => {
-    if (isSubmittingResponse || isAnimating) return;
-    setIsSubmittingResponse(true);
+    if (isSubmittingResponse || flipAnimationPlaying) return;
 
-    await respondToFlashcard.mutateAsync({
-      flashcardId: flashcard.id,
-      response: { knewIt },
-    });
+    respondToFlashcard
+      .mutateAsync({
+        flashcardId: flashcard.id,
+        response: { knewIt },
+      })
+      .then(() => refetch());
 
-    setFlipped(false);
-    setWasFlipped(false);
-    await refetch();
+    setSwipeAnimationDirection(knewIt ? "right" : "left");
+    setTimeout(async () => {
+      setSwipeAnimationDirection(null);
+      setFlipped(false);
+      setWasFlipped(false);
 
-    setIsSubmittingResponse(false);
+      setIsSubmittingResponse(true);
+      setCurrentFlashcard(flashcard);
+      setTimeout(() => setIsSubmittingResponse(false), 20);
+    }, 700);
   };
 
   return (
@@ -85,27 +102,20 @@ export default function Flashcards() {
         onChange={setLanguagePair}
       />
 
-      <FlashcardComp
-        className="mx-2 lg:mx-0"
-        flashcard={flashcard}
-        flipped={flipped}
-        startFlip={startFlip}
-        isSubmittingResponse={isSubmittingResponse}
-        onKeyDown={onKeyDown}
-      />
+      {currentFlashcard && (
+        <FlashcardComp
+          className="mx-2 lg:mx-0"
+          flashcard={currentFlashcard}
+          flipped={flipped}
+          startFlip={startFlip}
+          flipAnimationPlaying={flipAnimationPlaying}
+          swipeAnimationDirection={swipeAnimationDirection}
+          isSubmittingResponse={isSubmittingResponse}
+          onKeyDown={onKeyDown}
+        />
+      )}
 
       <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-4">
-        <Button
-          className="flex"
-          variant="outline"
-          onClick={() => sendResponse(true)}
-          disabled={isSubmittingResponse}
-        >
-          <IconCheck className="mt-0.5 text-success" />
-
-          <p>{!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}</p>
-        </Button>
-
         <Button
           className="flex"
           variant="outline"
@@ -117,6 +127,17 @@ export default function Flashcards() {
           <p>
             {!wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow")}
           </p>
+        </Button>
+
+        <Button
+          className="flex"
+          variant="outline"
+          onClick={() => sendResponse(true)}
+          disabled={isSubmittingResponse}
+        >
+          <IconCheck className="mt-0.5 text-success" />
+
+          <p>{!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}</p>
         </Button>
       </div>
 

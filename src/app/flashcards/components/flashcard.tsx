@@ -11,18 +11,28 @@ interface FlashcardCompProps {
   className?: string;
   flashcard: Flashcard;
   flipped: boolean;
+  flipAnimationPlaying: boolean;
+  swipeAnimationDirection: "left" | "right" | null;
   isSubmittingResponse: boolean;
   startFlip: () => void;
   onKeyDown?: (e: globalThis.KeyboardEvent) => void;
 }
 
+interface FlashcardSideProps {
+  flashcard: Flashcard;
+  isFront: boolean;
+  flipped: boolean;
+  flipAnimationPlaying: boolean;
+  swipeAnimationDirection?: "left" | "right" | null;
+}
+
 function FlashcardSide({
   flashcard,
   isFront,
-}: {
-  flashcard: Flashcard;
-  isFront: boolean;
-}) {
+  flipped,
+  flipAnimationPlaying,
+  swipeAnimationDirection,
+}: FlashcardSideProps) {
   const isMobile = useIsMobileScreen();
 
   return (
@@ -30,9 +40,17 @@ function FlashcardSide({
       className={cn(
         "absolute inset-0 bg-muted-foreground rounded-xl border border-black [backface-visibility:hidden]",
         !isFront && "[transform:rotateY(180deg)]",
+        ((isFront && !flipped) || (!isFront && flipped)) &&
+          swipeAnimationDirection &&
+          "transition-opacity duration-700 opacity-0",
       )}
     >
-      <div className="flex h-full">
+      <div
+        className={cn(
+          "flex h-full",
+          flipped && isFront && !flipAnimationPlaying && "opacity-0",
+        )}
+      >
         <div className="m-auto text-center">
           <div className="flex w-fit mx-auto">
             <IconLanguage className="my-auto mr-1" />
@@ -81,6 +99,8 @@ export function FlashcardComp({
   className,
   flashcard,
   flipped,
+  flipAnimationPlaying,
+  swipeAnimationDirection,
   isSubmittingResponse,
   startFlip,
   onKeyDown,
@@ -97,17 +117,33 @@ export function FlashcardComp({
     <div className={cn("select-none", className)}>
       <div
         className={cn(
-          "relative rounded-xl h-60 cursor-pointer transition-all duration-1000 [transform-style:preserve-3d]",
+          "relative rounded-xl h-60 hover:scale-102 cursor-pointer transition-all [transform-style:preserve-3d]",
+          flipAnimationPlaying && "duration-1000 hover:scale-100",
+          swipeAnimationDirection && "duration-700 hover:scale-100",
+          swipeAnimationDirection === "left" && "-translate-x-96 -rotate-5",
+          swipeAnimationDirection === "right" && "translate-x-96 rotate-5",
           flipped && "[transform:rotateY(180deg)]",
           isSubmittingResponse && "duration-0",
         )}
         onClick={() => startFlip()}
       >
-        <FlashcardSide flashcard={flashcard} isFront />
-        <FlashcardSide flashcard={flashcard} isFront={false} />
+        <FlashcardSide
+          flashcard={flashcard}
+          isFront={true}
+          flipped={flipped}
+          flipAnimationPlaying={flipAnimationPlaying}
+          swipeAnimationDirection={swipeAnimationDirection}
+        />
+        <FlashcardSide
+          flashcard={flashcard}
+          isFront={false}
+          flipped={flipped}
+          flipAnimationPlaying={flipAnimationPlaying}
+          swipeAnimationDirection={swipeAnimationDirection}
+        />
       </div>
-      <div className="-mt-57 h-60 w-full rounded-xl bg-muted-foreground h-6 border border-black"></div>
-      <div className="-mt-61.5 h-60 w-full rounded-xl bg-muted-foreground h-6 border border-black"></div>
+      <div className="-mt-57 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
+      <div className="-mt-61.5 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
     </div>
   );
 }
