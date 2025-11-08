@@ -1,6 +1,7 @@
 import { LanguageSelector } from "@/app/vocabulary/components/language-selector";
 import {
   useCreateTranslation,
+  useDeleteTranslation,
   useUpdateTranslation,
 } from "@/app/vocabulary/hooks";
 import { InputWithKbd } from "@/components/input-with-kbd";
@@ -8,7 +9,6 @@ import { MultiSelectChipList } from "@/components/multi-select-chip-list";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -27,12 +27,12 @@ import {
 import { useLanguages } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAlert } from "@/lib/alert-context";
-import { IconCornerDownLeft, IconHelp } from "@tabler/icons-react";
+import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 
 interface AddEditWordDialogProps {
   open: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   id?: number;
   editMode?: boolean;
   currentSourceLanguageCode?: string;
@@ -54,9 +54,11 @@ export function AddEditWordDialog({
   currentDefinition = "",
 }: AddEditWordDialogProps) {
   const t = useI18n();
+  const { showAlert } = useAlert();
+
   const createTranslation = useCreateTranslation();
   const updateTranslation = useUpdateTranslation(id);
-  const { showAlert } = useAlert();
+  const deleteTranslation = useDeleteTranslation(id);
 
   const { data: languages, isLoading, error } = useLanguages();
 
@@ -67,9 +69,11 @@ export function AddEditWordDialog({
     string | null
   >(currentTranslationLanguageCode);
   const [word, setWord] = useState<string>(currentWord);
-  const [translation, setTranslation] = useState<string>("");
+  const [translation, setTranslation] = useState<string>(
+    currentTranslationList.length === 1 ? currentTranslationList[0] : "",
+  );
   const [translationList, setTranslationList] = useState<string[]>(
-    currentTranslationList,
+    currentTranslationList.length > 1 ? currentTranslationList : [],
   );
   const [knowledgeLevel, setKnowledgeLevel] = useState<number[]>([0]);
   const [definition, setDefinition] = useState<string>(currentDefinition);
@@ -129,15 +133,35 @@ export function AddEditWordDialog({
         await updateTranslation.mutateAsync(newTranslation);
       }
 
+      onOpenChange(false);
       showAlert({
         title: t("vocabulary.translationSavedSuccessfully"),
         variant: "default",
       });
-    } catch (error: any) {
+    } catch (error) {
       showAlert({
         title:
           error.response?.data?.message ||
           t("vocabulary.errorAddingTranslation"),
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteTranslation.mutateAsync();
+
+      onOpenChange(false);
+      showAlert({
+        title: t("vocabulary.translationDeletedSuccessfully"),
+        variant: "default",
+      });
+    } catch (error) {
+      showAlert({
+        title:
+          error.response?.data?.message ||
+          t("vocabulary.errorDeletingTranslation"),
         variant: "destructive",
       });
     }
@@ -258,21 +282,30 @@ export function AddEditWordDialog({
           </>
         )}
 
-        <DialogFooter className="flex items-center">
-          <DialogClose className="w-full" asChild>
+        <DialogFooter className="w-full">
+          <Button
+            className="mx-auto w-30"
+            variant="outline"
+            onClick={handleSave}
+            disabled={
+              createTranslation.isPending ||
+              !word ||
+              (!translationList.length && !translation)
+            }
+          >
+            {t("general.save")}
+          </Button>
+
+          {editMode && (
             <Button
-              className="mx-auto w-30"
+              className="absolute"
               variant="outline"
-              onClick={handleSave}
-              disabled={
-                createTranslation.isPending ||
-                !word ||
-                (!translationList.length && !translation)
-              }
+              size="icon"
+              onClick={handleDelete}
             >
-              {t("general.save")}
+              <IconTrash className="text-destructive" />
             </Button>
-          </DialogClose>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -89,6 +89,20 @@ export const useUpdateTranslation = (id: number) => {
   });
 };
 
+export const useDeleteTranslation = (id: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      await apiClient.delete(`/translations/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["translations"] });
+      queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+    },
+  });
+};
+
 export const useDeleteTranslationsBulk = () => {
   const queryClient = useQueryClient();
 
@@ -97,7 +111,7 @@ export const useDeleteTranslationsBulk = () => {
       await apiClient.post(`/translations/delete-bulk`, body);
       return body;
     },
-    onSuccess: ({ ids }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translations"] });
       queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
     },

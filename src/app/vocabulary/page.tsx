@@ -14,7 +14,7 @@ export default function Home() {
   if (!words) return <div>No words found</div>;
 
   return (
-    <div className="w-[95%] lg:w-[60%] mx-auto">
+    <div className="lg:w-2/3 mx-auto p-3">
       <div className="text-3xl font-bold my-8">{t("vocabulary.title")}</div>
       <VocabularyTable columns={columns} data={words} />
     </div>

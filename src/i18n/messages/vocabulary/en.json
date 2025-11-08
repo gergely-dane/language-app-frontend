@@ -13,6 +13,7 @@
   "enterTheTranslation": "Enter the translation(s)",
   "enterTheWord": "Enter the word",
   "errorAddingTranslation": "Error adding translation",
+  "errorDeletingTranslation": "Error deleting translation",
   "howWellDoYouKnowTheWord": "How well do you know the word?",
   "justLearnedIt": "Just learned it",
   "knowItVeryWell": "Know it very well",
@@ -23,6 +24,7 @@
   "searchLanguages": "Search languages...",
   "selectLanguage": "Select language",
   "title": "Word List",
+  "translationDeletedSuccessfully": "Translation deleted successfully",
   "translationSavedSuccessfully": "Translation saved successfully",
   "translationsDeletedSuccessfully": "Translations deleted successfully"
 }
