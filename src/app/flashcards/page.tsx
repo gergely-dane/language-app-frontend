@@ -6,26 +6,28 @@ import { LanguagePairSelector } from "@/app/vocabulary/components/language-pair-
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePair } from "@/hooks/languages-hooks";
+import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { IconCheck, IconX } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { IconCheck, IconHandMove, IconX } from "@tabler/icons-react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Flashcards() {
   const t = useI18n();
   const respondToFlashcard = useRespondToFlashcard();
   const isMobile = useIsMobileScreen();
+  const { ref, swipeDirection, resetSwipeDirection } =
+    useDetectSwipeOnElement<HTMLDivElement>();
 
   const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
-
   const [currentFlashcard, setCurrentFlashcard] = useState(null);
   const [wasFlipped, setWasFlipped] = useState(false);
   const [flipped, setFlipped] = useState(false);
-  const [flipAnimationPlaying, setFlipAnimationPlaying] = useState(false);
+  const [animationPlaying, setAnimationPlaying] = useState(false);
   const [swipeAnimationDirection, setSwipeAnimationDirection] = useState<
     "left" | "right" | null
   >(null);
-  const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
+  const [isCardRefreshing, setIsCardRefreshing] = useState(false);
 
   const {
     data: flashcard,
@@ -38,20 +40,16 @@ export default function Flashcards() {
     if (flashcard && !currentFlashcard) {
       setCurrentFlashcard(flashcard);
     }
-  }, [flashcard]);
-
-  if (isLoading) return <div>Loading flashcard...</div>;
-  if (error) return <div>Error loading flashcard</div>;
-  if (!flashcard) return <div>No flashcards found</div>;
+  }, [currentFlashcard, flashcard]);
 
   const startFlip = () => {
-    if (flipAnimationPlaying) return;
+    if (animationPlaying || swipeDirection) return;
 
     setFlipped(!flipped);
     setWasFlipped(true);
-    setFlipAnimationPlaying(true);
+    setAnimationPlaying(true);
     setTimeout(() => {
-      setFlipAnimationPlaying(false);
+      setAnimationPlaying(false);
     }, 1000);
   };
 
@@ -72,27 +70,58 @@ export default function Flashcards() {
     }
   };
 
-  const sendResponse = async (knewIt: boolean) => {
-    if (isSubmittingResponse || flipAnimationPlaying) return;
+  const sendResponse = useCallback(
+    async (knewIt: boolean) => {
+      if (isCardRefreshing || animationPlaying || !flashcard) return;
 
-    respondToFlashcard
-      .mutateAsync({
-        flashcardId: flashcard.id,
-        response: { knewIt },
-      })
-      .then(() => refetch());
+      respondToFlashcard
+        .mutateAsync({
+          flashcardId: flashcard.id,
+          response: { knewIt },
+        })
+        .then(() => refetch());
 
-    setSwipeAnimationDirection(knewIt ? "right" : "left");
-    setTimeout(async () => {
-      setSwipeAnimationDirection(null);
-      setFlipped(false);
-      setWasFlipped(false);
+      setSwipeAnimationDirection(knewIt ? "right" : "left");
+      setTimeout(async () => {
+        setSwipeAnimationDirection(null);
+        setFlipped(false);
+        setWasFlipped(false);
 
-      setIsSubmittingResponse(true);
-      setCurrentFlashcard(flashcard);
-      setTimeout(() => setIsSubmittingResponse(false), 20);
-    }, 700);
-  };
+        setIsCardRefreshing(true);
+        setCurrentFlashcard(flashcard);
+        setTimeout(() => setIsCardRefreshing(false), 20);
+      }, 700);
+    },
+    [
+      flashcard,
+      animationPlaying,
+      isCardRefreshing,
+      refetch,
+      respondToFlashcard,
+    ],
+  );
+
+  useEffect(() => {}, [languagePair]);
+
+  useEffect(() => {
+    if (swipeDirection === "left") {
+      sendResponse(false);
+    } else if (swipeDirection === "right") {
+      sendResponse(true);
+    }
+
+    if (swipeDirection) {
+      resetSwipeDirection();
+      setAnimationPlaying(true);
+      setTimeout(() => {
+        setAnimationPlaying(false);
+      }, 700);
+    }
+  }, [swipeDirection, resetSwipeDirection, sendResponse]);
+
+  if (isLoading) return <div>Loading flashcard...</div>;
+  if (error) return <div>Error loading flashcard</div>;
+  if (!flashcard) return <div>No flashcards found</div>;
 
   return (
     <div className="flex flex-col mt-6 mx-auto gap-4 lg:w-120">
@@ -105,12 +134,13 @@ export default function Flashcards() {
       {currentFlashcard && (
         <FlashcardComp
           className="mx-2 lg:mx-0"
+          ref={ref}
           flashcard={currentFlashcard}
           flipped={flipped}
           startFlip={startFlip}
-          flipAnimationPlaying={flipAnimationPlaying}
+          animationPlaying={animationPlaying}
           swipeAnimationDirection={swipeAnimationDirection}
-          isSubmittingResponse={isSubmittingResponse}
+          isCardRefreshing={isCardRefreshing}
           onKeyDown={onKeyDown}
         />
       )}
@@ -120,7 +150,7 @@ export default function Flashcards() {
           className="flex"
           variant="outline"
           onClick={() => sendResponse(false)}
-          disabled={isSubmittingResponse}
+          disabled={isCardRefreshing}
         >
           <IconX className="mt-0.5 text-destructive" />
 
@@ -133,7 +163,7 @@ export default function Flashcards() {
           className="flex"
           variant="outline"
           onClick={() => sendResponse(true)}
-          disabled={isSubmittingResponse}
+          disabled={isCardRefreshing}
         >
           <IconCheck className="mt-0.5 text-success" />
 
@@ -141,10 +171,14 @@ export default function Flashcards() {
         </Button>
       </div>
 
-      {!isMobile && (
-        <p className="text-muted-foreground/40 mx-auto text-center">
-          Hint: you can use the arrow keys (<Kbd>◀</Kbd> and <Kbd>▶</Kbd>) to
-          respond.
+      {!isMobile ? (
+        <p className="text-muted-foreground/70 mx-auto text-center">
+          Hint: try using the arrow keys (<Kbd>◀</Kbd> and <Kbd>▶</Kbd>), or
+          swiping on the card to respond.
+        </p>
+      ) : (
+        <p className="flex gap-1.5 text-muted-foreground/70 mx-auto text-center">
+          Hint: try swiping on the card to respond <IconHandMove />
         </p>
       )}
     </div>

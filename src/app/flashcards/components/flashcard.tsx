@@ -4,16 +4,21 @@ import { Kbd } from "@/components/ui/kbd";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { IconArrowRight, IconLanguage } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconHandClick,
+  IconLanguage,
+} from "@tabler/icons-react";
 import { useEffect } from "react";
 
 interface FlashcardCompProps {
   className?: string;
+  ref?: React.RefObject<HTMLDivElement | null>;
   flashcard: Flashcard;
   flipped: boolean;
-  flipAnimationPlaying: boolean;
+  animationPlaying: boolean;
   swipeAnimationDirection: "left" | "right" | null;
-  isSubmittingResponse: boolean;
+  isCardRefreshing: boolean;
   startFlip: () => void;
   onKeyDown?: (e: globalThis.KeyboardEvent) => void;
 }
@@ -54,6 +59,7 @@ function FlashcardSide({
         <div className="m-auto text-center">
           <div className="flex w-fit mx-auto">
             <IconLanguage className="my-auto mr-1" />
+
             <p className="text-sm my-auto">
               {
                 LANGUAGES[
@@ -63,7 +69,9 @@ function FlashcardSide({
                 ]
               }
             </p>
+
             <IconArrowRight className="mx-2 mt-1.5" size={16} />
+
             <p className="text-sm my-auto">
               {
                 LANGUAGES[
@@ -79,14 +87,17 @@ function FlashcardSide({
               ? flashcard.translation.word.word
               : flashcard.translation.translations[0].word}
           </p>
-          <div className="absolute left-0 bottom-5 w-full text-muted/40">
+
+          <div className="absolute left-0 bottom-5 w-full text-center text-muted/50">
             {!isMobile ? (
               <div>
                 Click on the card or press{" "}
-                <Kbd className="bg-muted/40">Space</Kbd> to flip it
+                <Kbd className="bg-muted/50">Space</Kbd> to flip it
               </div>
             ) : (
-              <p>Tap on the card to flip it</p>
+              <p className="flex justify-center items-center gap-1.5">
+                Tap on the card to flip it <IconHandClick />
+              </p>
             )}
           </div>
         </div>
@@ -97,11 +108,12 @@ function FlashcardSide({
 
 export function FlashcardComp({
   className,
+  ref,
   flashcard,
   flipped,
-  flipAnimationPlaying,
+  animationPlaying,
   swipeAnimationDirection,
-  isSubmittingResponse,
+  isCardRefreshing,
   startFlip,
   onKeyDown,
 }: FlashcardCompProps) {
@@ -114,16 +126,17 @@ export function FlashcardComp({
   }, [onKeyDown]);
 
   return (
-    <div className={cn("select-none", className)}>
+    <div className={cn("select-none", className)} ref={ref}>
       <div
         className={cn(
           "relative rounded-xl h-60 hover:scale-102 cursor-pointer transition-all [transform-style:preserve-3d]",
-          flipAnimationPlaying && "duration-1000 hover:scale-100",
-          swipeAnimationDirection && "duration-700 hover:scale-100",
+          animationPlaying && "duration-1000 hover:scale-100",
+          swipeAnimationDirection &&
+            "duration-700 hover:scale-100 translate-y-4",
           swipeAnimationDirection === "left" && "-translate-x-96 -rotate-5",
           swipeAnimationDirection === "right" && "translate-x-96 rotate-5",
           flipped && "[transform:rotateY(180deg)]",
-          isSubmittingResponse && "duration-0",
+          isCardRefreshing && "duration-0",
         )}
         onClick={() => startFlip()}
       >
@@ -131,18 +144,21 @@ export function FlashcardComp({
           flashcard={flashcard}
           isFront={true}
           flipped={flipped}
-          flipAnimationPlaying={flipAnimationPlaying}
+          flipAnimationPlaying={animationPlaying}
           swipeAnimationDirection={swipeAnimationDirection}
         />
+
         <FlashcardSide
           flashcard={flashcard}
           isFront={false}
           flipped={flipped}
-          flipAnimationPlaying={flipAnimationPlaying}
+          flipAnimationPlaying={animationPlaying}
           swipeAnimationDirection={swipeAnimationDirection}
         />
       </div>
+
       <div className="-mt-57 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
+
       <div className="-mt-61.5 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
     </div>
   );
