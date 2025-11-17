@@ -4,12 +4,7 @@ import { UserButton } from "@/app/components/user-button";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
-import {
-  IconCards,
-  IconHome,
-  IconLanguage,
-  IconList,
-} from "@tabler/icons-react";
+import { IconCards, IconHome, IconList } from "@tabler/icons-react";
 import Link from "next/link";
 
 export function Navbar() {
@@ -41,13 +36,6 @@ export function Navbar() {
           <Button variant="ghost">
             <IconCards />
             <span className="hidden lg:block">{t("general.flashcards")}</span>
-          </Button>
-        </Link>
-
-        <Link href="/translate">
-          <Button variant="ghost">
-            <IconLanguage />
-            <span className="hidden lg:block">{t("general.translate")}</span>
           </Button>
         </Link>
 

@@ -124,16 +124,15 @@ export default function Flashcards() {
   if (!flashcard) return <div>No flashcards found</div>;
 
   return (
-    <div className="flex flex-col mt-6 mx-auto gap-4 lg:w-120">
+    <div className="flex flex-col mx-auto gap-4 lg:w-120">
       <LanguagePairSelector
-        className="mx-2 w-fit lg:mx-0"
+        className="w-fit"
         value={languagePair}
         onChange={setLanguagePair}
       />
 
       {currentFlashcard && (
         <FlashcardComp
-          className="mx-2 lg:mx-0"
           ref={ref}
           flashcard={currentFlashcard}
           flipped={flipped}

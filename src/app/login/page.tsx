@@ -1,37 +1,24 @@
 "use client";
 
-import { supabaseClient } from "@/lib/supabase-client";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useAuth } from "@/context/auth-context";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const { login } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    router.push("/vocabulary");
-  };
 
   return (
     <div style={{ maxWidth: 400, margin: "40px auto" }}>
       <h2>Login</h2>
 
-      <form onSubmit={handleLogin}>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await login(email, password);
+        }}
+      >
         <input
           type="email"
           value={email}
@@ -51,8 +38,6 @@ export default function LoginPage() {
         />
 
         <button type="submit">Sign In</button>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
   );

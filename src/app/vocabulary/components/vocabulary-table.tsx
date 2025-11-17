@@ -138,8 +138,8 @@ export function VocabularyTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex gap-2">
-        <div className="flex">
+      <div className="flex gap-1.5">
+        <div className="fle">
           <Input
             className="mb-4 lg:w-50"
             placeholder={t("vocabulary.searchForAWord")}

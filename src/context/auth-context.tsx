@@ -1,6 +1,8 @@
 "use client";
 
 import { supabaseClient } from "@/lib/supabase-client";
+import { User } from "@supabase/auth-js";
+import { redirect } from "next/navigation";
 import {
   createContext,
   ReactNode,
@@ -11,15 +13,15 @@ import {
 
 interface AuthContextProps {
   isAuthenticated: boolean;
-  user: any | null;
-  login: () => void;
-  logout: () => void;
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
@@ -40,8 +42,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const login = () => {};
-  const logout = () => {};
+  const login = async (email: string, password: string) => {
+    await supabaseClient.auth.signInWithPassword({ email, password });
+    redirect("/vocabulary");
+  };
+
+  const logout = async () => {
+    await supabaseClient.auth.signOut();
+    redirect("/login");
+  };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>

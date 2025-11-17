@@ -41,7 +41,7 @@ export default function RootLayout({
             <NextIntlClientProvider>
               <AlertProvider>
                 <Navbar />
-                {children}
+                <div className="m-auto px-2.5 py-4 lg:w-3/5">{children}</div>
               </AlertProvider>
             </NextIntlClientProvider>
           </AuthProvider>
