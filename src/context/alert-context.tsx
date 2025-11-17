@@ -2,14 +2,12 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
-import React, { createContext, useContext, useState } from "react";
-
-type AlertType = "default" | "destructive";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 interface AlertState {
   title: string;
   description?: string;
-  variant?: AlertType;
+  variant?: "default" | "destructive";
   open: boolean;
 }
 
@@ -19,7 +17,7 @@ interface AlertContextProps {
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 
-export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
+export const AlertProvider = ({ children }: { children: ReactNode }) => {
   const [alert, setAlert] = useState<AlertState>({
     title: "",
     description: "",
@@ -70,8 +68,10 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAlert = () => {
   const context = useContext(AlertContext);
+
   if (!context) {
     throw new Error("useAlert must be used within an AlertProvider");
   }
+
   return context;
 };

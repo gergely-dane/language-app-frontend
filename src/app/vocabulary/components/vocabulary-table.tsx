@@ -12,10 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useAlert } from "@/context/alert-context";
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { useAlert } from "@/lib/alert-context";
 import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import {
   ColumnDef,

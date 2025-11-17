@@ -24,9 +24,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAlert } from "@/context/alert-context";
 import { useLanguages } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
-import { useAlert } from "@/lib/alert-context";
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 

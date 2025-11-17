@@ -9,6 +9,7 @@ export default function Home() {
   const t = useI18n();
 
   const { data: words, isLoading, error } = useTranslations({});
+
   if (isLoading) return <div>Loading words...</div>;
   if (error) return <div>Error loading words</div>;
   if (!words) return <div>No words found</div>;

@@ -1,6 +1,7 @@
-import Navbar from "@/app/components/navbar";
+import { Navbar } from "@/app/components/navbar";
 import { QueryProvider } from "@/app/components/query-provider";
-import { AlertProvider } from "@/lib/alert-context";
+import { AlertProvider } from "@/context/alert-context";
+import { AuthProvider } from "@/context/auth-context";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -36,10 +37,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-          <Navbar />
-          <NextIntlClientProvider>
-            <AlertProvider>{children}</AlertProvider>
-          </NextIntlClientProvider>
+          <AuthProvider>
+            <NextIntlClientProvider>
+              <AlertProvider>
+                <Navbar />
+                {children}
+              </AlertProvider>
+            </NextIntlClientProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
