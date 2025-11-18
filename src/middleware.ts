@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
-async function updateSession(request: NextRequest) {
+const updateSession = async (request: NextRequest) => {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -32,9 +32,9 @@ async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   return { isAuthenticated: !!user, supabaseResponse };
-}
+};
 
-export async function middleware(request: NextRequest) {
+export const middleware = async (request: NextRequest) => {
   const { isAuthenticated, supabaseResponse } = await updateSession(request);
 
   if (
@@ -47,7 +47,7 @@ export async function middleware(request: NextRequest) {
   }
 
   return supabaseResponse;
-}
+};
 
 export const config = {
   matcher: [

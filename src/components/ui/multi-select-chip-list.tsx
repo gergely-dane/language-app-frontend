@@ -2,17 +2,17 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { IconX } from "@tabler/icons-react";
 
-interface MultiSelectChipListProps {
+type MultiSelectChipListProps = {
   className?: string;
   items: string[];
   onChange?: (items: string[]) => void;
-}
+};
 
-export function MultiSelectChipList({
+export const MultiSelectChipList = ({
   className,
   items,
   onChange,
-}: MultiSelectChipListProps) {
+}: MultiSelectChipListProps) => {
   if (!items?.length) {
     return;
   }
@@ -38,4 +38,4 @@ export function MultiSelectChipList({
       ))}
     </div>
   );
-}
+};

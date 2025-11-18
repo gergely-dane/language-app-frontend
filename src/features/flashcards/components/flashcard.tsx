@@ -1,7 +1,8 @@
 "use client";
-import { Flashcard } from "@/app/flashcards/hooks";
+
 import { Kbd } from "@/components/ui/kbd";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Flashcard } from "@/interfaces/flashcard.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {
@@ -11,7 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect } from "react";
 
-interface FlashcardCompProps {
+type FlashcardCompProps = {
   className?: string;
   ref?: React.RefObject<HTMLDivElement | null>;
   flashcard: Flashcard;
@@ -21,23 +22,23 @@ interface FlashcardCompProps {
   isCardRefreshing: boolean;
   startFlip: () => void;
   onKeyDown?: (e: globalThis.KeyboardEvent) => void;
-}
+};
 
-interface FlashcardSideProps {
+type FlashcardSideProps = {
   flashcard: Flashcard;
   isFront: boolean;
   flipped: boolean;
   flipAnimationPlaying: boolean;
   swipeAnimationDirection?: "left" | "right" | null;
-}
+};
 
-function FlashcardSide({
+const FlashcardSide = ({
   flashcard,
   isFront,
   flipped,
   flipAnimationPlaying,
   swipeAnimationDirection,
-}: FlashcardSideProps) {
+}: FlashcardSideProps) => {
   const isMobile = useIsMobileScreen();
 
   return (
@@ -104,9 +105,9 @@ function FlashcardSide({
       </div>
     </div>
   );
-}
+};
 
-export function FlashcardComp({
+export const FlashcardComp = ({
   className,
   ref,
   flashcard,
@@ -116,7 +117,7 @@ export function FlashcardComp({
   isCardRefreshing,
   startFlip,
   onKeyDown,
-}: FlashcardCompProps) {
+}: FlashcardCompProps) => {
   useEffect(() => {
     if (!onKeyDown) return;
     window.addEventListener("keydown", onKeyDown);
@@ -162,4 +163,4 @@ export function FlashcardComp({
       <div className="-mt-61.5 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
     </div>
   );
-}
+};

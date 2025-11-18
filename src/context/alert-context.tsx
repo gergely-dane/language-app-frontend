@@ -4,16 +4,16 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 import { createContext, ReactNode, useContext, useState } from "react";
 
-interface AlertState {
+type AlertState = {
   title: string;
   description?: string;
   variant?: "default" | "destructive";
   open: boolean;
-}
+};
 
-interface AlertContextProps {
+type AlertContextProps = {
   showAlert: (options: Omit<AlertState, "open">) => void;
-}
+};
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 

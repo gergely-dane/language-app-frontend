@@ -1,9 +1,8 @@
 "use client";
 
-import { DeleteWordDialog } from "@/app/vocabulary/components/delete-word-dialog";
-import { Translation, useDeleteTranslationsBulk } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
   Table,
   TableBody,
@@ -13,9 +12,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAlert } from "@/context/alert-context";
+import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-translations-bulk";
+import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
+import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-dialog";
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Translation } from "@/interfaces/translation.interface";
 import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -30,8 +33,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect } from "react";
-import { AddEditWordDialog } from "./add-edit-word-dialog";
-import { LanguagePairSelector } from "./language-pair-selector";
 
 interface VocabularyTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

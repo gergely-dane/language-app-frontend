@@ -6,16 +6,16 @@ import {
 import { Kbd } from "@/components/ui/kbd";
 import React, { ReactNode } from "react";
 
-interface InputWithKbdProps {
+type InputWithKbdProps = {
   kbd: ReactNode;
-}
+};
 
-export function InputWithKbd({
+export const InputWithKbd = ({
   kbd,
   className,
   type,
   ...props
-}: InputWithKbdProps & React.ComponentProps<"input">) {
+}: InputWithKbdProps & React.ComponentProps<"input">) => {
   return (
     <InputGroup className={className}>
       <InputGroupInput type={type} {...props} />
@@ -26,4 +26,4 @@ export function InputWithKbd({
       )}
     </InputGroup>
   );
-}
+};

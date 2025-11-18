@@ -21,19 +21,19 @@ import { cn } from "@/lib/utils";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
 
-interface LanguageSelectorProps {
+type LanguageSelectorProps = {
   value: string | null;
   onChange: (value: string | null) => void;
   languages: string[];
   className?: string;
-}
+};
 
-export function LanguageSelector({
+export const LanguageSelector = ({
   value,
   onChange,
   languages,
   className,
-}: LanguageSelectorProps) {
+}: LanguageSelectorProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
@@ -96,4 +96,4 @@ export function LanguageSelector({
       </Popover>
     </div>
   );
-}
+};

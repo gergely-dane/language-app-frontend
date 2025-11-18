@@ -1,18 +1,19 @@
 "use client";
 
-import { FlashcardComp } from "@/app/flashcards/components/flashcard";
-import { useFlashcard, useRespondToFlashcard } from "@/app/flashcards/hooks";
-import { LanguagePairSelector } from "@/app/vocabulary/components/language-pair-selector";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
-import { LanguagePair } from "@/hooks/languages-hooks";
+import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
+import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
+import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
+import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { IconCheck, IconHandMove, IconX } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
-export default function Flashcards() {
+const Flashcards = () => {
   const t = useI18n();
   const respondToFlashcard = useRespondToFlashcard();
   const isMobile = useIsMobileScreen();
@@ -182,4 +183,6 @@ export default function Flashcards() {
       )}
     </div>
   );
-}
+};
+
+export default Flashcards;

@@ -13,10 +13,10 @@ import {
 import { cn } from "@/lib/utils";
 import { IconSearch } from "@tabler/icons-react";
 
-function Command({
+const Command = ({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive>) {
+}: React.ComponentProps<typeof CommandPrimitive>) => {
   return (
     <CommandPrimitive
       className={cn(
@@ -27,9 +27,9 @@ function Command({
       {...props}
     />
   );
-}
+};
 
-function CommandDialog({
+const CommandDialog = ({
   title = "Command Palette",
   description = "Search for a command to run...",
   children,
@@ -37,7 +37,7 @@ function CommandDialog({
 }: React.ComponentProps<typeof Dialog> & {
   title?: string;
   description?: string;
-}) {
+}) => {
   return (
     <Dialog {...props}>
       <DialogHeader className="sr-only">
@@ -51,12 +51,12 @@ function CommandDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-function CommandInput({
+const CommandInput = ({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+}: React.ComponentProps<typeof CommandPrimitive.Input>) => {
   return (
     <div
       className="flex h-9 items-center gap-2 border-b px-3"
@@ -73,12 +73,12 @@ function CommandInput({
       />
     </div>
   );
-}
+};
 
-function CommandList({
+const CommandList = ({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.List>) {
+}: React.ComponentProps<typeof CommandPrimitive.List>) => {
   return (
     <CommandPrimitive.List
       className={cn(
@@ -89,11 +89,11 @@ function CommandList({
       {...props}
     />
   );
-}
+};
 
-function CommandEmpty({
+const CommandEmpty = ({
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Empty>) {
+}: React.ComponentProps<typeof CommandPrimitive.Empty>) => {
   return (
     <CommandPrimitive.Empty
       className="py-6 text-center text-sm"
@@ -101,12 +101,12 @@ function CommandEmpty({
       {...props}
     />
   );
-}
+};
 
-function CommandGroup({
+const CommandGroup = ({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Group>) {
+}: React.ComponentProps<typeof CommandPrimitive.Group>) => {
   return (
     <CommandPrimitive.Group
       className={cn(
@@ -117,12 +117,12 @@ function CommandGroup({
       {...props}
     />
   );
-}
+};
 
-function CommandSeparator({
+const CommandSeparator = ({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Separator>) {
+}: React.ComponentProps<typeof CommandPrimitive.Separator>) => {
   return (
     <CommandPrimitive.Separator
       className={cn("bg-border -mx-1 h-px", className)}
@@ -130,12 +130,12 @@ function CommandSeparator({
       {...props}
     />
   );
-}
+};
 
-function CommandItem({
+const CommandItem = ({
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+}: React.ComponentProps<typeof CommandPrimitive.Item>) => {
   return (
     <CommandPrimitive.Item
       className={cn(
@@ -146,12 +146,12 @@ function CommandItem({
       {...props}
     />
   );
-}
+};
 
-function CommandShortcut({
+const CommandShortcut = ({
   className,
   ...props
-}: React.ComponentProps<"span">) {
+}: React.ComponentProps<"span">) => {
   return (
     <span
       className={cn(
@@ -162,7 +162,7 @@ function CommandShortcut({
       {...props}
     />
   );
-}
+};
 
 export {
   Command,

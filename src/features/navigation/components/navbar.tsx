@@ -1,13 +1,13 @@
 "use client";
 
-import { UserButton } from "@/app/components/user-button";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { IconCards, IconHome, IconList } from "@tabler/icons-react";
 import Link from "next/link";
+import { UserButton } from "./user-button";
 
-export function Navbar() {
+export const Navbar = () => {
   const t = useI18n();
   const { isAuthenticated, user } = useAuth();
 
@@ -43,4 +43,4 @@ export function Navbar() {
       </div>
     </nav>
   );
-}
+};

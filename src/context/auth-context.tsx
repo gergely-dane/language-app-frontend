@@ -11,12 +11,12 @@ import {
   useState,
 } from "react";
 
-interface AuthContextProps {
+type AuthContextProps = {
   isAuthenticated: boolean;
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-}
+};
 
 const AuthContext = createContext<AuthContextProps>(null);
 

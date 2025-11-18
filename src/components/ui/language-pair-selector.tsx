@@ -14,8 +14,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { LanguagePair, useLanguagePairs } from "@/hooks/languages-hooks";
+import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useI18n } from "@/hooks/use-i18n";
+import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { LANGUAGES } from "@/lib/constants";
 import {
   IconArrowNarrowRight,
@@ -24,17 +25,17 @@ import {
 } from "@tabler/icons-react";
 import { useState } from "react";
 
-interface LanguagePairSelectorProps {
+type LanguagePairSelectorProps = {
   value: LanguagePair | null;
   onChange: (value: LanguagePair | null) => void;
   className?: string;
-}
+};
 
-export function LanguagePairSelector({
+export const LanguagePairSelector = ({
   value,
   onChange,
   className,
-}: LanguagePairSelectorProps) {
+}: LanguagePairSelectorProps) => {
   const [open, setOpen] = useState(false);
 
   const t = useI18n();
@@ -122,4 +123,4 @@ export function LanguagePairSelector({
       </Popover>
     </div>
   );
-}
+};

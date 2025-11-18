@@ -1,11 +1,11 @@
 "use client";
 
-import { columns } from "@/app/vocabulary/components/columns";
-import { VocabularyTable } from "@/app/vocabulary/components/vocabulary-table";
-import { useTranslations } from "@/app/vocabulary/hooks";
+import { useTranslations } from "@/features/vocabulary/api/get-translations";
+import { columns } from "@/features/vocabulary/components/columns";
+import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
 import { useI18n } from "@/hooks/use-i18n";
 
-export default function Home() {
+export const Vocabulary = () => {
   const t = useI18n();
 
   const { data: words, isLoading, error } = useTranslations({});
@@ -20,4 +20,6 @@ export default function Home() {
       <VocabularyTable columns={columns} data={words} />
     </div>
   );
-}
+};
+
+export default Vocabulary;

@@ -8,19 +8,19 @@ import {
 } from "@/components/ui/dialog";
 import { useI18n } from "@/hooks/use-i18n";
 
-interface DeleteWordDialogProps {
+type DeleteWordDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   wordCount: number;
   onDelete: () => void;
-}
+};
 
-export function DeleteWordDialog({
+export const DeleteWordDialog = ({
   open,
   onOpenChange,
   wordCount,
   onDelete,
-}: DeleteWordDialogProps) {
+}: DeleteWordDialogProps) => {
   const t = useI18n();
 
   return (
@@ -49,4 +49,4 @@ export function DeleteWordDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};

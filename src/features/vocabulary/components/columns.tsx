@@ -1,11 +1,11 @@
 "use client";
 
-import { AddEditWordDialog } from "@/app/vocabulary/components/add-edit-word-dialog";
-import { Translation, Word } from "@/app/vocabulary/hooks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Translation, Word } from "@/interfaces/translation.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {

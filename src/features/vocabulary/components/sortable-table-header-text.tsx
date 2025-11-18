@@ -6,17 +6,17 @@ import {
 import { Column } from "@tanstack/table-core";
 import React from "react";
 
-interface SortableTableHeaderTextProps {
+type SortableTableHeaderTextProps = {
   headerName?: string;
   icon?: React.ReactNode;
   column: Column<any>;
-}
+};
 
-export function SortableTableHeaderText({
+export const SortableTableHeaderText = ({
   headerName,
   icon,
   column,
-}: SortableTableHeaderTextProps) {
+}: SortableTableHeaderTextProps) => {
   return (
     <div
       className="flex cursor-pointer hover:underline"
@@ -42,4 +42,4 @@ export function SortableTableHeaderText({
       )}
     </div>
   );
-}
+};

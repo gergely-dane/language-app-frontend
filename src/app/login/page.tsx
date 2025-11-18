@@ -3,7 +3,7 @@
 import { useAuth } from "@/context/auth-context";
 import { useState } from "react";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -41,4 +41,6 @@ export default function LoginPage() {
       </form>
     </div>
   );
-}
+};
+
+export default LoginPage;

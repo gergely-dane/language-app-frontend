@@ -1,11 +1,3 @@
-import { LanguageSelector } from "@/app/vocabulary/components/language-selector";
-import {
-  useCreateTranslation,
-  useDeleteTranslation,
-  useUpdateTranslation,
-} from "@/app/vocabulary/hooks";
-import { InputWithKbd } from "@/components/input-with-kbd";
-import { MultiSelectChipList } from "@/components/multi-select-chip-list";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,7 +8,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { InputWithKbd } from "@/components/ui/input-with-kbd";
 import { Label } from "@/components/ui/label";
+import { LanguageSelector } from "@/components/ui/language-selector";
+import { MultiSelectChipList } from "@/components/ui/multi-select-chip-list";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -25,12 +20,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAlert } from "@/context/alert-context";
-import { useLanguages } from "@/hooks/languages-hooks";
+import { useLanguages } from "@/features/languages/api/get-languages";
+import { useCreateTranslation } from "@/features/vocabulary/api/create-translation";
+import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
+import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
 import { useI18n } from "@/hooks/use-i18n";
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 
-interface AddEditWordDialogProps {
+type AddEditWordDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   id?: number;
@@ -40,9 +38,9 @@ interface AddEditWordDialogProps {
   currentWord?: string;
   currentTranslationList?: string[];
   currentDefinition?: string;
-}
+};
 
-export function AddEditWordDialog({
+export const AddEditWordDialog = ({
   open,
   onOpenChange,
   id,
@@ -52,7 +50,7 @@ export function AddEditWordDialog({
   currentWord = "",
   currentTranslationList = [],
   currentDefinition = "",
-}: AddEditWordDialogProps) {
+}: AddEditWordDialogProps) => {
   const t = useI18n();
   const { showAlert } = useAlert();
 
@@ -310,4 +308,4 @@ export function AddEditWordDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};

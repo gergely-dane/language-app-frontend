@@ -10,9 +10,9 @@ import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";
 import { IconLogout, IconUser } from "@tabler/icons-react";
 
-interface UserButtonProps {
+type UserButtonProps = {
   className?: string;
-}
+};
 
 export const UserButton = ({ className }: UserButtonProps) => {
   const t = useI18n();
