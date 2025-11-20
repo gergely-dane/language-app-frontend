@@ -152,7 +152,7 @@ export function VocabularyTable<TData, TValue>({
 
           {(table.getColumn("word")?.getFilterValue() as string) && (
             <Button
-              className="-ml-9 cursor-pointer opacity-50 hover:opacity-100"
+              className="-ml-9 opacity-50 hover:opacity-100"
               variant={null}
               size="icon"
               onClick={() => table.getColumn("word")?.setFilterValue("")}

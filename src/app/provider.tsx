@@ -7,6 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextIntlClientProvider } from "next-intl";
 import { RequestConfig } from "next-intl/dist/types/server/react-server/getRequestConfig";
+import { ThemeProvider } from "next-themes";
 import { ReactNode } from "react";
 
 type AppProviderProps = {
@@ -25,7 +26,9 @@ export const AppProvider = ({ i18nConfig, children }: AppProviderProps) => {
           locale={i18nConfig.locale}
           messages={i18nConfig.messages}
         >
-          <AlertProvider>{children}</AlertProvider>
+          <ThemeProvider attribute="class" enableSystem>
+            <AlertProvider>{children}</AlertProvider>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </AuthProvider>
     </QueryClientProvider>

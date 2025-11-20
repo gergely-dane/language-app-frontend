@@ -33,7 +33,7 @@ const RootLayout = async ({
   const isMobile = await isMobileScreen();
 
   return (
-    <html lang="en">
+    <html suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

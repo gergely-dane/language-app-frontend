@@ -24,7 +24,7 @@ export const BottomNavbar = () => {
           )}
         >
           <IconHome className="scale-120" />
-          <p className="text-md">{t("general.home")}</p>
+          <p>{t("general.home")}</p>
         </Button>
       </Link>
 
