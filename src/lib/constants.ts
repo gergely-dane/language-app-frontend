@@ -1,3 +1,8 @@
+export const MAX_MOBILE_WIDTH = 1024;
+
+export const MOBILE_AGENT_REGEX =
+  /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i;
+
 export const LANGUAGES: { [key: string]: string } = {
   aa: "Afar",
   ab: "Abkhazian",

@@ -4,7 +4,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Flashcard } from "@/interfaces/flashcard.interface";
 import { LANGUAGES } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import {
   IconArrowRight,
   IconHandClick,
@@ -44,7 +44,7 @@ const FlashcardSide = ({
   return (
     <div
       className={cn(
-        "absolute inset-0 bg-muted-foreground rounded-xl border border-black [backface-visibility:hidden]",
+        "absolute inset-0 bg-primary rounded-xl border border-black [backface-visibility:hidden]",
         !isFront && "[transform:rotateY(180deg)]",
         ((isFront && !flipped) || (!isFront && flipped)) &&
           swipeAnimationDirection &&
@@ -158,9 +158,9 @@ export const FlashcardComp = ({
         />
       </div>
 
-      <div className="-mt-57 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
+      <div className="-mt-57 h-60 w-full rounded-xl bg-primary border border-black"></div>
 
-      <div className="-mt-61.5 h-60 w-full rounded-xl bg-muted-foreground border border-black"></div>
+      <div className="-mt-61.5 h-60 w-full rounded-xl bg-primary border border-black"></div>
     </div>
   );
 };

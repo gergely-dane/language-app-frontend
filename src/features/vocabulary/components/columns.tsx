@@ -7,7 +7,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Translation, Word } from "@/interfaces/translation.interface";
 import { LANGUAGES } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import {
   IconArrowNarrowRight,
   IconPencil,

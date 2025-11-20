@@ -7,7 +7,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { IconLogout, IconUser } from "@tabler/icons-react";
 
 type UserButtonProps = {
@@ -24,9 +24,9 @@ export const UserButton = ({ className }: UserButtonProps) => {
         <Button
           variant="outline"
           size="icon"
-          className={cn("bg-white rounded-full", className)}
+          className={cn("bg-white rounded-full shadow-sm", className)}
         >
-          <IconUser />
+          <IconUser className="text-primary" />
         </Button>
       </PopoverTrigger>
 

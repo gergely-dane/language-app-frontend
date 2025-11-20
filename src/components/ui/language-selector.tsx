@@ -17,7 +17,7 @@ import {
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LANGUAGES } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
 

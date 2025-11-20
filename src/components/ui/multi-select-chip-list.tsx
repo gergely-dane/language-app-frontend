@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { IconX } from "@tabler/icons-react";
 
 type MultiSelectChipListProps = {
