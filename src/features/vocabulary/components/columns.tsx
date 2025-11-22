@@ -86,14 +86,16 @@ export const columns: ColumnDef<Translation>[] = [
       const isMobile = useIsMobileScreen();
 
       return (
-        <div className="flex">
-          <div className={isMobile ? "uppercase" : ""}>
+        <div className="flex gap-0.5">
+          <p className={isMobile ? "uppercase" : ""}>
             {!isMobile ? LANGUAGES[sourceLanguage] : sourceLanguage}
-          </div>
-          <IconArrowNarrowRight className="mx-0.5 mt-0.5" size={16} />
-          <div className={isMobile ? "uppercase" : ""}>
+          </p>
+
+          <IconArrowNarrowRight className="mt-0.5" size={16} />
+
+          <p className={isMobile ? "uppercase" : ""}>
             {!isMobile ? LANGUAGES[translationLanguage] : translationLanguage}
-          </div>
+          </p>
         </div>
       );
     },

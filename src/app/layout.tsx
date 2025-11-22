@@ -3,7 +3,6 @@ import { BaseContentLayout } from "@/components/layouts/base-content-layout";
 import { BottomNavbar } from "@/features/navigation/components/bottom-navbar";
 import { Navbar } from "@/features/navigation/components/navbar";
 import getI18nConfig from "@/i18n/request";
-import { isMobileScreen } from "@/utils/is-mobile-screen";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -30,7 +29,6 @@ const RootLayout = async ({
 }>) => {
   // @ts-ignore
   const i18nConfig = await getI18nConfig();
-  const isMobile = await isMobileScreen();
 
   return (
     <html suppressHydrationWarning>
@@ -39,7 +37,7 @@ const RootLayout = async ({
       >
         <AppProvider i18nConfig={i18nConfig}>
           <Navbar />
-          {isMobile && <BottomNavbar />}
+          <BottomNavbar />
           <BaseContentLayout>{children}</BaseContentLayout>
         </AppProvider>
       </body>

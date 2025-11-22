@@ -28,14 +28,17 @@ export const DeleteWordDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("vocabulary.deleteWords.areYouSure")}</DialogTitle>
+
           <DialogDescription>
             {t("vocabulary.deleteWords.description", { count: wordCount })}
           </DialogDescription>
         </DialogHeader>
-        <div className="mt-4 flex justify-end gap-2">
+
+        <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t("general.cancel")}
           </Button>
+
           <Button
             variant="destructive"
             onClick={() => {

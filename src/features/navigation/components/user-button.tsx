@@ -24,18 +24,23 @@ export const UserButton = ({ className }: UserButtonProps) => {
         <Button
           variant="outline"
           size="icon"
-          className={cn("bg-white rounded-full shadow-sm", className)}
+          className={cn("rounded-full shadow-sm", className)}
         >
           <IconUser className="text-primary" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent
-        className="flex flex-col w-fit gap-2 py-1 px-1.5"
+        className="flex flex-col w-fit gap-2 pt-2 pb-1 px-1"
         align="end"
       >
-        <div className="text-muted-foreground text-sm">{user?.email}</div>
+        <div className="flex items-center gap-1 px-2.5">
+          <IconUser size={16} />
+          <p className="text-muted-foreground text-xs">{user?.email}</p>
+        </div>
+
         <Separator />
+
         <Button variant="ghost" className="justify-start" onClick={logout}>
           <IconLogout />
           {t("general.logOut")}

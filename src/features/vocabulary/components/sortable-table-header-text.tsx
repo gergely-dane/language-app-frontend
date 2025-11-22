@@ -19,27 +19,20 @@ export const SortableTableHeaderText = ({
 }: SortableTableHeaderTextProps) => {
   return (
     <div
-      className="flex cursor-pointer hover:underline"
+      className="flex gap-1 cursor-pointer hover:underline"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
-      {headerName}
+      <p>{headerName}</p>
       {icon}
-      {column.getIsSorted() === "asc" ? (
-        <span>
-          {" "}
-          <IconArrowNarrowUp className="mt-0.5 ml-1" size={16} />{" "}
-        </span>
-      ) : column.getIsSorted() === "desc" ? (
-        <span>
-          {" "}
-          <IconArrowNarrowDown className="mt-0.5 ml-1" size={16} />{" "}
-        </span>
-      ) : (
-        <span>
-          {" "}
-          <IconArrowsSort className="mt-0.5 ml-1" size={16} />{" "}
-        </span>
-      )}
+      <span className="mt-0.5">
+        {column.getIsSorted() === "asc" ? (
+          <IconArrowNarrowUp size={16} />
+        ) : column.getIsSorted() === "desc" ? (
+          <IconArrowNarrowDown size={16} />
+        ) : (
+          <IconArrowsSort size={16} />
+        )}
+      </span>
     </div>
   );
 };

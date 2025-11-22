@@ -44,7 +44,7 @@ const FlashcardSide = ({
   return (
     <div
       className={cn(
-        "absolute inset-0 bg-primary rounded-xl border border-black [backface-visibility:hidden]",
+        "absolute inset-0 bg-primary text-primary-foreground rounded-xl [backface-visibility:hidden]",
         !isFront && "[transform:rotateY(180deg)]",
         ((isFront && !flipped) || (!isFront && flipped)) &&
           swipeAnimationDirection &&
@@ -89,7 +89,7 @@ const FlashcardSide = ({
               : flashcard.translation.translations[0].word}
           </p>
 
-          <div className="absolute left-0 bottom-5 w-full text-center text-muted/50">
+          <div className="absolute left-0 bottom-5 w-full text-center text-primary-muted-foreground">
             {!isMobile ? (
               <div>
                 Click on the card or press{" "}
@@ -130,7 +130,7 @@ export const FlashcardComp = ({
     <div className={cn("select-none", className)} ref={ref}>
       <div
         className={cn(
-          "relative rounded-xl h-60 hover:scale-102 cursor-pointer transition-all [transform-style:preserve-3d]",
+          "relative rounded-xl h-60 ring-2 hover:scale-102 cursor-pointer transition-all [transform-style:preserve-3d]",
           animationPlaying && "duration-1000 hover:scale-100",
           swipeAnimationDirection &&
             "duration-700 hover:scale-100 translate-y-4",
@@ -158,9 +158,9 @@ export const FlashcardComp = ({
         />
       </div>
 
-      <div className="-mt-57 h-60 w-full rounded-xl bg-primary border border-black"></div>
+      <div className="-mt-57 h-60 w-full rounded-xl ring-2 bg-primary"></div>
 
-      <div className="-mt-61.5 h-60 w-full rounded-xl bg-primary border border-black"></div>
+      <div className="-mt-61.5 h-60 w-full rounded-xl ring-2 bg-primary"></div>
     </div>
   );
 };

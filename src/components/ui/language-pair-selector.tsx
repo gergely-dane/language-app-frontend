@@ -18,6 +18,7 @@ import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { LANGUAGES } from "@/lib/constants";
+import { cn } from "@/utils/cn";
 import {
   IconArrowNarrowRight,
   IconCheck,
@@ -50,22 +51,22 @@ export const LanguagePairSelector = ({
       <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger asChild>
           <Button
-            className="w-full justify-between"
+            className="w-full justify-between gap-1"
             variant="outline"
             role="combobox"
             aria-expanded={open}
           >
             {value ? (
               <>
-                <div className="">{LANGUAGES[value.sourceLanguageCode]}</div>
-                <IconArrowNarrowRight className="mt-1" />
-                {LANGUAGES[value.translationLanguageCode]}
+                <p>{LANGUAGES[value.sourceLanguageCode]}</p>
+                <IconArrowNarrowRight />
+                <p>{LANGUAGES[value.translationLanguageCode]}</p>
               </>
             ) : (
               <p>{t("vocabulary.allLanguages")}</p>
             )}
 
-            <IconSelector className="ml-2 shrink-0 opacity-50" />
+            <IconSelector className="shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
 
@@ -80,6 +81,7 @@ export const LanguagePairSelector = ({
 
               <CommandGroup>
                 <CommandItem
+                  className="gap-1"
                   value="all"
                   onSelect={() => {
                     onChange(null);
@@ -90,32 +92,37 @@ export const LanguagePairSelector = ({
                   {t("vocabulary.allLanguages")}
                 </CommandItem>
 
-                {languagePairs.map((pair, i) => (
-                  <CommandItem
-                    key={i}
-                    value={pair}
-                    onSelect={() => {
-                      onChange(pair);
-                      setOpen(false);
-                    }}
-                  >
-                    <IconCheck
-                      className={
-                        value?.sourceLanguageCode === pair.sourceLanguageCode &&
-                        value?.translationLanguageCode ===
-                          pair.translationLanguageCode
-                          ? "opacity-100"
-                          : "opacity-0"
-                      }
-                    />
+                {languagePairs.map((pair, i) => {
+                  const isSelected =
+                    value?.sourceLanguageCode === pair.sourceLanguageCode &&
+                    value?.translationLanguageCode ===
+                      pair.translationLanguageCode;
 
-                    <p>{LANGUAGES[pair.sourceLanguageCode]}</p>
+                  return (
+                    <CommandItem
+                      className={cn(
+                        "gap-1",
+                        isSelected ? "bg-primary/50!" : "",
+                      )}
+                      key={i}
+                      value={pair}
+                      onSelect={() => {
+                        onChange(pair);
+                        setOpen(false);
+                      }}
+                    >
+                      <IconCheck
+                        className={isSelected ? "opacity-100" : "opacity-0"}
+                      />
 
-                    <IconArrowNarrowRight className="mt-1" />
+                      <p>{LANGUAGES[pair.sourceLanguageCode]}</p>
 
-                    <p>{LANGUAGES[pair.translationLanguageCode]}</p>
-                  </CommandItem>
-                ))}
+                      <IconArrowNarrowRight />
+
+                      <p>{LANGUAGES[pair.translationLanguageCode]}</p>
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
             </CommandList>
           </Command>

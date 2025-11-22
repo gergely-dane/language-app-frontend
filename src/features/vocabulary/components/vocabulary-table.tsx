@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
   Table,
@@ -14,12 +13,13 @@ import {
 import { useAlert } from "@/context/alert-context";
 import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-translations-bulk";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
-import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-dialog";
+import { DeleteTranslationsButton } from "@/features/vocabulary/components/delete-translations-button";
+import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { LanguagePair } from "@/hooks/languages-hooks";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Translation } from "@/interfaces/translation.interface";
-import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -56,7 +56,6 @@ export function VocabularyTable<TData, TValue>({
   );
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [addWordDialogOpen, setAddWordDialogOpen] = React.useState(false);
-  const [deleteWordDialogOpen, setDeleteWordDialogOpen] = React.useState(false);
   const [selectedRowCount, setSelectedRowCount] = React.useState(0);
 
   const table = useReactTable({
@@ -71,7 +70,7 @@ export function VocabularyTable<TData, TValue>({
       sorting,
       columnFilters,
       rowSelection,
-      columnVisibility: { createdAt: !isMobile, select: !isMobile },
+      columnVisibility: { createdAt: !isMobile, select: false },
     },
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -128,65 +127,28 @@ export function VocabularyTable<TData, TValue>({
     }
   };
 
-  const deleteClicked = () => {
-    if (selectedRowCount > 1) {
-      setDeleteWordDialogOpen(true);
-      return;
-    }
-
-    handleDelete();
-  };
-
   return (
     <div>
       <div className="flex gap-1.5">
-        <div className="fle">
-          <Input
-            className="mb-4 lg:w-50"
-            placeholder={t("vocabulary.searchForAWord")}
-            value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("word")?.setFilterValue(event.target.value)
-            }
-          />
-
-          {(table.getColumn("word")?.getFilterValue() as string) && (
-            <Button
-              className="-ml-9 opacity-50 hover:opacity-100"
-              variant={null}
-              size="icon"
-              onClick={() => table.getColumn("word")?.setFilterValue("")}
-              aria-label="Clear filter"
-            >
-              <IconX />
-            </Button>
-          )}
-        </div>
+        <SearchInput
+          value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
+          onChange={(val) => table.getColumn("word")?.setFilterValue(val)}
+          placeholder={t("vocabulary.searchForAWord")}
+        />
 
         <LanguagePairSelector
           value={getFilterValue()}
           onChange={setLanguageFilter}
         />
 
-        <Button
-          className="ml-auto"
-          variant="outline"
-          onClick={deleteClicked}
-          disabled={!rowSelection || !Object.keys(rowSelection).length}
-        >
-          <IconTrash className="text-destructive" />
-        </Button>
-
-        <DeleteWordDialog
-          open={deleteWordDialogOpen}
-          onOpenChange={(open) => setDeleteWordDialogOpen(open)}
-          wordCount={selectedRowCount}
+        <DeleteTranslationsButton
+          selectedRowCount={selectedRowCount}
           onDelete={handleDelete}
         />
 
         <Button variant="outline" onClick={() => setAddWordDialogOpen(true)}>
           <IconPlus />
-          <span className="hidden lg:block">{t("vocabulary.addWord")}</span>
+          <p className="hidden lg:block">{t("vocabulary.addWord")}</p>
         </Button>
 
         <AddEditWordDialog
