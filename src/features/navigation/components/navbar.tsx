@@ -30,13 +30,13 @@ export const Navbar = () => {
   }, [startTransition, theme, setTheme]);
 
   return (
-    <nav className="sticky top-0 flex w-full items-center justify-center gap-6 border-b py-2 shadow-sm z-10 bg-background/80">
+    <nav className="sticky top-0 flex w-full items-center justify-center gap-6 border-b h-[var(--navbar-height)] shadow-sm z-10 bg-background/80">
       <div className="flex px-2.5 w-full lg:w-3/5 gap-6">
         <Link className="text-xl text-primary font-semibold" href="/">
           LanguageApp
         </Link>
 
-        {!isMobile && (
+        {!isMobile && isAuthenticated && (
           <>
             <div className="flex gap-2">
               <Link href="/">

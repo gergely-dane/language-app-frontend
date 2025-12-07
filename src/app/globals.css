@@ -46,6 +46,7 @@
 }
 
 :root {
+  --navbar-height: 3.25rem;
   --radius: 0.625rem;
   --primary: oklch(0.54 0.06 189.569);
   --primary-foreground: oklch(0.985 0 0);
