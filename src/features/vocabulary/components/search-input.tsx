@@ -1,21 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/utils/cn";
 import { IconX } from "@tabler/icons-react";
 
 interface SearchInputProps {
+  className?: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 }
 
 export const SearchInput = ({
+  className,
   value,
   onChange,
   placeholder,
 }: SearchInputProps) => (
-  <div className="relative">
+  <div className={cn("relative", className)}>
     <Input
-      className="mb-4 lg:w-50"
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}

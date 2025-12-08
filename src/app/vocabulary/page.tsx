@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
+import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
 import { useAlert } from "@/context/alert-context";
 import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-translations-bulk";
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { columns } from "@/features/vocabulary/components/columns";
-import { DeleteTranslationsButton } from "@/features/vocabulary/components/delete-translations-button";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
 import { useI18n } from "@/hooks/use-i18n";
@@ -108,29 +108,34 @@ const Vocabulary = () => {
   if (error) return <div>Error loading words</div>;
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full min-h-[calc(100vh-var(--navbar-height))] space-y-3">
       <div className="text-3xl font-bold">{t("vocabulary.title")}</div>
 
       <div className="flex gap-1.5 flex-wrap">
         <SearchInput
+          className="flex-7 lg:flex-none"
           value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
           onChange={(val) => table.getColumn("word")?.setFilterValue(val)}
           placeholder={t("vocabulary.searchForAWord")}
         />
 
         <LanguagePairSelector
+          className="flex-1 lg:flex-none"
           value={getFilterValue()}
           onChange={setLanguageFilter}
         />
 
-        <DeleteTranslationsButton
-          selectedRowCount={selectedRowCount}
-          onDelete={handleDelete}
-        />
+        {/*<DeleteTranslationsButton*/}
+        {/*  selectedRowCount={selectedRowCount}*/}
+        {/*  onDelete={handleDelete}*/}
+        {/*/>*/}
 
-        <Button onClick={() => setAddWordDialogOpen(true)}>
-          <IconPlus className="mr-2 h-4 w-4" />
-          <span className="hidden lg:block">{t("vocabulary.addWord")}</span>
+        <Button
+          className="ml-auto flex-1 lg:flex-none"
+          onClick={() => setAddWordDialogOpen(true)}
+        >
+          <IconPlus className="h-4 w-4" />
+          <p className="hidden lg:block">{t("vocabulary.addWord")}</p>
         </Button>
 
         <AddEditWordDialog
@@ -140,6 +145,8 @@ const Vocabulary = () => {
       </div>
 
       <VocabularyTable table={table} columns={columns} />
+
+      <ScrollToTopButton />
     </div>
   );
 };
