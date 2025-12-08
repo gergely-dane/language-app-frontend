@@ -125,7 +125,7 @@ const Flashcards = () => {
   if (!flashcard) return <div>No flashcards found</div>;
 
   return (
-    <div className="flex flex-col mx-auto gap-4 lg:w-120">
+    <div className="flex flex-col mx-auto gap-4 w-full lg:w-120">
       <LanguagePairSelector
         className="w-fit"
         value={languagePair}
