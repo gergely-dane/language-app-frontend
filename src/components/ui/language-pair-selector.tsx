@@ -19,11 +19,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
-import {
-  IconArrowNarrowRight,
-  IconCheck,
-  IconSelector,
-} from "@tabler/icons-react";
+import { IconArrowNarrowRight, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
 
 type LanguagePairSelectorProps = {
@@ -81,14 +77,13 @@ export const LanguagePairSelector = ({
 
               <CommandGroup>
                 <CommandItem
-                  className="gap-1"
+                  className={cn("gap-1", !value ? "bg-primary" : "")}
                   value="all"
                   onSelect={() => {
                     onChange(null);
                     setOpen(false);
                   }}
                 >
-                  <IconCheck className={!value ? "opacity-100" : "opacity-0"} />
                   {t("vocabulary.allLanguages")}
                 </CommandItem>
 
@@ -102,7 +97,9 @@ export const LanguagePairSelector = ({
                     <CommandItem
                       className={cn(
                         "gap-1",
-                        isSelected ? "bg-primary/50!" : "",
+                        isSelected
+                          ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
+                          : "",
                       )}
                       key={i}
                       value={pair}
@@ -111,14 +108,12 @@ export const LanguagePairSelector = ({
                         setOpen(false);
                       }}
                     >
-                      <IconCheck
-                        className={isSelected ? "opacity-100" : "opacity-0"}
-                      />
-
                       <p>{LANGUAGES[pair.sourceLanguageCode]}</p>
-
-                      <IconArrowNarrowRight />
-
+                      <IconArrowNarrowRight
+                        className={
+                          isSelected ? "text-primary-foreground" : "text-black"
+                        }
+                      />
                       <p>{LANGUAGES[pair.translationLanguageCode]}</p>
                     </CommandItem>
                   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
@@ -10,6 +11,7 @@ import { usePathname } from "next/navigation";
 
 export const BottomNavbar = () => {
   const t = useI18n();
+  const { isAuthenticated } = useAuth();
   const pathname = usePathname();
   const isMobile = useIsMobileScreen();
 
@@ -18,7 +20,7 @@ export const BottomNavbar = () => {
       className={cn(
         "fixed bottom-0 flex flex-cols gap-4 py-1.5 px-2 bg-muted w-full shadow-sm h-16 z-10 text-muted-foreground border-t",
         {
-          hidden: !isMobile,
+          hidden: !isMobile || !isAuthenticated,
         },
       )}
     >

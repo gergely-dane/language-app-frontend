@@ -31,7 +31,7 @@ export const Navbar = () => {
 
   return (
     <nav className="sticky top-0 flex w-full items-center justify-center gap-6 border-b h-[var(--navbar-height)] shadow-sm z-10 bg-background/80">
-      <div className="flex px-2.5 w-full lg:w-3/5 gap-6">
+      <div className="flex items-center px-2.5 w-full lg:w-3/5 gap-6">
         <Link className="text-xl text-primary font-semibold" href="/">
           LanguageApp
         </Link>
