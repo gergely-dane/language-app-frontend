@@ -99,14 +99,11 @@ const Vocabulary = () => {
     }
   };
 
-  if (isLoading) return <div>Loading words...</div>;
-  if (error) return <div>Error loading words</div>;
-
   return (
-    <div className="w-full min-h-[calc(100vh-var(--navbar-height))] space-y-3">
+    <div className="w-full min-h-[calc(100vh-var(--navbar-height))]">
       <div className="text-3xl font-bold">{t("vocabulary.title")}</div>
 
-      <div className="flex gap-1.5 flex-wrap">
+      <div className="flex gap-1.5 flex-wrap mt-4 mb-1.5">
         <SearchInput
           className="flex-7 lg:flex-none"
           value={searchFilter}
@@ -143,6 +140,7 @@ const Vocabulary = () => {
 
       {words && (
         <PaginationNavigator
+          className="mt-2"
           currentPage={words.currentPage}
           totalPages={words.totalPages}
           onChange={(page) => setPageNumber(page)}

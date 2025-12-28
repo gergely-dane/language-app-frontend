@@ -27,7 +27,7 @@ export const ScrollToTopButton = () => {
       {showButton && (
         <Button
           variant="outline"
-          className="fixed bottom-18 right-4 w-10 h-10 rounded-full z-50 opacity-70"
+          className="fixed bottom-18 right-3 w-10 h-10 rounded-full z-50 opacity-70"
           onClick={scrollToTop}
         >
           <IconChevronsUp />

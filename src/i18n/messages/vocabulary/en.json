@@ -2,6 +2,7 @@
   "addNewWord": "Add a new word to your vocabulary.",
   "addWord": "Add Word",
   "adjustTheSlider": "Adjust the slider according to your knowledge level",
+  "all": "All",
   "allLanguages": "All Languages",
   "deleteWords": {
     "areYouSure": "Are you sure?",
@@ -14,7 +15,9 @@
   "enterTheWord": "Enter the word",
   "errorAddingTranslation": "Error adding translation",
   "errorDeletingTranslation": "Error deleting translation",
+  "export": "Export",
   "howWellDoYouKnowTheWord": "How well do you know the word?",
+  "import": "Import",
   "justLearnedIt": "Just learned it",
   "knowItVeryWell": "Know it very well",
   "next": "Next",
@@ -25,7 +28,7 @@
   "searchForAWord": "Search for a word...",
   "searchLanguages": "Search languages...",
   "selectLanguage": "Select language",
-  "title": "Word List",
+  "title": "Vocabulary",
   "translationDeletedSuccessfully": "Translation deleted successfully",
   "translationSavedSuccessfully": "Translation saved successfully",
   "translationsDeletedSuccessfully": "Translations deleted successfully"

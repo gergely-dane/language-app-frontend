@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
@@ -36,6 +37,7 @@ export const LanguagePairSelector = ({
   const [open, setOpen] = useState(false);
 
   const t = useI18n();
+  const isMobile = useIsMobileScreen();
 
   let { data: languagePairs } = useLanguagePairs();
   if (!languagePairs) {
@@ -54,12 +56,22 @@ export const LanguagePairSelector = ({
           >
             {value ? (
               <>
-                <p>{LANGUAGES[value.sourceLanguageCode]}</p>
+                <p>
+                  {!isMobile
+                    ? LANGUAGES[value.sourceLanguageCode]
+                    : value.sourceLanguageCode.toUpperCase()}
+                </p>
                 <IconArrowNarrowRight />
-                <p>{LANGUAGES[value.translationLanguageCode]}</p>
+                <p>
+                  {!isMobile
+                    ? LANGUAGES[value.translationLanguageCode]
+                    : value.translationLanguageCode.toUpperCase()}
+                </p>
               </>
             ) : (
-              <p>{t("vocabulary.allLanguages")}</p>
+              <p>
+                {!isMobile ? t("vocabulary.allLanguages") : t("vocabulary.all")}
+              </p>
             )}
 
             <IconSelector className="shrink-0 opacity-50" />
@@ -68,7 +80,14 @@ export const LanguagePairSelector = ({
 
         <PopoverContent className="w-fit p-0">
           <Command>
-            <CommandInput placeholder={t("vocabulary.searchLanguages")} />
+            <CommandInput
+              className="w-20 lg:w-30"
+              placeholder={
+                !isMobile
+                  ? t("vocabulary.searchLanguages")
+                  : t("general.search")
+              }
+            />
 
             <CommandList>
               <CommandEmpty>

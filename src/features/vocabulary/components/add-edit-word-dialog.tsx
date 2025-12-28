@@ -7,6 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { InputWithKbd } from "@/components/ui/input-with-kbd";
 import { Label } from "@/components/ui/label";
@@ -25,8 +33,142 @@ import { useCreateTranslation } from "@/features/vocabulary/api/create-translati
 import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
+
+type AddEditFormProps = {
+  editMode: boolean;
+  word: string;
+  setWord: (word: string) => void;
+  translation: string;
+  setTranslation: (translation: string) => void;
+  translationList: string[];
+  setTranslationList: (translations: string[]) => void;
+  definition: string;
+  setDefinition: (definition: string) => void;
+  sourceLanguageCode: string | null;
+  translationLanguageCode: string | null;
+  handleLanguageChange: (value: string | null, translation: boolean) => void;
+  translationInputOnKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
+  knowledgeLevel?: number[];
+  setKnowledgeLevel?: (level: number[]) => void;
+};
+
+const AddEditForm = ({
+  editMode,
+  word,
+  setWord,
+  translation,
+  setTranslation,
+  translationList,
+  setTranslationList,
+  definition,
+  setDefinition,
+  sourceLanguageCode,
+  translationLanguageCode,
+  handleLanguageChange,
+  translationInputOnKeyDown,
+  knowledgeLevel,
+  setKnowledgeLevel,
+}: AddEditFormProps) => {
+  const t = useI18n();
+  const isMobile = useIsMobileScreen();
+  const { data: languages } = useLanguages();
+
+  return (
+    <>
+      <div className="grid gap-3">
+        <div className="flex items-center gap-2">
+          <Input
+            id="name"
+            placeholder={t("vocabulary.enterTheWord")}
+            value={word}
+            onChange={(e) => setWord(e.target.value)}
+          />
+
+          <LanguageSelector
+            className="w-14 lg:w-32"
+            value={sourceLanguageCode}
+            onChange={(value) => handleLanguageChange(value, false)}
+            languages={languages?.map((lang) => lang.code) || []}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <InputWithKbd
+              placeholder={t("vocabulary.enterTheTranslation")}
+              kbd={
+                <>
+                  {!isMobile && <p>Enter</p>} <IconCornerDownLeft />
+                </>
+              }
+              value={translation}
+              onChange={(e) => setTranslation(e.target.value)}
+              onKeyDown={translationInputOnKeyDown}
+            />
+
+            <LanguageSelector
+              className="w-14 lg:w-32"
+              value={translationLanguageCode}
+              onChange={(value) => handleLanguageChange(value, true)}
+              languages={languages?.map((lang) => lang.code) || []}
+            />
+          </div>
+
+          <MultiSelectChipList
+            items={translationList}
+            onChange={(items) => setTranslationList(items)}
+          />
+        </div>
+
+        <Textarea
+          placeholder={t("vocabulary.enterDefinition")}
+          value={definition}
+          onChange={(e) => setDefinition(e.target.value)}
+          maxLength={500}
+        />
+      </div>
+
+      {!editMode && (
+        <div className="mt-3 lg:mt-0">
+          <div className="flex">
+            <Label htmlFor="knowledgeLevelSlider">
+              {t("vocabulary.howWellDoYouKnowTheWord")}
+            </Label>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <IconHelp className="text-muted-foreground ml-1" size={18} />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("vocabulary.adjustTheSlider")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          <div>
+            <Slider
+              className="h-8"
+              id="knowledgeLevelSlider"
+              value={knowledgeLevel}
+              onValueChange={setKnowledgeLevel}
+              min={0}
+              max={4}
+              step={1}
+            />
+
+            <div className="-mt-1 flex text-xs">
+              <div>{t("vocabulary.justLearnedIt")}</div>
+              <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 type AddEditWordDialogProps = {
   open: boolean;
@@ -52,13 +194,14 @@ export const AddEditWordDialog = ({
   currentDefinition = "",
 }: AddEditWordDialogProps) => {
   const t = useI18n();
+  const isMobile = useIsMobileScreen();
   const { showAlert } = useAlert();
 
   const createTranslation = useCreateTranslation();
   const updateTranslation = useUpdateTranslation(id);
   const deleteTranslation = useDeleteTranslation(id);
 
-  const { data: languages, isLoading, error } = useLanguages();
+  const { data: languages } = useLanguages();
 
   const [sourceLanguageCode, setSourceLanguageCode] = useState<string | null>(
     currentSourceLanguageCode,
@@ -179,108 +322,100 @@ export const AddEditWordDialog = ({
     }
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="px-4 lg:px-8">
-        <DialogHeader>
-          <DialogTitle>
-            {!editMode ? t("vocabulary.addWord") : t("vocabulary.editWord")}
-          </DialogTitle>
-          {!editMode && (
-            <DialogDescription>{t("vocabulary.addNewWord")}</DialogDescription>
-          )}
-        </DialogHeader>
+  if (!isMobile) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="px-4 lg:px-8">
+          <DialogHeader>
+            <DialogTitle>
+              {!editMode ? t("vocabulary.addWord") : t("vocabulary.editWord")}
+            </DialogTitle>
+            {!editMode && (
+              <DialogDescription>
+                {t("vocabulary.addNewWord")}
+              </DialogDescription>
+            )}
+          </DialogHeader>
 
-        <div className="grid gap-3">
-          <div className="flex items-center gap-2">
-            <Input
-              id="name"
-              placeholder={t("vocabulary.enterTheWord")}
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-            />
-
-            <LanguageSelector
-              className="w-14 lg:w-32"
-              value={sourceLanguageCode}
-              onChange={(value) => handleLanguageChange(value, false)}
-              languages={languages?.map((lang) => lang.code) || []}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <InputWithKbd
-                placeholder={t("vocabulary.enterTheTranslation")}
-                kbd={
-                  <>
-                    Enter <IconCornerDownLeft />
-                  </>
-                }
-                value={translation}
-                onChange={(e) => setTranslation(e.target.value)}
-                onKeyDown={translationInputOnKeyDown}
-              />
-
-              <LanguageSelector
-                className="w-14 lg:w-32"
-                value={translationLanguageCode}
-                onChange={(value) => handleLanguageChange(value, true)}
-                languages={languages?.map((lang) => lang.code) || []}
-              />
-            </div>
-
-            <MultiSelectChipList
-              items={translationList}
-              onChange={(items) => setTranslationList(items)}
-            />
-          </div>
-
-          <Textarea
-            placeholder={t("vocabulary.enterDefinition")}
-            value={definition}
-            onChange={(e) => setDefinition(e.target.value)}
-            maxLength={500}
+          <AddEditForm
+            editMode={editMode}
+            word={word}
+            setWord={setWord}
+            translation={translation}
+            setTranslation={setTranslation}
+            translationList={translationList}
+            setTranslationList={setTranslationList}
+            definition={definition}
+            setDefinition={setDefinition}
+            sourceLanguageCode={sourceLanguageCode}
+            translationLanguageCode={translationLanguageCode}
+            handleLanguageChange={handleLanguageChange}
+            translationInputOnKeyDown={translationInputOnKeyDown}
+            knowledgeLevel={knowledgeLevel}
+            setKnowledgeLevel={setKnowledgeLevel}
           />
-        </div>
 
-        {!editMode && (
-          <>
-            <div className="flex">
-              <Label htmlFor="knowledgeLevelSlider">
-                {t("vocabulary.howWellDoYouKnowTheWord")}
-              </Label>
+          <DialogFooter className="w-full">
+            <Button
+              className="mx-auto w-30"
+              variant="outline"
+              onClick={handleSave}
+              disabled={
+                createTranslation.isPending ||
+                !word ||
+                (!translationList.length && !translation)
+              }
+            >
+              {t("general.save")}
+            </Button>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <IconHelp className="text-muted-foreground ml-1" size={18} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t("vocabulary.adjustTheSlider")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
+            {editMode && (
+              <Button
+                className="absolute"
+                variant="outline"
+                size="icon"
+                onClick={handleDelete}
+              >
+                <IconTrash className="text-destructive" />
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
-            <div>
-              <Slider
-                className="-mt-4 h-8"
-                id="knowledgeLevelSlider"
-                value={knowledgeLevel}
-                onValueChange={setKnowledgeLevel}
-                min={0}
-                max={4}
-                step={1}
-              />
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="px-4 lg:px-8">
+        <DrawerHeader>
+          <DrawerTitle>
+            {!editMode ? t("vocabulary.addWord") : t("vocabulary.editWord")}
+          </DrawerTitle>
+          {!editMode && (
+            <DrawerDescription>{t("vocabulary.addNewWord")}</DrawerDescription>
+          )}
+        </DrawerHeader>
 
-              <div className="-mt-1 flex text-xs">
-                <div>{t("vocabulary.justLearnedIt")}</div>
-                <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>
-              </div>
-            </div>
-          </>
-        )}
+        <AddEditForm
+          editMode={editMode}
+          word={word}
+          setWord={setWord}
+          translation={translation}
+          setTranslation={setTranslation}
+          translationList={translationList}
+          setTranslationList={setTranslationList}
+          definition={definition}
+          setDefinition={setDefinition}
+          sourceLanguageCode={sourceLanguageCode}
+          translationLanguageCode={translationLanguageCode}
+          handleLanguageChange={handleLanguageChange}
+          translationInputOnKeyDown={translationInputOnKeyDown}
+          knowledgeLevel={knowledgeLevel}
+          setKnowledgeLevel={setKnowledgeLevel}
+        />
 
-        <DialogFooter className="w-full">
+        <DrawerFooter className="w-full">
           <Button
             className="mx-auto w-30"
             variant="outline"
@@ -304,8 +439,8 @@ export const AddEditWordDialog = ({
               <IconTrash className="text-destructive" />
             </Button>
           )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };

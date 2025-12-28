@@ -35,7 +35,9 @@ export const PaginationNavigator = ({
     <Pagination className={className}>
       <PaginationContent>
         <PaginationItem className={currentPage === 1 ? "invisible" : ""}>
-          <PaginationPrevious onClick={() => onChange(currentPage - 1)} />
+          <PaginationPrevious
+            onClick={() => (currentPage > 1 ? onChange(currentPage - 1) : 1)}
+          />
         </PaginationItem>
 
         <PaginationItem>
@@ -92,7 +94,11 @@ export const PaginationNavigator = ({
         <PaginationItem
           className={currentPage === totalPages ? "invisible" : ""}
         >
-          <PaginationNext onClick={() => onChange(currentPage + 1)} />
+          <PaginationNext
+            onClick={() =>
+              currentPage < totalPages ? onChange(currentPage + 1) : totalPages
+            }
+          />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
