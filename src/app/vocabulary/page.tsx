@@ -8,6 +8,7 @@ import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-tran
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { columns } from "@/features/vocabulary/components/columns";
+import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
 import { useI18n } from "@/hooks/use-i18n";
@@ -16,11 +17,8 @@ import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { Translation } from "@/interfaces/translation.interface";
 import { IconPlus } from "@tabler/icons-react";
 import {
-  ColumnFiltersState,
   getCoreRowModel,
   getFacetedUniqueValues,
-  getFilteredRowModel,
-  getSortedRowModel,
   RowSelectionState,
   SortingState,
   useReactTable,
@@ -36,29 +34,41 @@ const Vocabulary = () => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
   ]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [addWordDialogOpen, setAddWordDialogOpen] = useState(false);
   const [selectedRowCount, setSelectedRowCount] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [searchFilter, setSearchFilter] = useState("");
+  const [languageFilter, setLanguageFilter] = useState<LanguagePair | null>(
+    null,
+  );
 
-  const { data: words, isLoading, error } = useTranslations({});
+  const {
+    data: words,
+    isLoading,
+    error,
+    refetch,
+  } = useTranslations({
+    pageNumber,
+    search: searchFilter,
+    sourceLanguageCode: languageFilter?.sourceLanguageCode,
+    translationLanguageCode: languageFilter?.translationLanguageCode,
+    sortBy: sorting[0].id,
+    sortAscending: !sorting[0].desc,
+  });
 
   const table = useReactTable({
-    data: words ?? [],
+    data: words?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
-      columnFilters,
       rowSelection,
       columnVisibility: { createdAt: !isMobile, select: false },
     },
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row: Translation) => row.id.toString(),
   });
 
@@ -66,24 +76,9 @@ const Vocabulary = () => {
     setSelectedRowCount(Object.keys(rowSelection).length);
   }, [rowSelection]);
 
-  const getFilterValue = (): LanguagePair | null => {
-    const filterValue = table.getColumn("language")?.getFilterValue() as string;
-    if (!filterValue) return null;
-
-    const [sourceLanguageCode, translationLanguageCode] =
-      filterValue.split("-");
-    return { sourceLanguageCode, translationLanguageCode };
-  };
-
-  const setLanguageFilter = (languagePair: LanguagePair | null) => {
-    table
-      .getColumn("language")
-      ?.setFilterValue(
-        languagePair
-          ? `${languagePair.sourceLanguageCode}-${languagePair.translationLanguageCode}`
-          : null,
-      );
-  };
+  useEffect(() => {
+    refetch();
+  }, [pageNumber, searchFilter, languageFilter, refetch]);
 
   const handleDelete = async () => {
     if (!selectedRowCount) return;
@@ -114,15 +109,15 @@ const Vocabulary = () => {
       <div className="flex gap-1.5 flex-wrap">
         <SearchInput
           className="flex-7 lg:flex-none"
-          value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
-          onChange={(val) => table.getColumn("word")?.setFilterValue(val)}
+          value={searchFilter}
+          onChange={(value) => setSearchFilter(value)}
           placeholder={t("vocabulary.searchForAWord")}
         />
 
         <LanguagePairSelector
           className="flex-1 lg:flex-none"
-          value={getFilterValue()}
-          onChange={setLanguageFilter}
+          value={languageFilter}
+          onChange={(value) => setLanguageFilter(value)}
         />
 
         {/*<DeleteTranslationsButton*/}
@@ -145,6 +140,14 @@ const Vocabulary = () => {
       </div>
 
       <VocabularyTable table={table} columns={columns} />
+
+      {words && (
+        <PaginationNavigator
+          currentPage={words.currentPage}
+          totalPages={words.totalPages}
+          onChange={(page) => setPageNumber(page)}
+        />
+      )}
 
       <ScrollToTopButton />
     </div>
