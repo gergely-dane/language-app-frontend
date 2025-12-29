@@ -34,7 +34,7 @@ export const PaginationNavigator = ({
   return (
     <Pagination className={className}>
       <PaginationContent>
-        <PaginationItem className={currentPage === 1 ? "invisible" : ""}>
+        <PaginationItem className={currentPage <= 1 ? "invisible" : ""}>
           <PaginationPrevious
             onClick={() => (currentPage > 1 ? onChange(currentPage - 1) : 1)}
           />
@@ -49,50 +49,60 @@ export const PaginationNavigator = ({
           </PaginationLink>
         </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink
-            isActive={currentPage === firstNumber + 1}
-            onClick={() => onChange(firstNumber + 1)}
-          >
-            {firstNumber + 1}
-          </PaginationLink>
-        </PaginationItem>
+        {firstNumber + 1 <= totalPages && (
+          <PaginationItem>
+            <PaginationLink
+              isActive={currentPage === firstNumber + 1}
+              onClick={() => onChange(firstNumber + 1)}
+            >
+              {firstNumber + 1}
+            </PaginationLink>
+          </PaginationItem>
+        )}
 
-        <PaginationItem>
-          <PaginationLink
-            isActive={currentPage === firstNumber + 2}
-            onClick={() => onChange(firstNumber + 2)}
-          >
-            {firstNumber + 2}
-          </PaginationLink>
-        </PaginationItem>
+        {firstNumber + 2 <= totalPages && (
+          <PaginationItem>
+            <PaginationLink
+              isActive={currentPage === firstNumber + 2}
+              onClick={() => onChange(firstNumber + 2)}
+            >
+              {firstNumber + 2}
+            </PaginationLink>
+          </PaginationItem>
+        )}
 
         {currentPage < totalPages - 3 ? (
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
         ) : (
+          <>
+            {totalPages >= 4 && (
+              <PaginationItem>
+                <PaginationLink
+                  isActive={currentPage === totalPages - 1}
+                  onClick={() => onChange(totalPages - 1)}
+                >
+                  {totalPages - 1}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+          </>
+        )}
+
+        {totalPages >= 5 && (
           <PaginationItem>
             <PaginationLink
-              isActive={currentPage === totalPages - 1}
-              onClick={() => onChange(totalPages - 1)}
+              isActive={currentPage === totalPages}
+              onClick={() => onChange(totalPages)}
             >
-              {totalPages - 1}
+              {totalPages}
             </PaginationLink>
           </PaginationItem>
         )}
 
-        <PaginationItem>
-          <PaginationLink
-            isActive={currentPage === totalPages}
-            onClick={() => onChange(totalPages)}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-
         <PaginationItem
-          className={currentPage === totalPages ? "invisible" : ""}
+          className={currentPage >= totalPages ? "invisible" : ""}
         >
           <PaginationNext
             onClick={() =>

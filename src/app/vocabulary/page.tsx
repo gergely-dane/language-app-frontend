@@ -105,7 +105,7 @@ const Vocabulary = () => {
 
       <div className="flex gap-1.5 flex-wrap mt-4 mb-1.5">
         <SearchInput
-          className="flex-7 lg:flex-none"
+          className="flex-7 lg:flex-none lg:w-70"
           value={searchFilter}
           onChange={(value) => setSearchFilter(value)}
           placeholder={t("vocabulary.searchForAWord")}

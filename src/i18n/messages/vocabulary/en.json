@@ -1,14 +1,20 @@
 {
+  "1mbMaxFileSize": "1MB max file size",
+  "acceptedFormats": "Accepted formats:",
   "addNewWord": "Add a new word to your vocabulary.",
-  "addWord": "Add Word",
+  "addWord": "Add word",
   "adjustTheSlider": "Adjust the slider according to your knowledge level",
   "all": "All",
   "allLanguages": "All Languages",
+  "anErrorOccurredWhileImportingTranslations": "An error occurred while importing translations.",
+  "browse": "browse",
+  "chooseFile": "choose file",
   "deleteWords": {
     "areYouSure": "Are you sure?",
     "delete": "Delete",
     "description": "You are about to delete {count} words from your vocabulary."
   },
+  "dragAndDropOr": "Drag and drop or",
   "editWord": "Edit Word",
   "enterDefinition": "Enter a definition (optional) ",
   "enterTheTranslation": "Enter the translation(s)",
@@ -28,8 +34,12 @@
   "searchForAWord": "Search for a word...",
   "searchLanguages": "Search languages...",
   "selectLanguage": "Select language",
+  "successfullyImported": "Successfully imported",
   "title": "Vocabulary",
+  "toReplaceFile": "to replace file",
+  "toUpload": "to upload",
   "translationDeletedSuccessfully": "Translation deleted successfully",
   "translationSavedSuccessfully": "Translation saved successfully",
+  "translations": "translations",
   "translationsDeletedSuccessfully": "Translations deleted successfully"
 }

@@ -1,26 +1,13 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { InputWithKbd } from "@/components/ui/input-with-kbd";
 import { Label } from "@/components/ui/label";
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { MultiSelectChipList } from "@/components/ui/multi-select-chip-list";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
@@ -31,150 +18,18 @@ import { useAlert } from "@/context/alert-context";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { useCreateTranslation } from "@/features/vocabulary/api/create-translation";
 import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
+import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadsheet";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
+import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 
 type AddEditFormProps = {
-  editMode: boolean;
-  word: string;
-  setWord: (word: string) => void;
-  translation: string;
-  setTranslation: (translation: string) => void;
-  translationList: string[];
-  setTranslationList: (translations: string[]) => void;
-  definition: string;
-  setDefinition: (definition: string) => void;
-  sourceLanguageCode: string | null;
-  translationLanguageCode: string | null;
-  handleLanguageChange: (value: string | null, translation: boolean) => void;
-  translationInputOnKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
-  knowledgeLevel?: number[];
-  setKnowledgeLevel?: (level: number[]) => void;
-};
-
-const AddEditForm = ({
-  editMode,
-  word,
-  setWord,
-  translation,
-  setTranslation,
-  translationList,
-  setTranslationList,
-  definition,
-  setDefinition,
-  sourceLanguageCode,
-  translationLanguageCode,
-  handleLanguageChange,
-  translationInputOnKeyDown,
-  knowledgeLevel,
-  setKnowledgeLevel,
-}: AddEditFormProps) => {
-  const t = useI18n();
-  const isMobile = useIsMobileScreen();
-  const { data: languages } = useLanguages();
-
-  return (
-    <>
-      <div className="grid gap-3">
-        <div className="flex items-center gap-2">
-          <Input
-            id="name"
-            placeholder={t("vocabulary.enterTheWord")}
-            value={word}
-            onChange={(e) => setWord(e.target.value)}
-          />
-
-          <LanguageSelector
-            className="w-14 lg:w-32"
-            value={sourceLanguageCode}
-            onChange={(value) => handleLanguageChange(value, false)}
-            languages={languages?.map((lang) => lang.code) || []}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <InputWithKbd
-              placeholder={t("vocabulary.enterTheTranslation")}
-              kbd={
-                <>
-                  {!isMobile && <p>Enter</p>} <IconCornerDownLeft />
-                </>
-              }
-              value={translation}
-              onChange={(e) => setTranslation(e.target.value)}
-              onKeyDown={translationInputOnKeyDown}
-            />
-
-            <LanguageSelector
-              className="w-14 lg:w-32"
-              value={translationLanguageCode}
-              onChange={(value) => handleLanguageChange(value, true)}
-              languages={languages?.map((lang) => lang.code) || []}
-            />
-          </div>
-
-          <MultiSelectChipList
-            items={translationList}
-            onChange={(items) => setTranslationList(items)}
-          />
-        </div>
-
-        <Textarea
-          placeholder={t("vocabulary.enterDefinition")}
-          value={definition}
-          onChange={(e) => setDefinition(e.target.value)}
-          maxLength={500}
-        />
-      </div>
-
-      {!editMode && (
-        <div className="mt-3 lg:mt-0">
-          <div className="flex">
-            <Label htmlFor="knowledgeLevelSlider">
-              {t("vocabulary.howWellDoYouKnowTheWord")}
-            </Label>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <IconHelp className="text-muted-foreground ml-1" size={18} />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{t("vocabulary.adjustTheSlider")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-
-          <div>
-            <Slider
-              className="h-8"
-              id="knowledgeLevelSlider"
-              value={knowledgeLevel}
-              onValueChange={setKnowledgeLevel}
-              min={0}
-              max={4}
-              step={1}
-            />
-
-            <div className="-mt-1 flex text-xs">
-              <div>{t("vocabulary.justLearnedIt")}</div>
-              <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-type AddEditWordDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
   id?: number;
   editMode?: boolean;
+  onClose: () => void;
   currentSourceLanguageCode?: string;
   currentTranslationLanguageCode?: string;
   currentWord?: string;
@@ -182,26 +37,25 @@ type AddEditWordDialogProps = {
   currentDefinition?: string;
 };
 
-export const AddEditWordDialog = ({
-  open,
-  onOpenChange,
+const AddEditForm = ({
   id,
   editMode = false,
+  onClose,
   currentSourceLanguageCode = "",
   currentTranslationLanguageCode = "",
   currentWord = "",
   currentTranslationList = [],
   currentDefinition = "",
-}: AddEditWordDialogProps) => {
+}: AddEditFormProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
   const { showAlert } = useAlert();
+  const { data: languages } = useLanguages();
 
   const createTranslation = useCreateTranslation();
   const updateTranslation = useUpdateTranslation(id);
   const deleteTranslation = useDeleteTranslation(id);
-
-  const { data: languages } = useLanguages();
+  const importSpreadsheet = useImportSpreadsheet();
 
   const [sourceLanguageCode, setSourceLanguageCode] = useState<string | null>(
     currentSourceLanguageCode,
@@ -209,15 +63,17 @@ export const AddEditWordDialog = ({
   const [translationLanguageCode, setTranslationLanguageCode] = useState<
     string | null
   >(currentTranslationLanguageCode);
-  const [word, setWord] = useState<string>(currentWord);
-  const [translation, setTranslation] = useState<string>(
+
+  const [word, setWord] = useState(currentWord);
+  const [translation, setTranslation] = useState(
     currentTranslationList.length === 1 ? currentTranslationList[0] : "",
   );
   const [translationList, setTranslationList] = useState<string[]>(
     currentTranslationList.length > 1 ? currentTranslationList : [],
   );
+  const [definition, setDefinition] = useState(currentDefinition);
   const [knowledgeLevel, setKnowledgeLevel] = useState<number[]>([0]);
-  const [definition, setDefinition] = useState<string>(currentDefinition);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     setSourceLanguageCode(languages?.[0]?.code ?? null);
@@ -227,85 +83,9 @@ export const AddEditWordDialog = ({
   const resetForm = () => {
     setWord("");
     setTranslation("");
-    setKnowledgeLevel([0]);
-    setSourceLanguageCode(languages?.[0]?.code ?? null);
-    setTranslationLanguageCode(languages?.[1]?.code ?? null);
     setTranslationList([]);
     setDefinition("");
-  };
-
-  const translationInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const trimmedTranslation = translation.trim();
-      if (trimmedTranslation && !translationList.includes(trimmedTranslation)) {
-        setTranslationList([...translationList, trimmedTranslation]);
-        setTranslation("");
-      }
-    }
-  };
-
-  const handleSave = async () => {
-    if (
-      !word ||
-      (!translationList.length && !translation) ||
-      !sourceLanguageCode ||
-      !translationLanguageCode
-    ) {
-      return;
-    }
-
-    const newTranslation = {
-      word,
-      translations: translationList.length ? translationList : [translation],
-      sourceLanguageCode,
-      translationLanguageCode,
-      definition,
-    };
-
-    try {
-      if (!editMode) {
-        await createTranslation.mutateAsync({
-          ...newTranslation,
-          knowledgeLevel: knowledgeLevel[0],
-        });
-        resetForm();
-      } else {
-        await updateTranslation.mutateAsync(newTranslation);
-      }
-
-      onOpenChange(false);
-      showAlert({
-        title: t("vocabulary.translationSavedSuccessfully"),
-        variant: "default",
-      });
-    } catch (error) {
-      showAlert({
-        title:
-          error.response?.data?.message ||
-          t("vocabulary.errorAddingTranslation"),
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await deleteTranslation.mutateAsync();
-
-      onOpenChange(false);
-      showAlert({
-        title: t("vocabulary.translationDeletedSuccessfully"),
-        variant: "default",
-      });
-    } catch (error) {
-      showAlert({
-        title:
-          error.response?.data?.message ||
-          t("vocabulary.errorDeletingTranslation"),
-        variant: "destructive",
-      });
-    }
+    setKnowledgeLevel([0]);
   };
 
   const handleLanguageChange = (value: string | null, translation: boolean) => {
@@ -322,100 +102,199 @@ export const AddEditWordDialog = ({
     }
   };
 
-  if (!isMobile) {
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="px-4 lg:px-8">
-          <DialogHeader>
-            <DialogTitle>
-              {!editMode ? t("vocabulary.addWord") : t("vocabulary.editWord")}
-            </DialogTitle>
-            {!editMode && (
-              <DialogDescription>
-                {t("vocabulary.addNewWord")}
-              </DialogDescription>
-            )}
-          </DialogHeader>
+  const translationInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
 
-          <AddEditForm
-            editMode={editMode}
-            word={word}
-            setWord={setWord}
-            translation={translation}
-            setTranslation={setTranslation}
-            translationList={translationList}
-            setTranslationList={setTranslationList}
-            definition={definition}
-            setDefinition={setDefinition}
-            sourceLanguageCode={sourceLanguageCode}
-            translationLanguageCode={translationLanguageCode}
-            handleLanguageChange={handleLanguageChange}
-            translationInputOnKeyDown={translationInputOnKeyDown}
-            knowledgeLevel={knowledgeLevel}
-            setKnowledgeLevel={setKnowledgeLevel}
-          />
+    const trimmed = translation.trim();
+    if (trimmed && !translationList.includes(trimmed)) {
+      setTranslationList([...translationList, trimmed]);
+      setTranslation("");
+    }
+  };
 
-          <DialogFooter className="w-full">
-            <Button
-              className="mx-auto w-30"
-              variant="outline"
-              onClick={handleSave}
-              disabled={
-                createTranslation.isPending ||
-                !word ||
-                (!translationList.length && !translation)
-              }
-            >
-              {t("general.save")}
-            </Button>
+  const handleSave = async () => {
+    if (
+      !word ||
+      (!translation && !translationList.length) ||
+      !sourceLanguageCode ||
+      !translationLanguageCode
+    ) {
+      return;
+    }
 
-            {editMode && (
-              <Button
-                className="absolute"
-                variant="outline"
-                size="icon"
-                onClick={handleDelete}
-              >
-                <IconTrash className="text-destructive" />
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+    const payload = {
+      word,
+      translations: translationList.length ? translationList : [translation],
+      sourceLanguageCode,
+      translationLanguageCode,
+      definition,
+    };
+
+    try {
+      if (editMode) {
+        await updateTranslation.mutateAsync(payload);
+      } else {
+        await createTranslation.mutateAsync({
+          ...payload,
+          knowledgeLevel: knowledgeLevel[0],
+        });
+        resetForm();
+      }
+
+      onClose();
+      showAlert({
+        title: t("vocabulary.translationSavedSuccessfully"),
+        variant: "default",
+      });
+    } catch (error: any) {
+      showAlert({
+        title:
+          error.response?.data?.message ||
+          t("vocabulary.errorAddingTranslation"),
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteTranslation.mutateAsync();
+      onClose();
+      showAlert({
+        title: t("vocabulary.translationDeletedSuccessfully"),
+        variant: "default",
+      });
+    } catch (error: any) {
+      showAlert({
+        title:
+          error.response?.data?.message ||
+          t("vocabulary.errorDeletingTranslation"),
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleImport = async () => {
+    if (!file) return;
+
+    try {
+      const response = await importSpreadsheet.mutateAsync({ file });
+      onClose();
+      showAlert({
+        title: `${t("vocabulary.successfullyImported")} ${response.importedCount} ${t("vocabulary.translations")}.`,
+        variant: "default",
+      });
+    } catch (error: any) {
+      showAlert({
+        title:
+          error.response?.data?.message ||
+          t("vocabulary.anErrorOccurredWhileImportingTranslations"),
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="px-4 lg:px-8">
-        <DrawerHeader>
-          <DrawerTitle>
-            {!editMode ? t("vocabulary.addWord") : t("vocabulary.editWord")}
-          </DrawerTitle>
-          {!editMode && (
-            <DrawerDescription>{t("vocabulary.addNewWord")}</DrawerDescription>
-          )}
-        </DrawerHeader>
+    <Tabs className="mt-4" defaultValue="addWord">
+      {!editMode && (
+        <TabsList className="w-full mb-1">
+          <TabsTrigger value="addWord">{t("vocabulary.addWord")}</TabsTrigger>
+          <TabsTrigger value="import">{t("vocabulary.import")}</TabsTrigger>
+        </TabsList>
+      )}
 
-        <AddEditForm
-          editMode={editMode}
-          word={word}
-          setWord={setWord}
-          translation={translation}
-          setTranslation={setTranslation}
-          translationList={translationList}
-          setTranslationList={setTranslationList}
-          definition={definition}
-          setDefinition={setDefinition}
-          sourceLanguageCode={sourceLanguageCode}
-          translationLanguageCode={translationLanguageCode}
-          handleLanguageChange={handleLanguageChange}
-          translationInputOnKeyDown={translationInputOnKeyDown}
-          knowledgeLevel={knowledgeLevel}
-          setKnowledgeLevel={setKnowledgeLevel}
-        />
+      <TabsContent className="flex flex-col" value="addWord">
+        <div className="grid gap-3">
+          <div className="flex items-center gap-2">
+            <Input
+              id="name"
+              placeholder={t("vocabulary.enterTheWord")}
+              value={word}
+              onChange={(e) => setWord(e.target.value)}
+            />
 
-        <DrawerFooter className="w-full">
+            <LanguageSelector
+              className="w-14 lg:w-32"
+              value={sourceLanguageCode}
+              onChange={(value) => handleLanguageChange(value, false)}
+              languages={languages?.map((lang) => lang.code) || []}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <InputWithKbd
+                placeholder={t("vocabulary.enterTheTranslation")}
+                kbd={
+                  <>
+                    {!isMobile && <p>Enter</p>} <IconCornerDownLeft />
+                  </>
+                }
+                value={translation}
+                onChange={(e) => setTranslation(e.target.value)}
+                onKeyDown={translationInputOnKeyDown}
+              />
+
+              <LanguageSelector
+                className="w-14 lg:w-32"
+                value={translationLanguageCode}
+                onChange={(value) => handleLanguageChange(value, true)}
+                languages={languages?.map((lang) => lang.code) || []}
+              />
+            </div>
+
+            <MultiSelectChipList
+              items={translationList}
+              onChange={(items) => setTranslationList(items)}
+            />
+          </div>
+
+          <Textarea
+            placeholder={t("vocabulary.enterDefinition")}
+            value={definition}
+            onChange={(e) => setDefinition(e.target.value)}
+            maxLength={500}
+          />
+        </div>
+
+        {!editMode && (
+          <div className="mt-3">
+            <div className="flex">
+              <Label htmlFor="knowledgeLevelSlider">
+                {t("vocabulary.howWellDoYouKnowTheWord")}
+              </Label>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <IconHelp className="text-muted-foreground ml-1" size={18} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("vocabulary.adjustTheSlider")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+
+            <div>
+              <Slider
+                className="h-8"
+                id="knowledgeLevelSlider"
+                value={knowledgeLevel}
+                onValueChange={setKnowledgeLevel}
+                min={0}
+                max={4}
+                step={1}
+              />
+
+              <div className="-mt-1 flex text-xs">
+                <div>{t("vocabulary.justLearnedIt")}</div>
+                <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="relative flex mt-4">
           <Button
             className="mx-auto w-30"
             variant="outline"
@@ -439,8 +318,77 @@ export const AddEditWordDialog = ({
               <IconTrash className="text-destructive" />
             </Button>
           )}
-        </DrawerFooter>
-      </DrawerContent>
+        </div>
+      </TabsContent>
+
+      <TabsContent className="flex flex-col" value="import">
+        <ImportDropzone file={file} onChange={setFile} />
+
+        <Button
+          className="mt-4 mx-auto w-30"
+          variant="outline"
+          onClick={handleImport}
+          disabled={!file}
+        >
+          {t("vocabulary.import")}
+        </Button>
+      </TabsContent>
+    </Tabs>
+  );
+};
+
+type AddEditWordDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  id?: number;
+  editMode?: boolean;
+  currentSourceLanguageCode?: string;
+  currentTranslationLanguageCode?: string;
+  currentWord?: string;
+  currentTranslationList?: string[];
+  currentDefinition?: string;
+};
+
+export const AddEditWordDialog = ({
+  open,
+  onOpenChange,
+  id,
+  editMode = false,
+  currentSourceLanguageCode,
+  currentTranslationLanguageCode,
+  currentWord,
+  currentTranslationList,
+  currentDefinition,
+}: AddEditWordDialogProps) => {
+  const t = useI18n();
+  const isMobile = useIsMobileScreen();
+
+  const form = (
+    <AddEditForm
+      id={id}
+      editMode={editMode}
+      onClose={() => onOpenChange(false)}
+      currentSourceLanguageCode={currentSourceLanguageCode}
+      currentTranslationLanguageCode={currentTranslationLanguageCode}
+      currentWord={currentWord}
+      currentTranslationList={currentTranslationList}
+      currentDefinition={currentDefinition}
+    />
+  );
+
+  if (!isMobile) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTitle className="sr-only">{t("vocabulary.addWord")}</DialogTitle>
+        <DialogContent className="px-4 lg:px-8">{form}</DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerTitle className="sr-only">{t("vocabulary.addWord")}</DrawerTitle>
+      <DrawerContent className="px-4 pb-4">{form}</DrawerContent>
     </Drawer>
   );
 };

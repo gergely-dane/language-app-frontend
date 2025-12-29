@@ -1,8 +1,17 @@
-import { GetTranslationsQuery } from "@/interfaces/get-translations-query.interface";
 import { PaginatedResponse } from "@/interfaces/paginated-response.interface";
 import { Translation } from "@/interfaces/translation.interface";
 import { apiClient } from "@/lib/api-client";
 import { useQuery } from "@tanstack/react-query";
+
+interface GetTranslationsQuery {
+  search?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortAscending?: boolean;
+  sourceLanguageCode?: string;
+  translationLanguageCode?: string;
+}
 
 export const useTranslations = (params: GetTranslationsQuery) => {
   return useQuery({
