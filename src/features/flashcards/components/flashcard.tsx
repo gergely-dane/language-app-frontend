@@ -44,11 +44,12 @@ const FlashcardSide = ({
   return (
     <div
       className={cn(
-        "absolute inset-0 bg-primary text-primary-foreground rounded-xl [backface-visibility:hidden]",
+        "absolute inset-0 bg-primary text-primary-foreground ring-foreground ring-2 rounded-xl ease-out [backface-visibility:hidden]",
         !isFront && "[transform:rotateY(180deg)]",
         ((isFront && !flipped) || (!isFront && flipped)) &&
           swipeAnimationDirection &&
           "transition-opacity duration-700 opacity-0",
+        swipeAnimationDirection && flipped && isFront && "opacity-0",
       )}
     >
       <div
@@ -130,8 +131,8 @@ export const FlashcardComp = ({
     <div className={cn("select-none", className)} ref={ref}>
       <div
         className={cn(
-          "relative rounded-xl h-60 ring-2 hover:scale-102 cursor-pointer transition-all [transform-style:preserve-3d]",
-          animationPlaying && "duration-1000 hover:scale-100",
+          "relative rounded-xl h-60 hover:scale-102 cursor-pointer transition-all ease-out [transform-style:preserve-3d]",
+          animationPlaying && "duration-1000",
           swipeAnimationDirection &&
             "duration-700 hover:scale-100 translate-y-4",
           swipeAnimationDirection === "left" && "-translate-x-96 -rotate-5",

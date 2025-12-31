@@ -9,19 +9,21 @@ import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Flashcard } from "@/interfaces/flashcard.interface";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { IconCheck, IconHandMove, IconX } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
 const Flashcards = () => {
   const t = useI18n();
-  const respondToFlashcard = useRespondToFlashcard();
   const isMobile = useIsMobileScreen();
   const { ref, swipeDirection, resetSwipeDirection } =
     useDetectSwipeOnElement<HTMLDivElement>();
 
   const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
-  const [currentFlashcard, setCurrentFlashcard] = useState(null);
+  const [currentFlashcard, setCurrentFlashcard] = useState<Flashcard | null>(
+    null,
+  );
   const [wasFlipped, setWasFlipped] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [animationPlaying, setAnimationPlaying] = useState(false);
@@ -29,22 +31,19 @@ const Flashcards = () => {
     "left" | "right" | null
   >(null);
   const [isCardRefreshing, setIsCardRefreshing] = useState(false);
+  const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
 
-  const {
-    data: flashcard,
-    isLoading,
-    error,
-    refetch,
-  } = useFlashcard(languagePair);
+  const { data: flashcard, isLoading, error } = useFlashcard(languagePair);
+  const respondToFlashcard = useRespondToFlashcard(languagePair);
 
   useEffect(() => {
-    if (flashcard && !currentFlashcard) {
+    if ((flashcard && !currentFlashcard) || isCardRefreshing) {
       setCurrentFlashcard(flashcard);
     }
-  }, [currentFlashcard, flashcard]);
+  }, [isCardRefreshing, currentFlashcard, flashcard]);
 
   const startFlip = () => {
-    if (animationPlaying || swipeDirection) return;
+    if (animationPlaying || swipeAnimationDirection) return;
 
     setFlipped(!flipped);
     setWasFlipped(true);
@@ -73,36 +72,48 @@ const Flashcards = () => {
 
   const sendResponse = useCallback(
     async (knewIt: boolean) => {
-      if (isCardRefreshing || animationPlaying || !flashcard) return;
+      if (
+        isCardRefreshing ||
+        animationPlaying ||
+        swipeAnimationDirection ||
+        !flashcard
+      )
+        return;
 
-      respondToFlashcard
-        .mutateAsync({
-          flashcardId: flashcard.id,
-          response: { knewIt },
-        })
-        .then(() => refetch());
+      respondToFlashcard.mutateAsync({
+        flashcardId: flashcard.id,
+        response: { knewIt },
+      });
 
       setSwipeAnimationDirection(knewIt ? "right" : "left");
+      setAreButtonsDisabled(true);
       setTimeout(async () => {
         setSwipeAnimationDirection(null);
         setFlipped(false);
         setWasFlipped(false);
+        setAreButtonsDisabled(false);
 
         setIsCardRefreshing(true);
-        setCurrentFlashcard(flashcard);
         setTimeout(() => setIsCardRefreshing(false), 20);
-      }, 700);
+      }, 680);
     },
     [
       flashcard,
       animationPlaying,
       isCardRefreshing,
-      refetch,
+      swipeAnimationDirection,
       respondToFlashcard,
     ],
   );
 
-  useEffect(() => {}, [languagePair]);
+  const onLanguagePairChange = (newPair: LanguagePair | null) => {
+    setLanguagePair(newPair);
+    setTimeout(() => {
+      setCurrentFlashcard(null);
+      setFlipped(false);
+      setWasFlipped(false);
+    }, 100);
+  };
 
   useEffect(() => {
     if (swipeDirection === "left") {
@@ -129,7 +140,8 @@ const Flashcards = () => {
       <LanguagePairSelector
         className="w-fit"
         value={languagePair}
-        onChange={setLanguagePair}
+        onChange={(newPair) => onLanguagePairChange(newPair)}
+        disabled={areButtonsDisabled}
       />
 
       {currentFlashcard && (
@@ -150,7 +162,7 @@ const Flashcards = () => {
           className="flex"
           variant="outline"
           onClick={() => sendResponse(false)}
-          disabled={isCardRefreshing}
+          disabled={areButtonsDisabled}
         >
           <IconX className="mt-0.5 text-destructive" />
 
@@ -163,7 +175,7 @@ const Flashcards = () => {
           className="flex"
           variant="outline"
           onClick={() => sendResponse(true)}
-          disabled={isCardRefreshing}
+          disabled={areButtonsDisabled}
         >
           <IconCheck className="mt-0.5 text-success" />
 

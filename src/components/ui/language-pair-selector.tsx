@@ -24,15 +24,17 @@ import { IconArrowNarrowRight, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
 
 type LanguagePairSelectorProps = {
+  className?: string;
   value: LanguagePair | null;
   onChange: (value: LanguagePair | null) => void;
-  className?: string;
+  disabled?: boolean;
 };
 
 export const LanguagePairSelector = ({
+  className,
   value,
   onChange,
-  className,
+  disabled = false,
 }: LanguagePairSelectorProps) => {
   const [open, setOpen] = useState(false);
 
@@ -47,7 +49,7 @@ export const LanguagePairSelector = ({
   return (
     <div className={className}>
       <Popover onOpenChange={setOpen} open={open}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild disabled={disabled}>
           <Button
             className="w-full justify-between gap-1"
             variant="outline"
@@ -129,9 +131,12 @@ export const LanguagePairSelector = ({
                     >
                       <p>{LANGUAGES[pair.sourceLanguageCode]}</p>
                       <IconArrowNarrowRight
-                        className={
-                          isSelected ? "text-primary-foreground" : "text-black"
-                        }
+                        className={cn(
+                          "mt-0.5",
+                          isSelected
+                            ? "text-primary-foreground"
+                            : "text-foreground",
+                        )}
                       />
                       <p>{LANGUAGES[pair.translationLanguageCode]}</p>
                     </CommandItem>
