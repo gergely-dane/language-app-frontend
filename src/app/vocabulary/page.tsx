@@ -1,12 +1,12 @@
 "use client";
 
+import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
 import { useAlert } from "@/context/alert-context";
 import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-translations-bulk";
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
-import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { columns } from "@/features/vocabulary/components/columns";
 import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
 import { SearchInput } from "@/features/vocabulary/components/search-input";

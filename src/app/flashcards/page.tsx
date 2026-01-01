@@ -1,12 +1,12 @@
 "use client";
 
+import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
-import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";

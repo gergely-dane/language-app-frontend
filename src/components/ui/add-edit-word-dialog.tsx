@@ -198,6 +198,11 @@ const AddEditForm = ({
     }
   };
 
+  const handleTranslationClicked = (item: string) => {
+    setTranslation(item);
+    setTranslationList(translationList.filter((t) => t !== item));
+  };
+
   return (
     <Tabs className="mt-4" defaultValue="addWord">
       {!editMode && (
@@ -250,6 +255,7 @@ const AddEditForm = ({
             <MultiSelectChipList
               items={translationList}
               onChange={(items) => setTranslationList(items)}
+              onItemClick={(item) => handleTranslationClicked(item)}
             />
           </div>
 

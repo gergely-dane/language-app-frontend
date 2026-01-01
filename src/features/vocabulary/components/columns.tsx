@@ -1,8 +1,8 @@
 "use client";
 
+import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Translation, Word } from "@/interfaces/translation.interface";
