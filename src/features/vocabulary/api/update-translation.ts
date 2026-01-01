@@ -24,6 +24,7 @@ export const useUpdateTranslation = (id: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translations"] });
       queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+      queryClient.invalidateQueries({ queryKey: ["flashcards"] });
     },
   });
 };

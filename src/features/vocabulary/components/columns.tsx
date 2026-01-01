@@ -145,11 +145,7 @@ export const columns: ColumnDef<Translation>[] = [
             onOpenChange={(open) => setDialogOpen(open)}
             id={rowData.id}
             editMode={true}
-            currentSourceLanguageCode={rowData.sourceLanguageCode}
-            currentTranslationLanguageCode={rowData.translationLanguageCode}
-            currentWord={rowData.word?.word}
-            currentTranslationList={rowData.translations.map((t) => t.word)}
-            currentDefinition={rowData.definition ?? ""}
+            currentTranslation={rowData}
           />
         </>
       );

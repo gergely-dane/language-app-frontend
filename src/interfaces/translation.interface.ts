@@ -6,6 +6,7 @@ export interface Word {
 }
 
 export interface Translation extends BaseEntity {
+  id: number;
   word: Word;
   translations: Word[];
   sourceLanguageCode: string;

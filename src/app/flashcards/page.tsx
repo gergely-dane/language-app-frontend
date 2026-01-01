@@ -6,12 +6,18 @@ import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
+import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit-word-dialog";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Flashcard } from "@/interfaces/flashcard.interface";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
-import { IconCheck, IconHandMove, IconX } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconHandMove,
+  IconPencil,
+  IconX,
+} from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
 const Flashcards = () => {
@@ -32,6 +38,7 @@ const Flashcards = () => {
   >(null);
   const [isCardRefreshing, setIsCardRefreshing] = useState(false);
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const { data: flashcard, isLoading, error } = useFlashcard(languagePair);
   const respondToFlashcard = useRespondToFlashcard(languagePair);
@@ -137,12 +144,23 @@ const Flashcards = () => {
 
   return (
     <div className="flex flex-col mx-auto gap-4 w-full lg:w-120">
-      <LanguagePairSelector
-        className="w-fit"
-        value={languagePair}
-        onChange={(newPair) => onLanguagePairChange(newPair)}
-        disabled={areButtonsDisabled}
-      />
+      <div className="flex">
+        <LanguagePairSelector
+          className="w-fit"
+          value={languagePair}
+          onChange={(newPair) => onLanguagePairChange(newPair)}
+          disabled={areButtonsDisabled}
+        />
+
+        <Button
+          className="ml-auto"
+          variant="outline"
+          onClick={() => setEditDialogOpen(true)}
+        >
+          <IconPencil />
+          {t("general.edit")}
+        </Button>
+      </div>
 
       {currentFlashcard && (
         <FlashcardComp
@@ -154,6 +172,7 @@ const Flashcards = () => {
           swipeAnimationDirection={swipeAnimationDirection}
           isCardRefreshing={isCardRefreshing}
           onKeyDown={onKeyDown}
+          setEditDialogOpen={setEditDialogOpen}
         />
       )}
 
@@ -184,15 +203,22 @@ const Flashcards = () => {
       </div>
 
       {!isMobile ? (
-        <p className="text-muted-foreground/70 mx-auto text-center">
+        <p className="text-muted-foreground/70 mx-auto text-center text-sm">
           Hint: try using the arrow keys (<Kbd>◀</Kbd> and <Kbd>▶</Kbd>), or
           swiping on the card to respond.
         </p>
       ) : (
-        <p className="flex gap-1.5 text-muted-foreground/70 mx-auto text-center">
+        <p className="flex gap-1.5 text-muted-foreground/70 mx-auto text-center text-sm">
           Hint: try swiping on the card to respond <IconHandMove />
         </p>
       )}
+
+      <AddEditWordDialog
+        open={editDialogOpen}
+        onOpenChange={(open) => setEditDialogOpen(open)}
+        editMode={true}
+        currentTranslation={flashcard.translation}
+      />
     </div>
   );
 };

@@ -23,29 +23,20 @@ import { useUpdateTranslation } from "@/features/vocabulary/api/update-translati
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Translation } from "@/interfaces/translation.interface";
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
 
 type AddEditFormProps = {
-  id?: number;
   editMode?: boolean;
   onClose: () => void;
-  currentSourceLanguageCode?: string;
-  currentTranslationLanguageCode?: string;
-  currentWord?: string;
-  currentTranslationList?: string[];
-  currentDefinition?: string;
+  currentTranslation?: Translation;
 };
 
 const AddEditForm = ({
-  id,
   editMode = false,
   onClose,
-  currentSourceLanguageCode = "",
-  currentTranslationLanguageCode = "",
-  currentWord = "",
-  currentTranslationList = [],
-  currentDefinition = "",
+  currentTranslation,
 }: AddEditFormProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
@@ -53,25 +44,34 @@ const AddEditForm = ({
   const { data: languages } = useLanguages();
 
   const createTranslation = useCreateTranslation();
-  const updateTranslation = useUpdateTranslation(id);
-  const deleteTranslation = useDeleteTranslation(id);
+  const updateTranslation = useUpdateTranslation(currentTranslation?.id);
+  const deleteTranslation = useDeleteTranslation(currentTranslation?.id);
   const importSpreadsheet = useImportSpreadsheet();
 
   const [sourceLanguageCode, setSourceLanguageCode] = useState<string | null>(
-    currentSourceLanguageCode,
+    currentTranslation?.sourceLanguageCode || null,
   );
   const [translationLanguageCode, setTranslationLanguageCode] = useState<
     string | null
-  >(currentTranslationLanguageCode);
+  >(currentTranslation?.translationLanguageCode || null);
 
-  const [word, setWord] = useState(currentWord);
-  const [translation, setTranslation] = useState(
-    currentTranslationList.length === 1 ? currentTranslationList[0] : "",
+  const [word, setWord] = useState<string>(
+    currentTranslation?.word?.word || "",
+  );
+  const [translation, setTranslation] = useState<string>(
+    currentTranslation?.translations.length === 1
+      ? currentTranslation?.translations?.[0]?.word
+      : "",
   );
   const [translationList, setTranslationList] = useState<string[]>(
-    currentTranslationList.length > 1 ? currentTranslationList : [],
+    currentTranslation?.translations &&
+      currentTranslation.translations.length > 1
+      ? currentTranslation?.translations?.map((t) => t.word)
+      : [],
   );
-  const [definition, setDefinition] = useState(currentDefinition);
+  const [definition, setDefinition] = useState<string>(
+    currentTranslation?.definition || "",
+  );
   const [knowledgeLevel, setKnowledgeLevel] = useState<number[]>([0]);
   const [file, setFile] = useState<File | null>(null);
 
@@ -125,7 +125,10 @@ const AddEditForm = ({
 
     const payload = {
       word,
-      translations: translationList.length ? translationList : [translation],
+      translations: [
+        ...translationList,
+        ...(!!translation ? [translation] : []),
+      ],
       sourceLanguageCode,
       translationLanguageCode,
       definition,
@@ -340,39 +343,24 @@ const AddEditForm = ({
 type AddEditWordDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  id?: number;
   editMode?: boolean;
-  currentSourceLanguageCode?: string;
-  currentTranslationLanguageCode?: string;
-  currentWord?: string;
-  currentTranslationList?: string[];
-  currentDefinition?: string;
+  currentTranslation?: Translation;
 };
 
 export const AddEditWordDialog = ({
   open,
   onOpenChange,
-  id,
   editMode = false,
-  currentSourceLanguageCode,
-  currentTranslationLanguageCode,
-  currentWord,
-  currentTranslationList,
-  currentDefinition,
+  currentTranslation,
 }: AddEditWordDialogProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
   const form = (
     <AddEditForm
-      id={id}
       editMode={editMode}
       onClose={() => onOpenChange(false)}
-      currentSourceLanguageCode={currentSourceLanguageCode}
-      currentTranslationLanguageCode={currentTranslationLanguageCode}
-      currentWord={currentWord}
-      currentTranslationList={currentTranslationList}
-      currentDefinition={currentDefinition}
+      currentTranslation={currentTranslation}
     />
   );
 

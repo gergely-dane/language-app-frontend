@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Flashcard } from "@/interfaces/flashcard.interface";
@@ -7,10 +8,11 @@ import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
 import {
   IconArrowRight,
+  IconChevronDown,
   IconHandClick,
   IconLanguage,
 } from "@tabler/icons-react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type FlashcardCompProps = {
   className?: string;
@@ -22,6 +24,7 @@ type FlashcardCompProps = {
   isCardRefreshing: boolean;
   startFlip: () => void;
   onKeyDown?: (e: globalThis.KeyboardEvent) => void;
+  setEditDialogOpen?: (open: boolean) => void;
 };
 
 type FlashcardSideProps = {
@@ -30,6 +33,7 @@ type FlashcardSideProps = {
   flipped: boolean;
   flipAnimationPlaying: boolean;
   swipeAnimationDirection?: "left" | "right" | null;
+  setEditDialogOpen?: (open: boolean) => void;
 };
 
 const FlashcardSide = ({
@@ -38,13 +42,32 @@ const FlashcardSide = ({
   flipped,
   flipAnimationPlaying,
   swipeAnimationDirection,
+  setEditDialogOpen,
 }: FlashcardSideProps) => {
   const isMobile = useIsMobileScreen();
+
+  const textRef = useRef<HTMLParagraphElement | null>(null);
+  const [isClamped, setIsClamped] = useState(false);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    setIsClamped(el.scrollHeight > el.clientHeight);
+  }, [flashcard]);
+
+  const handleEditButtonClicked = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (setEditDialogOpen) {
+      setEditDialogOpen(true);
+    }
+  };
 
   return (
     <div
       className={cn(
-        "absolute inset-0 bg-primary text-primary-foreground ring-foreground ring-2 rounded-xl ease-out [backface-visibility:hidden]",
+        "absolute inset-0 bg-primary p-2 text-primary-foreground ring-foreground ring-2 rounded-xl ease-in [backface-visibility:hidden]",
         !isFront && "[transform:rotateY(180deg)]",
         ((isFront && !flipped) || (!isFront && flipped)) &&
           swipeAnimationDirection &&
@@ -54,11 +77,11 @@ const FlashcardSide = ({
     >
       <div
         className={cn(
-          "flex h-full",
+          "relative flex flex-col items-center justify-center h-full",
           flipped && isFront && !flipAnimationPlaying && "opacity-0",
         )}
       >
-        <div className="m-auto text-center">
+        <div className="relative text-center">
           <div className="flex w-fit mx-auto">
             <IconLanguage className="my-auto mr-1" />
 
@@ -84,24 +107,38 @@ const FlashcardSide = ({
               }
             </p>
           </div>
-          <p className="text-xl">
+
+          <p className="text-xl line-clamp-3" ref={textRef}>
             {isFront
               ? flashcard.translation.word.word
-              : flashcard.translation.translations[0].word}
+              : flashcard.translation.translations
+                  .map((t) => t.word)
+                  .join(", ")}
           </p>
 
-          <div className="absolute left-0 bottom-5 w-full text-center text-primary-muted-foreground">
-            {!isMobile ? (
-              <div>
-                Click on the card or press{" "}
-                <Kbd className="bg-muted/50">Space</Kbd> to flip it
-              </div>
-            ) : (
-              <p className="flex justify-center items-center gap-1.5">
-                Tap on the card to flip it <IconHandClick />
-              </p>
-            )}
-          </div>
+          {!isFront && (isClamped || !!flashcard.translation.definition) && (
+            <Button
+              className="absolute left-1/2 top-full -translate-x-1/2 hover:bg-primary!"
+              variant="ghost"
+              size="icon"
+              onClick={handleEditButtonClicked}
+            >
+              <IconChevronDown className="mt-0.5" />
+            </Button>
+          )}
+        </div>
+
+        <div className="absolute bottom-0 w-full text-center text-primary-muted-foreground text-sm">
+          {!isMobile ? (
+            <div>
+              Click on the card or press{" "}
+              <Kbd className="bg-muted/50">Space</Kbd> to see the translation(s)
+            </div>
+          ) : (
+            <div className="flex justify-center items-center gap-1.5">
+              Tap on the card to see the translation(s) <IconHandClick />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -118,6 +155,7 @@ export const FlashcardComp = ({
   isCardRefreshing,
   startFlip,
   onKeyDown,
+  setEditDialogOpen,
 }: FlashcardCompProps) => {
   useEffect(() => {
     if (!onKeyDown) return;
@@ -148,6 +186,7 @@ export const FlashcardComp = ({
           flipped={flipped}
           flipAnimationPlaying={animationPlaying}
           swipeAnimationDirection={swipeAnimationDirection}
+          setEditDialogOpen={setEditDialogOpen}
         />
 
         <FlashcardSide
@@ -156,6 +195,7 @@ export const FlashcardComp = ({
           flipped={flipped}
           flipAnimationPlaying={animationPlaying}
           swipeAnimationDirection={swipeAnimationDirection}
+          setEditDialogOpen={setEditDialogOpen}
         />
       </div>
 
