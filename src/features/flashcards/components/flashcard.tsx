@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
+import { useLanguages } from "@/features/languages/api/get-languages";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Flashcard } from "@/interfaces/flashcard.interface";
 import { LANGUAGES } from "@/lib/constants";
@@ -45,6 +46,7 @@ const FlashcardSide = ({
   setEditDialogOpen,
 }: FlashcardSideProps) => {
   const isMobile = useIsMobileScreen();
+  const { getLanguage } = useLanguages();
 
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const [isClamped, setIsClamped] = useState(false);
@@ -89,8 +91,10 @@ const FlashcardSide = ({
               {
                 LANGUAGES[
                   isFront
-                    ? flashcard.translation.sourceLanguageCode
-                    : flashcard.translation.translationLanguageCode
+                    ? getLanguage(flashcard.translation.sourceLanguageId)
+                        ?.code || ""
+                    : getLanguage(flashcard.translation.translationLanguageId)
+                        ?.code || ""
                 ]
               }
             </p>
@@ -101,8 +105,10 @@ const FlashcardSide = ({
               {
                 LANGUAGES[
                   isFront
-                    ? flashcard.translation.translationLanguageCode
-                    : flashcard.translation.sourceLanguageCode
+                    ? getLanguage(flashcard.translation.translationLanguageId)
+                        ?.code || ""
+                    : getLanguage(flashcard.translation.sourceLanguageId)
+                        ?.code || ""
                 ]
               }
             </p>

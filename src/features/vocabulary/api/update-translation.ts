@@ -2,11 +2,11 @@ import { Translation } from "@/interfaces/translation.interface";
 import { apiClient } from "@/lib/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface UpdateTranslationRequest {
+export interface UpdateTranslationRequest {
   word: string;
   translations: string[];
-  sourceLanguageCode: string;
-  translationLanguageCode: string;
+  sourceLanguageId: number;
+  translationLanguageId: number;
   definition?: string;
 }
 

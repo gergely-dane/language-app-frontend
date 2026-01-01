@@ -3,7 +3,7 @@ import { apiClient } from "@/lib/api-client";
 import { useQuery } from "@tanstack/react-query";
 
 export const useLanguages = () => {
-  return useQuery({
+  const queryResult = useQuery({
     queryKey: ["languages"],
     queryFn: async () => {
       const { data } = await apiClient.get<Language[]>("/languages");
@@ -11,4 +11,9 @@ export const useLanguages = () => {
     },
     staleTime: 24 * 60 * 60 * 1000,
   });
+
+  const getLanguage = (id?: number) =>
+    queryResult?.data?.find((lang) => lang.id === id);
+
+  return { ...queryResult, getLanguage };
 };

@@ -23,6 +23,7 @@ import { useUpdateTranslation } from "@/features/vocabulary/api/update-translati
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Language } from "@/interfaces/language.interface";
 import { Translation } from "@/interfaces/translation.interface";
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
 import { KeyboardEvent, useEffect, useState } from "react";
@@ -48,12 +49,12 @@ const AddEditForm = ({
   const deleteTranslation = useDeleteTranslation(currentTranslation?.id);
   const importSpreadsheet = useImportSpreadsheet();
 
-  const [sourceLanguageCode, setSourceLanguageCode] = useState<string | null>(
-    currentTranslation?.sourceLanguageCode || null,
+  const [sourceLanguageId, setSourceLanguageId] = useState<number | null>(
+    currentTranslation?.sourceLanguageId || null,
   );
-  const [translationLanguageCode, setTranslationLanguageCode] = useState<
-    string | null
-  >(currentTranslation?.translationLanguageCode || null);
+  const [translationLanguageId, setTranslationLanguageId] = useState<
+    number | null
+  >(currentTranslation?.translationLanguageId || null);
 
   const [word, setWord] = useState<string>(
     currentTranslation?.word?.word || "",
@@ -76,8 +77,8 @@ const AddEditForm = ({
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
-    setSourceLanguageCode(languages?.[0]?.code ?? null);
-    setTranslationLanguageCode(languages?.[1]?.code ?? null);
+    setSourceLanguageId(languages?.[0]?.id ?? null);
+    setTranslationLanguageId(languages?.[1]?.id ?? null);
   }, [languages]);
 
   const resetForm = () => {
@@ -88,17 +89,20 @@ const AddEditForm = ({
     setKnowledgeLevel([0]);
   };
 
-  const handleLanguageChange = (value: string | null, translation: boolean) => {
+  const handleLanguageChange = (
+    value: Language | null,
+    translation: boolean,
+  ) => {
     if (translation) {
-      if (value === sourceLanguageCode) {
-        setSourceLanguageCode(translationLanguageCode);
+      if (value === sourceLanguageId) {
+        setSourceLanguageId(translationLanguageId);
       }
-      setTranslationLanguageCode(value);
+      setTranslationLanguageId(value?.id || null);
     } else {
-      if (value === translationLanguageCode) {
-        setTranslationLanguageCode(sourceLanguageCode);
+      if (value === translationLanguageId) {
+        setTranslationLanguageId(sourceLanguageId);
       }
-      setSourceLanguageCode(value);
+      setSourceLanguageId(value?.id || null);
     }
   };
 
@@ -117,8 +121,8 @@ const AddEditForm = ({
     if (
       !word ||
       (!translation && !translationList.length) ||
-      !sourceLanguageCode ||
-      !translationLanguageCode
+      !sourceLanguageId ||
+      !translationLanguageId
     ) {
       return;
     }
@@ -129,8 +133,8 @@ const AddEditForm = ({
         ...translationList,
         ...(!!translation ? [translation] : []),
       ],
-      sourceLanguageCode,
-      translationLanguageCode,
+      sourceLanguageId,
+      translationLanguageId,
       definition,
     };
 
@@ -224,9 +228,11 @@ const AddEditForm = ({
 
             <LanguageSelector
               className="w-14 lg:w-32"
-              value={sourceLanguageCode}
+              value={
+                languages?.find((lang) => lang.id === sourceLanguageId) || null
+              }
               onChange={(value) => handleLanguageChange(value, false)}
-              languages={languages?.map((lang) => lang.code) || []}
+              languages={languages || []}
             />
           </div>
 
@@ -246,9 +252,13 @@ const AddEditForm = ({
 
               <LanguageSelector
                 className="w-14 lg:w-32"
-                value={translationLanguageCode}
+                value={
+                  languages?.find(
+                    (lang) => lang.id === translationLanguageId,
+                  ) || null
+                }
                 onChange={(value) => handleLanguageChange(value, true)}
-                languages={languages?.map((lang) => lang.code) || []}
+                languages={languages || []}
               />
             </div>
 

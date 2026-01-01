@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
+import { useLanguages } from "@/features/languages/api/get-languages";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
@@ -41,6 +42,7 @@ export const LanguagePairSelector = ({
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
+  const { getLanguage } = useLanguages();
   let { data: languagePairs } = useLanguagePairs();
   if (!languagePairs) {
     languagePairs = [];
@@ -60,14 +62,18 @@ export const LanguagePairSelector = ({
               <>
                 <p>
                   {!isMobile
-                    ? LANGUAGES[value.sourceLanguageCode]
-                    : value.sourceLanguageCode.toUpperCase()}
+                    ? LANGUAGES[getLanguage(value.sourceLanguageId)?.code || ""]
+                    : getLanguage(value.sourceLanguageId)?.code?.toUpperCase()}
                 </p>
                 <IconArrowNarrowRight />
                 <p>
                   {!isMobile
-                    ? LANGUAGES[value.translationLanguageCode]
-                    : value.translationLanguageCode.toUpperCase()}
+                    ? LANGUAGES[
+                        getLanguage(value.translationLanguageId)?.code || ""
+                      ]
+                    : getLanguage(
+                        value.translationLanguageId,
+                      )?.code?.toUpperCase()}
                 </p>
               </>
             ) : (
@@ -110,9 +116,8 @@ export const LanguagePairSelector = ({
 
                 {languagePairs.map((pair, i) => {
                   const isSelected =
-                    value?.sourceLanguageCode === pair.sourceLanguageCode &&
-                    value?.translationLanguageCode ===
-                      pair.translationLanguageCode;
+                    value?.sourceLanguageId === pair.sourceLanguageId &&
+                    value?.translationLanguageId === pair.translationLanguageId;
 
                   return (
                     <CommandItem
@@ -129,7 +134,14 @@ export const LanguagePairSelector = ({
                         setOpen(false);
                       }}
                     >
-                      <p>{LANGUAGES[pair.sourceLanguageCode]}</p>
+                      <p>
+                        {
+                          LANGUAGES[
+                            getLanguage(pair.sourceLanguageId)?.code || ""
+                          ]
+                        }
+                      </p>
+
                       <IconArrowNarrowRight
                         className={cn(
                           "mt-0.5",
@@ -138,7 +150,14 @@ export const LanguagePairSelector = ({
                             : "text-foreground",
                         )}
                       />
-                      <p>{LANGUAGES[pair.translationLanguageCode]}</p>
+
+                      <p>
+                        {
+                          LANGUAGES[
+                            getLanguage(pair.translationLanguageId)?.code || ""
+                          ]
+                        }
+                      </p>
                     </CommandItem>
                   );
                 })}

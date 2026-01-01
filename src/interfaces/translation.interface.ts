@@ -9,7 +9,7 @@ export interface Translation extends BaseEntity {
   id: number;
   word: Word;
   translations: Word[];
-  sourceLanguageCode: string;
-  translationLanguageCode: string;
+  sourceLanguageId: number;
+  translationLanguageId: number;
   definition?: string;
 }

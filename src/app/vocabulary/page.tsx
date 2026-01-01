@@ -51,8 +51,8 @@ const Vocabulary = () => {
   } = useTranslations({
     pageNumber,
     search: searchFilter,
-    sourceLanguageCode: languageFilter?.sourceLanguageCode,
-    translationLanguageCode: languageFilter?.translationLanguageCode,
+    sourceLanguageId: languageFilter?.sourceLanguageId,
+    translationLanguageId: languageFilter?.translationLanguageId,
     sortBy: sorting[0].id,
     sortAscending: !sorting[0].desc,
   });

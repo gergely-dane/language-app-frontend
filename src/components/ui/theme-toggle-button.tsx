@@ -190,7 +190,6 @@ export const ThemeToggleButton = ({
         showLabel && "gap-2",
         className,
       )}
-      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
     >
       {theme === "light" ? (
         <IconSun className="scale-130" />

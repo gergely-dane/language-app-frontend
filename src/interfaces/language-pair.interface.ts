@@ -1,4 +1,4 @@
 export interface LanguagePair {
-  sourceLanguageCode: string;
-  translationLanguageCode: string;
+  sourceLanguageId: number;
+  translationLanguageId: number;
 }

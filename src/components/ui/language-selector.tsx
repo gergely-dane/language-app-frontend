@@ -16,15 +16,16 @@ import {
 } from "@/components/ui/popover";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { Language } from "@/interfaces/language.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
 import { IconCheck, IconSelector } from "@tabler/icons-react";
 import { useState } from "react";
 
 type LanguageSelectorProps = {
-  value: string | null;
-  onChange: (value: string | null) => void;
-  languages: string[];
+  value: Language | null;
+  onChange: (value: Language | null) => void;
+  languages: Language[];
   className?: string;
 };
 
@@ -52,8 +53,8 @@ export const LanguageSelector = ({
             <p>
               {value
                 ? !isMobile
-                  ? LANGUAGES[value]
-                  : value.toUpperCase()
+                  ? LANGUAGES[value.code]
+                  : value.code.toUpperCase()
                 : t("vocabulary.selectLanguage")}
             </p>
             <IconSelector className="opacity-50" />
@@ -75,7 +76,7 @@ export const LanguageSelector = ({
                 {languages.map((language, i) => (
                   <CommandItem
                     key={i}
-                    value={LANGUAGES[language]}
+                    value={language.id}
                     onSelect={() => {
                       onChange(language);
                       setOpen(false);
@@ -83,10 +84,10 @@ export const LanguageSelector = ({
                   >
                     <IconCheck
                       className={
-                        value == language ? "opacity-100" : "opacity-0"
+                        value?.id === language.id ? "opacity-100" : "opacity-0"
                       }
                     />
-                    <p>{LANGUAGES[language]}</p>
+                    <p>{LANGUAGES[language.code]}</p>
                   </CommandItem>
                 ))}
               </CommandGroup>

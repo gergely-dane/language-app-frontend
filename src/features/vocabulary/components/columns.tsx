@@ -3,6 +3,7 @@
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLanguages } from "@/features/languages/api/get-languages";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { Translation, Word } from "@/interfaces/translation.interface";
@@ -77,24 +78,32 @@ export const columns: ColumnDef<Translation>[] = [
     id: "language",
     header: LanguageHeader,
     accessorFn: (tr) => {
-      return `${tr.sourceLanguageCode}-${tr.translationLanguageCode}`;
+      return `${tr.sourceLanguageId}-${tr.translationLanguageId}`;
     },
     cell: ({ getValue }) => {
-      const [sourceLanguage, translationLanguage] = (
+      const isMobile = useIsMobileScreen();
+      const { getLanguage } = useLanguages();
+
+      const [sourceLanguageId, translationLanguageId] = (
         getValue() as string
       ).split("-");
-      const isMobile = useIsMobileScreen();
 
       return (
         <div className="flex gap-0.5">
           <p className={isMobile ? "uppercase" : ""}>
-            {!isMobile ? LANGUAGES[sourceLanguage] : sourceLanguage}
+            {!isMobile
+              ? LANGUAGES[getLanguage(Number(sourceLanguageId))?.code || ""]
+              : getLanguage(Number(sourceLanguageId))?.code}
           </p>
 
-          <IconArrowNarrowRight className="mt-0.5" size={16} />
+          <IconArrowNarrowRight className="mt-0.5 shrink-0" size={16} />
 
           <p className={isMobile ? "uppercase" : ""}>
-            {!isMobile ? LANGUAGES[translationLanguage] : translationLanguage}
+            {!isMobile
+              ? LANGUAGES[
+                  getLanguage(Number(translationLanguageId))?.code || ""
+                ]
+              : getLanguage(Number(translationLanguageId))?.code}
           </p>
         </div>
       );
@@ -143,7 +152,6 @@ export const columns: ColumnDef<Translation>[] = [
           <AddEditWordDialog
             open={dialogOpen}
             onOpenChange={(open) => setDialogOpen(open)}
-            id={rowData.id}
             editMode={true}
             currentTranslation={rowData}
           />
