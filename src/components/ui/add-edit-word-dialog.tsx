@@ -32,12 +32,14 @@ type AddEditFormProps = {
   editMode?: boolean;
   onClose: () => void;
   currentTranslation?: Translation;
+  onSave?: () => void;
 };
 
 const AddEditForm = ({
   editMode = false,
   onClose,
   currentTranslation,
+  onSave,
 }: AddEditFormProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
@@ -149,6 +151,9 @@ const AddEditForm = ({
         resetForm();
       }
 
+      if (onSave) {
+        onSave();
+      }
       onClose();
       showAlert({
         title: t("vocabulary.translationSavedSuccessfully"),
@@ -361,6 +366,7 @@ type AddEditWordDialogProps = {
   onOpenChange: (open: boolean) => void;
   editMode?: boolean;
   currentTranslation?: Translation;
+  onSave?: () => void;
 };
 
 export const AddEditWordDialog = ({
@@ -368,6 +374,7 @@ export const AddEditWordDialog = ({
   onOpenChange,
   editMode = false,
   currentTranslation,
+  onSave,
 }: AddEditWordDialogProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
@@ -377,6 +384,7 @@ export const AddEditWordDialog = ({
       editMode={editMode}
       onClose={() => onOpenChange(false)}
       currentTranslation={currentTranslation}
+      onSave={onSave}
     />
   );
 

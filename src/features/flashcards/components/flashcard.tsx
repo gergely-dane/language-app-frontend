@@ -13,20 +13,7 @@ import {
   IconHandClick,
   IconLanguage,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-
-type FlashcardCompProps = {
-  className?: string;
-  ref?: React.RefObject<HTMLDivElement | null>;
-  flashcard: Flashcard;
-  flipped: boolean;
-  animationPlaying: boolean;
-  swipeAnimationDirection: "left" | "right" | null;
-  isCardRefreshing: boolean;
-  startFlip: () => void;
-  onKeyDown?: (e: globalThis.KeyboardEvent) => void;
-  setEditDialogOpen?: (open: boolean) => void;
-};
+import React, { useEffect, useRef, useState } from "react";
 
 type FlashcardSideProps = {
   flashcard: Flashcard;
@@ -149,6 +136,19 @@ const FlashcardSide = ({
       </div>
     </div>
   );
+};
+
+type FlashcardCompProps = {
+  className?: string;
+  ref?: React.RefObject<HTMLDivElement | null>;
+  flashcard: Flashcard;
+  flipped: boolean;
+  animationPlaying: boolean;
+  swipeAnimationDirection: "left" | "right" | null;
+  isCardRefreshing: boolean;
+  startFlip: () => void;
+  onKeyDown?: (e: globalThis.KeyboardEvent) => void;
+  setEditDialogOpen?: (open: boolean) => void;
 };
 
 export const FlashcardComp = ({

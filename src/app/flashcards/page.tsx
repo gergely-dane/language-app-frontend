@@ -36,18 +36,12 @@ const Flashcards = () => {
   const [swipeAnimationDirection, setSwipeAnimationDirection] = useState<
     "left" | "right" | null
   >(null);
-  const [isCardRefreshing, setIsCardRefreshing] = useState(false);
+  const [cardRefreshing, setCardRefreshing] = useState(true);
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const { data: flashcard, isLoading, error } = useFlashcard(languagePair);
-  const respondToFlashcard = useRespondToFlashcard(languagePair);
-
-  useEffect(() => {
-    if ((flashcard && !currentFlashcard) || isCardRefreshing) {
-      setCurrentFlashcard(flashcard);
-    }
-  }, [isCardRefreshing, currentFlashcard, flashcard]);
+  const respondToFlashcard = useRespondToFlashcard();
 
   const startFlip = () => {
     if (animationPlaying || swipeAnimationDirection) return;
@@ -77,10 +71,17 @@ const Flashcards = () => {
     }
   };
 
+  const refreshCard = () => {
+    setCardRefreshing(true);
+    setSwipeAnimationDirection(null);
+    setFlipped(false);
+    setWasFlipped(false);
+  };
+
   const sendResponse = useCallback(
     async (knewIt: boolean) => {
       if (
-        isCardRefreshing ||
+        cardRefreshing ||
         animationPlaying ||
         swipeAnimationDirection ||
         !flashcard
@@ -95,32 +96,34 @@ const Flashcards = () => {
       setSwipeAnimationDirection(knewIt ? "right" : "left");
       setAreButtonsDisabled(true);
       setTimeout(async () => {
-        setSwipeAnimationDirection(null);
-        setFlipped(false);
-        setWasFlipped(false);
+        refreshCard();
         setAreButtonsDisabled(false);
-
-        setIsCardRefreshing(true);
-        setTimeout(() => setIsCardRefreshing(false), 20);
       }, 680);
     },
     [
       flashcard,
       animationPlaying,
-      isCardRefreshing,
+      cardRefreshing,
       swipeAnimationDirection,
       respondToFlashcard,
     ],
   );
 
   const onLanguagePairChange = (newPair: LanguagePair | null) => {
+    // TODO: better way to reset the flashcard state
     setLanguagePair(newPair);
     setTimeout(() => {
-      setCurrentFlashcard(null);
-      setFlipped(false);
-      setWasFlipped(false);
-    }, 100);
+      refreshCard();
+    }, 150);
   };
+
+  useEffect(() => {
+    console.log(!isLoading && flashcard && cardRefreshing);
+    if (!isLoading && flashcard && cardRefreshing) {
+      setCurrentFlashcard(flashcard);
+      setCardRefreshing(false);
+    }
+  }, [cardRefreshing, flashcard, isLoading]);
 
   useEffect(() => {
     if (swipeDirection === "left") {
@@ -170,7 +173,7 @@ const Flashcards = () => {
           startFlip={startFlip}
           animationPlaying={animationPlaying}
           swipeAnimationDirection={swipeAnimationDirection}
-          isCardRefreshing={isCardRefreshing}
+          isCardRefreshing={cardRefreshing}
           onKeyDown={onKeyDown}
           setEditDialogOpen={setEditDialogOpen}
         />
@@ -218,6 +221,7 @@ const Flashcards = () => {
         onOpenChange={(open) => setEditDialogOpen(open)}
         editMode={true}
         currentTranslation={flashcard.translation}
+        onSave={() => setTimeout(() => refreshCard(), 150)}
       />
     </div>
   );

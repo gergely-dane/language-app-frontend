@@ -1,4 +1,3 @@
-import { LanguagePair } from "@/interfaces/language-pair.interface";
 import { apiClient } from "@/lib/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -9,9 +8,7 @@ interface RespondToFlashcardRequest {
   };
 }
 
-export const useRespondToFlashcard = (
-  paramsToInvalidate?: LanguagePair | null,
-) => {
+export const useRespondToFlashcard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -23,10 +20,7 @@ export const useRespondToFlashcard = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [
-          "flashcards",
-          paramsToInvalidate ? paramsToInvalidate : null,
-        ],
+        queryKey: ["flashcards"],
       });
     },
     onError: (error) => {
