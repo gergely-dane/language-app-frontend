@@ -6,7 +6,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 type AlertState = {
   title: string;
-  description?: string;
+  message?: string;
   variant?: "default" | "destructive";
   open: boolean;
 };
@@ -20,7 +20,7 @@ const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
   const [alert, setAlert] = useState<AlertState>({
     title: "",
-    description: "",
+    message: "",
     variant: "default",
     open: false,
   });
@@ -56,8 +56,8 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
               <IconCircleX className="text-destructive" />
             )}
             <AlertTitle>{alert.title}</AlertTitle>
-            {alert.description && (
-              <AlertDescription>{alert.description}</AlertDescription>
+            {alert.message && (
+              <AlertDescription>{alert.message}</AlertDescription>
             )}
           </Alert>
         </div>

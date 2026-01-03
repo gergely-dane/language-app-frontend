@@ -1,0 +1,9 @@
+{
+  "email": "Email",
+  "errorLoggingIn": "Error logging in",
+  "incorrectEmailOrPassword": "Incorrect email or password.",
+  "logOut": "Log out",
+  "login": "Login",
+  "password": "Password",
+  "signIn": "Sign In"
+}

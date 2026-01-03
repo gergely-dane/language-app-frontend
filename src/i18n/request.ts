@@ -1,8 +1,9 @@
+import * as fs from "fs";
 import { getRequestConfig } from "next-intl/server";
 
 export default getRequestConfig(async () => {
   const locale = "en";
-  const namespaces = ["general", "vocabulary", "flashcards"];
+  const namespaces = fs.readdirSync("src/i18n/messages");
 
   try {
     const messages = (

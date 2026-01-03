@@ -1,8 +1,7 @@
 "use client";
 
 import { supabaseClient } from "@/lib/supabase-client";
-import { User } from "@supabase/auth-js";
-import { redirect } from "next/navigation";
+import { AuthTokenResponsePassword, User } from "@supabase/auth-js";
 import {
   createContext,
   ReactNode,
@@ -14,11 +13,14 @@ import {
 type AuthContextProps = {
   isAuthenticated: boolean;
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<AuthTokenResponsePassword>;
   logout: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextProps>(null);
+const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -43,13 +45,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    await supabaseClient.auth.signInWithPassword({ email, password });
-    redirect("/vocabulary");
+    return supabaseClient.auth.signInWithPassword({ email, password });
   };
 
   const logout = async () => {
     await supabaseClient.auth.signOut();
-    redirect("/login");
   };
 
   return (

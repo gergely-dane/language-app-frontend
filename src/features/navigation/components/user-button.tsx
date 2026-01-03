@@ -9,6 +9,7 @@ import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/utils/cn";
 import { IconLogout, IconUser } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 type UserButtonProps = {
   className?: string;
@@ -17,6 +18,12 @@ type UserButtonProps = {
 export const UserButton = ({ className }: UserButtonProps) => {
   const t = useI18n();
   const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    logout().then(() => router.push("/login"));
+  };
 
   return (
     <Popover>
@@ -41,9 +48,13 @@ export const UserButton = ({ className }: UserButtonProps) => {
 
         <Separator />
 
-        <Button variant="ghost" className="justify-start" onClick={logout}>
+        <Button
+          variant="ghost"
+          className="justify-start"
+          onClick={handleLogout}
+        >
           <IconLogout />
-          {t("general.logOut")}
+          {t("auth.logOut")}
         </Button>
       </PopoverContent>
     </Popover>
