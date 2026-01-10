@@ -57,7 +57,7 @@
   --popover: var(--card);
   --popover-foreground: var(--card-foreground);
   --secondary-foreground: var(--foreground);
-  --accent: var(--muted);
+  --accent: oklch(from var(--muted) calc(l + 0.07) c h);
   --accent-foreground: var(--foreground);
   --border: var(--muted);
   --input: var(--muted);

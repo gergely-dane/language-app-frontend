@@ -1,0 +1,13 @@
+{
+  "didntKnow": "Didn't know",
+  "flashcardsCompleted": "Flashcards Completed",
+  "knew": "Knew",
+  "other": "Other",
+  "streakCard": {
+    "dayOne": "Do some practice today to start a streak!",
+    "keepGoing": "Keep up the good work!",
+    "streak": "{days} day streak!",
+    "title": "You're on a"
+  },
+  "translationsAdded": "Translations Added"
+}

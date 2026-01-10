@@ -101,9 +101,13 @@ const Vocabulary = () => {
 
   return (
     <div className="w-full min-h-[calc(100vh-var(--navbar-height))]">
-      <div className="text-3xl font-bold">{t("vocabulary.title")}</div>
+      <p className="text-3xl font-bold">{t("vocabulary.title")}</p>
 
-      <div className="flex gap-1.5 flex-wrap mt-4 mb-1.5">
+      <p className="text-muted-foreground font-semibold">
+        {t("vocabulary.anOverviewOfAllYourWords")}
+      </p>
+
+      <div className="flex gap-1.5 flex-wrap mt-6 mb-1.5">
         <SearchInput
           className="flex-7 lg:flex-none lg:w-70"
           value={searchFilter}

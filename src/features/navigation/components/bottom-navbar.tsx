@@ -15,19 +15,16 @@ export const BottomNavbar = () => {
   const pathname = usePathname();
   const isMobile = useIsMobileScreen();
 
+  if (!isMobile || !isAuthenticated) {
+    return null;
+  }
+
   return (
-    <nav
-      className={cn(
-        "fixed bottom-0 flex flex-cols gap-4 py-1.5 px-2 bg-muted w-full shadow-sm h-16 z-10 text-muted-foreground border-t",
-        {
-          hidden: !isMobile || !isAuthenticated,
-        },
-      )}
-    >
+    <nav className="fixed bottom-0 flex flex-cols gap-4 py-1.5 px-2 bg-accent w-full shadow-sm h-16 z-10 text-muted-foreground border-t">
       <Link href="/" className="flex-1">
         <Button
           variant="ghost"
-          className={cn("flex flex-col w-full h-full gap-0.5 bg-muted", {
+          className={cn("flex flex-col w-full h-full gap-0.5 bg-accent", {
             "bg-primary text-white": pathname === "/",
           })}
         >
@@ -39,7 +36,7 @@ export const BottomNavbar = () => {
       <Link href="/vocabulary" className="flex-1">
         <Button
           variant="ghost"
-          className={cn("flex flex-col w-full h-full gap-0.5 bg-muted", {
+          className={cn("flex flex-col w-full h-full gap-0.5 bg-accent", {
             "bg-primary text-white": pathname === "/vocabulary",
           })}
         >
@@ -51,7 +48,7 @@ export const BottomNavbar = () => {
       <Link href="/flashcards" className="flex-1">
         <Button
           variant="ghost"
-          className={cn("flex flex-col w-full h-full gap-0.5 bg-muted", {
+          className={cn("flex flex-col w-full h-full gap-0.5 bg-accent", {
             "bg-primary text-white": pathname === "/flashcards",
           })}
         >
