@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserStatistics } from "@/features/user/api/get-user-statistics";
-import { FlashcardsAddedLineChart } from "@/features/user/components/flashcards-added-line-chart";
+import { FlashcardsAddedBarChart } from "@/features/user/components/flashcards-added-bar-chart";
 import { LanguagesPieChart } from "@/features/user/components/languages-pie-chart";
 import { StreakCard } from "@/features/user/components/streak-card";
 import { TranslationsAddedBarChart } from "@/features/user/components/translations-added-bar-chart";
@@ -16,6 +16,8 @@ export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
   const isMobile = useIsMobileScreen();
   const { data: stats } = useUserStatistics({ previousDays: 30 });
 
+  if (!stats) return;
+
   if (!isMobile) {
     return (
       <div className={cn("flex flex-col gap-5", className)}>
@@ -26,7 +28,7 @@ export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
 
         <div className="flex w-full gap-5 h-80">
           <LanguagesPieChart className="w-2/5" stats={stats} />
-          <FlashcardsAddedLineChart className="w-full" stats={stats} />
+          <FlashcardsAddedBarChart className="w-full" stats={stats} />
         </div>
       </div>
     );
@@ -37,7 +39,7 @@ export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
       <StreakCard stats={stats} />
       <TranslationsAddedBarChart stats={stats} />
       <LanguagesPieChart stats={stats} />
-      <FlashcardsAddedLineChart stats={stats} />
+      <FlashcardsAddedBarChart stats={stats} />
     </div>
   );
 };

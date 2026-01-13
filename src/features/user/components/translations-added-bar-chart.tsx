@@ -36,6 +36,7 @@ export const TranslationsAddedBarChart = ({
     >
       <BarChart accessibilityLayer data={stats?.daily ?? []}>
         <CartesianGrid vertical={false} />
+
         <XAxis
           dataKey="date"
           tickLine={false}
@@ -50,6 +51,7 @@ export const TranslationsAddedBarChart = ({
             });
           }}
         />
+
         <ChartTooltip
           content={
             <ChartTooltipContent
@@ -64,6 +66,7 @@ export const TranslationsAddedBarChart = ({
             />
           }
         />
+
         <Bar
           dataKey="newTranslationsAdded"
           fill="var(--primary)"

@@ -14,7 +14,7 @@ type FlashcardsAddedLineChartProps = {
   className?: string;
 };
 
-export const FlashcardsAddedLineChart = ({
+export const FlashcardsAddedBarChart = ({
   stats,
   className,
 }: FlashcardsAddedLineChartProps) => {
@@ -39,6 +39,7 @@ export const FlashcardsAddedLineChart = ({
     >
       <BarChart accessibilityLayer data={stats?.daily ?? []}>
         <CartesianGrid vertical={false} />
+
         <XAxis
           dataKey="date"
           tickLine={false}
@@ -53,6 +54,7 @@ export const FlashcardsAddedLineChart = ({
             });
           }}
         />
+
         <ChartTooltip
           content={
             <ChartTooltipContent
@@ -66,12 +68,14 @@ export const FlashcardsAddedLineChart = ({
             />
           }
         />
+
         <Bar
           dataKey="successfulFlashcards"
           stackId="a"
           fill="var(--color-primary)"
           radius={[0, 0, 4, 4]}
         />
+
         <Bar
           dataKey="failedFlashcards"
           stackId="a"

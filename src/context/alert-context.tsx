@@ -2,7 +2,15 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type AlertState = {
   title: string;
@@ -27,21 +35,34 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
 
   const [visible, setVisible] = useState(false);
 
-  const showAlert = (options: Omit<AlertState, "open">) => {
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showAlert = useCallback((options: Omit<AlertState, "open">) => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+
     setAlert({ ...options, open: true });
     setVisible(true);
 
-    setTimeout(() => {
+    hideTimeoutRef.current = setTimeout(() => {
       setVisible(false);
     }, 2500);
 
-    setTimeout(() => {
+    closeTimeoutRef.current = setTimeout(() => {
       setAlert((prev) => ({ ...prev, open: false }));
     }, 3000);
-  };
+  }, []);
+
+  const value = useMemo(() => ({ showAlert }), [showAlert]);
 
   return (
-    <AlertContext.Provider value={{ showAlert }}>
+    <AlertContext.Provider value={value}>
       {children}
       {alert.open && (
         <div

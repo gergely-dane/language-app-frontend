@@ -11,6 +11,7 @@ import { columns } from "@/features/vocabulary/components/columns";
 import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { LanguagePair } from "@/interfaces/language-pair.interface";
@@ -23,7 +24,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Vocabulary = () => {
   const t = useI18n();
@@ -36,12 +37,13 @@ const Vocabulary = () => {
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [addWordDialogOpen, setAddWordDialogOpen] = useState(false);
-  const [selectedRowCount, setSelectedRowCount] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchFilter, setSearchFilter] = useState("");
   const [languageFilter, setLanguageFilter] = useState<LanguagePair | null>(
     null,
   );
+
+  const debouncedSearchFilter = useDebounce(searchFilter);
 
   const {
     data: words,
@@ -50,7 +52,7 @@ const Vocabulary = () => {
     refetch,
   } = useTranslations({
     pageNumber,
-    search: searchFilter,
+    search: debouncedSearchFilter,
     sourceLanguageId: languageFilter?.sourceLanguageId,
     translationLanguageId: languageFilter?.translationLanguageId,
     sortBy: sorting[0].id,
@@ -72,13 +74,7 @@ const Vocabulary = () => {
     getRowId: (row: Translation) => row.id.toString(),
   });
 
-  useEffect(() => {
-    setSelectedRowCount(Object.keys(rowSelection).length);
-  }, [rowSelection]);
-
-  useEffect(() => {
-    refetch();
-  }, [pageNumber, searchFilter, languageFilter, refetch]);
+  const selectedRowCount = Object.keys(rowSelection).length;
 
   const handleDelete = async () => {
     if (!selectedRowCount) return;
