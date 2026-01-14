@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserStatistics } from "@/features/user/api/get-user-statistics";
+import { useUserStatisticsSuspense } from "@/features/user/api/get-user-statistics";
 import { FlashcardsAddedBarChart } from "@/features/user/components/flashcards-added-bar-chart";
 import { LanguagesPieChart } from "@/features/user/components/languages-pie-chart";
 import { StreakCard } from "@/features/user/components/streak-card";
@@ -14,7 +14,7 @@ type StatisticsDisplayProps = {
 
 export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
   const isMobile = useIsMobileScreen();
-  const { data: stats } = useUserStatistics({ previousDays: 30 });
+  const { data: stats } = useUserStatisticsSuspense({ previousDays: 30 });
 
   if (!stats) return;
 

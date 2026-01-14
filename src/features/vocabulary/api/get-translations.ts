@@ -9,12 +9,12 @@ interface GetTranslationsQuery {
   pageSize?: number;
   sortBy?: string;
   sortAscending?: boolean;
-  sourceLanguageId?: string;
-  translationLanguageId?: string;
+  sourceLanguageId?: number;
+  translationLanguageId?: number;
 }
 
-export const useTranslations = (params: GetTranslationsQuery) => {
-  return useQuery({
+export const useTranslationsSuspense = (params: GetTranslationsQuery) =>
+  useQuery({
     queryKey: ["translations", params],
     queryFn: async () => {
       const { data } = await apiClient.get<PaginatedResponse<Translation>>(
@@ -26,4 +26,3 @@ export const useTranslations = (params: GetTranslationsQuery) => {
       return data;
     },
   });
-};

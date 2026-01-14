@@ -4,7 +4,7 @@ import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
-import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
+import { useFlashcardSuspense } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
@@ -40,7 +40,11 @@ const Flashcards = () => {
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-  const { data: flashcard, isLoading, error } = useFlashcard(languagePair);
+  const {
+    data: flashcard,
+    isLoading,
+    error,
+  } = useFlashcardSuspense(languagePair);
   const respondToFlashcard = useRespondToFlashcard();
 
   const startFlip = () => {

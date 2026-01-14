@@ -1,9 +1,9 @@
 import { Language } from "@/interfaces/language.interface";
 import { apiClient } from "@/lib/api-client";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const useLanguages = () => {
-  const queryResult = useQuery({
+  const queryResult = useSuspenseQuery({
     queryKey: ["languages"],
     queryFn: async () => {
       const { data } = await apiClient.get<Language[]>("/languages");

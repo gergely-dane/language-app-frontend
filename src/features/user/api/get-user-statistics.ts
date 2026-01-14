@@ -1,13 +1,13 @@
 import { UserStatistics } from "@/interfaces/user-statistics.interface";
 import { apiClient } from "@/lib/api-client";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 interface GetUserStatisticsParams {
   previousDays: number;
 }
 
-export const useUserStatistics = (params: GetUserStatisticsParams) => {
-  return useQuery({
+export const useUserStatisticsSuspense = (params: GetUserStatisticsParams) =>
+  useSuspenseQuery({
     queryKey: ["statistics", params],
     queryFn: async () => {
       const { data } = await apiClient.get<UserStatistics>("/users/me/stats", {
@@ -16,4 +16,3 @@ export const useUserStatistics = (params: GetUserStatisticsParams) => {
       return data;
     },
   });
-};
