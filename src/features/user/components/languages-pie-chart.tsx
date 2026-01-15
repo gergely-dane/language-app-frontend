@@ -5,6 +5,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import { StatisticsContainer } from "@/features/user/components/statistics-container";
 import { useI18n } from "@/hooks/use-i18n";
 import { UserStatistics } from "@/interfaces/user-statistics.interface";
 import { LANGUAGES } from "@/lib/constants";
@@ -120,34 +121,33 @@ export const LanguagesPieChart = ({
   );
 
   return (
-    <ChartContainer
-      className={cn(
-        "flex flex-col justify-center bg-card rounded-lg border shadow-sm",
-        className,
-      )}
-      config={chartConfig}
+    <StatisticsContainer
+      className={cn("w-full", className)}
+      title={t("statistics.yourLanguages")}
     >
-      <PieChart>
-        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+      <ChartContainer className="aspect-square w-full" config={chartConfig}>
+        <PieChart>
+          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
-        <Pie
-          data={chartData}
-          dataKey="translationsCount"
-          nameKey="label"
-          label={({ x, y, textAnchor, dominantBaseline, name, fill }) => (
-            <text
-              x={x}
-              y={y}
-              textAnchor={textAnchor}
-              dominantBaseline={dominantBaseline}
-              style={{ fontWeight: 600 }}
-              fill={fill}
-            >
-              {name}
-            </text>
-          )}
-        />
-      </PieChart>
-    </ChartContainer>
+          <Pie
+            data={chartData}
+            dataKey="translationsCount"
+            nameKey="label"
+            // label={({ x, y, textAnchor, dominantBaseline, name, fill }) => (
+            //   <text
+            //     x={x}
+            //     y={y}
+            //     textAnchor={textAnchor}
+            //     dominantBaseline={dominantBaseline}
+            //     style={{ fontWeight: 600 }}
+            //     fill={fill}
+            //   >
+            //     {name}
+            //   </text>
+            // )}
+          />
+        </PieChart>
+      </ChartContainer>
+    </StatisticsContainer>
   );
 };

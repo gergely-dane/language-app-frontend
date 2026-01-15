@@ -1,7 +1,9 @@
 {
   "didntKnow": "Didn't know",
   "flashcardsCompleted": "Flashcards Completed",
+  "inTheLastXDays": "In the last {days} days",
   "knew": "Knew",
+  "newWords": "New Words",
   "other": "Other",
   "streakCard": {
     "dayOne": "Do some practice today to start a streak!",
@@ -9,5 +11,6 @@
     "streak": "{days} day streak!",
     "title": "You're on a"
   },
-  "translationsAdded": "Translations Added"
+  "translationsAdded": "Translations Added",
+  "yourLanguages": "Your Languages"
 }
