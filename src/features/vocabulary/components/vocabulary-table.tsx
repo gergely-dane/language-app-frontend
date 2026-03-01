@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useTranslationsSuspense } from "@/features/vocabulary/api/get-translations";
+import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
@@ -51,7 +51,7 @@ export const VocabularyTable = <TValue,>({
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const { data: words } = useTranslationsSuspense({
+  const { data: words } = useTranslations({
     pageNumber: filters.pageNumber,
     search: filters.search,
     sourceLanguageId: filters.languageFilter?.sourceLanguageId,

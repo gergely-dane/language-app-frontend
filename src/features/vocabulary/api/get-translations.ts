@@ -14,15 +14,13 @@ interface GetTranslationsQuery {
   translationLanguageId?: number;
 }
 
-export const useTranslationsSuspense = (params: GetTranslationsQuery) =>
+export const useTranslations = (params: GetTranslationsQuery) =>
   useQuery({
     queryKey: ["translations", params],
     queryFn: async () => {
       const { data } = await apiClient.get<PaginatedResponse<Translation>>(
         "/translations",
-        {
-          params,
-        },
+        { params },
       );
       return data;
     },

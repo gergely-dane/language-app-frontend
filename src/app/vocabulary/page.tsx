@@ -1,23 +1,27 @@
 "use client";
 
 import { IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
-import { columns } from "@/features/vocabulary/components/columns";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
+import { useColumns } from "@/features/vocabulary/hooks/use-columns";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useI18n } from "@/hooks/use-i18n";
 import { type LanguagePair } from "@/interfaces/language-pair.interface";
+import { type Translation } from "@/interfaces/translation.interface";
 
 const Vocabulary = () => {
   const t = useI18n();
 
-  const [addWordDialogOpen, setAddWordDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingTranslation, setEditingTranslation] = useState<
+    Translation | undefined
+  >(undefined);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchFilter, setSearchFilter] = useState("");
   const [languageFilter, setLanguageFilter] = useState<LanguagePair | null>(
@@ -25,6 +29,18 @@ const Vocabulary = () => {
   );
 
   const debouncedSearchFilter = useDebounce(searchFilter);
+  const onEdit = useCallback((translation: Translation) => {
+    setEditingTranslation(translation);
+    setIsEditDialogOpen(true);
+  }, []);
+  const columns = useColumns(onEdit);
+
+  const onWordDialogOpenChange = (open: boolean) => {
+    if (!open) {
+      setEditingTranslation(undefined);
+    }
+    setIsEditDialogOpen(open);
+  };
 
   return (
     <div className="min-h-[calc(100vh-var(--navbar-height))] w-full">
@@ -50,17 +66,22 @@ const Vocabulary = () => {
 
         <Button
           className="ml-auto flex-1 lg:flex-none"
-          onClick={() => setAddWordDialogOpen(true)}
+          onClick={() => {
+            setEditingTranslation(undefined);
+            setIsEditDialogOpen(true);
+          }}
         >
           <IconPlus className="h-4 w-4" />
           <p className="hidden lg:block">{t("vocabulary.addWord")}</p>
         </Button>
-
-        <AddEditWordDialog
-          open={addWordDialogOpen}
-          onOpenChange={(open) => setAddWordDialogOpen(open)}
-        />
       </div>
+
+      <AddEditWordDialog
+        open={isEditDialogOpen}
+        onOpenChange={onWordDialogOpenChange}
+        editMode={!!editingTranslation}
+        currentTranslation={editingTranslation}
+      />
 
       <VocabularyTable
         columns={columns}
