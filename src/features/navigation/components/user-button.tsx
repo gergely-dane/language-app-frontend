@@ -1,3 +1,6 @@
+import { IconLogout, IconUser } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,8 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/utils/cn";
-import { IconLogout, IconUser } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 
 type UserButtonProps = {
   className?: string;
@@ -22,7 +23,11 @@ export const UserButton = ({ className }: UserButtonProps) => {
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
-    logout().then(() => router.push("/login"));
+    logout()
+      .then(() => router.push("/login"))
+      .catch((err) => {
+        console.error("Logout failed:", err);
+      });
   };
 
   return (
@@ -38,7 +43,7 @@ export const UserButton = ({ className }: UserButtonProps) => {
       </PopoverTrigger>
 
       <PopoverContent
-        className="flex flex-col w-fit gap-2 pt-2 pb-1 px-1"
+        className="flex w-fit flex-col gap-2 px-1 pt-2 pb-1"
         align="end"
       >
         <div className="flex items-center gap-1 px-2.5">

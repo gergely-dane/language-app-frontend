@@ -1,16 +1,17 @@
 "use client";
 
-import { supabaseClient } from "@/lib/supabase-client";
-import { AuthTokenResponsePassword, User } from "@supabase/auth-js";
+import type { AuthTokenResponsePassword, User } from "@supabase/auth-js";
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
+
+import { supabaseClient } from "@/lib/supabase-client";
 
 type AuthContextProps = {
   isAuthenticated: boolean;
@@ -29,20 +30,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    supabaseClient.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setIsAuthenticated(!!user);
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setIsAuthenticated(!!session?.user);
     });
 
-    const { data: subscription } = supabaseClient.auth.onAuthStateChange(
-      (_, session) => {
-        setUser(session?.user ?? null);
-        setIsAuthenticated(!!session?.user);
-      },
-    );
-
     return () => {
-      subscription.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 

@@ -1,11 +1,13 @@
+import "./globals.css";
+
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+
 import { AppProvider } from "@/app/provider";
 import { BaseContentLayout } from "@/components/layouts/base-content-layout";
 import { BottomNavbar } from "@/features/navigation/components/bottom-navbar";
 import { Navbar } from "@/features/navigation/components/navbar";
-import getI18nConfig from "@/i18n/request";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { getI18nConfig } from "@/i18n/request";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,6 @@ const RootLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  // @ts-ignore
   const i18nConfig = await getI18nConfig();
 
   return (

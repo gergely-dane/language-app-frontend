@@ -1,5 +1,8 @@
+import { useCallback, useMemo } from "react";
+import { Pie, PieChart } from "recharts";
+
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -7,11 +10,9 @@ import {
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { StatisticsContainer } from "@/features/user/components/statistics-container";
 import { useI18n } from "@/hooks/use-i18n";
-import { UserStatistics } from "@/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/interfaces/user-statistics.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
-import { useCallback, useMemo } from "react";
-import { Pie, PieChart } from "recharts";
 
 type LanguagesPieChartProps = {
   stats: UserStatistics;

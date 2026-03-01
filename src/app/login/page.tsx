@@ -1,13 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useAlert } from "@/context/alert-context";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
 
 const LoginPage = () => {
   const t = useI18n();
@@ -18,25 +19,34 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, password).then((data) => {
-      if (!data?.data?.user) {
+    login(email, password)
+      .then((data) => {
+        if (!data?.data?.user) {
+          showAlert({
+            title: t("auth.errorLoggingIn"),
+            message: t("auth.incorrectEmailOrPassword"),
+            variant: "destructive",
+          });
+          return;
+        }
+
+        router.push("/");
+      })
+      .catch((err) => {
+        console.error("Login failed:", err);
         showAlert({
           title: t("auth.errorLoggingIn"),
-          message: t("auth.incorrectEmailOrPassword"),
+          message: (err?.message as string) || undefined,
           variant: "destructive",
         });
-        return;
-      }
-
-      router.push("/");
-    });
+      });
   };
 
   return (
-    <div className="flex flex-col gap-2 p-4 w-full -mt-[var(--navbar-height)] lg:w-90 lg:p-0">
-      <p className="text-2xl font-semibold mx-auto">{t("auth.login")}</p>
+    <div className="-mt-[var(--navbar-height)] flex w-full flex-col gap-2 p-4 lg:w-90 lg:p-0">
+      <p className="mx-auto text-2xl font-semibold">{t("auth.login")}</p>
 
       <Separator className="my-2" />
 

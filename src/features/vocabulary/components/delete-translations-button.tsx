@@ -1,8 +1,9 @@
+import { IconTrash } from "@tabler/icons-react";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
-import { IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
 
 interface DeleteTranslationsButtonProps {
   selectedRowCount: number;

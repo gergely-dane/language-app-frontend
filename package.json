@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "tsc --noEmit && next build",
     "start": "next start",
+    "typecheck": "tsc --noEmit",
     "lint": "next lint",
     "prepare": "husky"
   },
@@ -47,16 +48,22 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
+    "@eslint/js": "9.39.3",
     "@next/eslint-plugin-next": "15.5.6",
     "@supabase/auth-js": "2.81.1",
     "@tailwindcss/postcss": "4.1.14",
     "@types/node": "24.8.1",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@typescript-eslint/eslint-plugin": "8.56.1",
+    "@typescript-eslint/parser": "8.56.1",
     "@xeonlink/prettier-plugin-organize-attributes": "1.1.0",
     "eslint": "9.38.0",
     "eslint-config-next": "15.5.6",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react-hooks": "7.0.0",
+    "eslint-plugin-simple-import-sort": "12.1.1",
+    "eslint-plugin-unused-imports": "4.4.1",
     "husky": "9.1.7",
     "lint-staged": "16.2.4",
     "prettier": "3.6.2",
@@ -67,7 +74,11 @@
     "typescript": "5.9.3"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,html,css,json}": [
+    "**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{html,css,json,md}": [
       "prettier --write"
     ]
   }

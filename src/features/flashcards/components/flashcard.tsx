@@ -1,12 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Kbd } from "@/components/ui/kbd";
-import { useLanguages } from "@/features/languages/api/get-languages";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { Flashcard } from "@/interfaces/flashcard.interface";
-import { LANGUAGES } from "@/lib/constants";
-import { cn } from "@/utils/cn";
 import {
   IconArrowRight,
   IconChevronDown,
@@ -14,6 +7,14 @@ import {
   IconLanguage,
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { useLanguages } from "@/features/languages/api/get-languages";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { type Flashcard } from "@/interfaces/flashcard.interface";
+import { LANGUAGES } from "@/lib/constants";
+import { cn } from "@/utils/cn";
 
 type FlashcardSideProps = {
   flashcard: Flashcard;
@@ -56,25 +57,25 @@ const FlashcardSide = ({
   return (
     <div
       className={cn(
-        "absolute inset-0 bg-primary p-2 text-primary-foreground ring-foreground ring-2 rounded-xl ease-in [backface-visibility:hidden]",
+        "bg-primary text-primary-foreground ring-foreground absolute inset-0 rounded-xl p-2 ring-2 ease-in [backface-visibility:hidden]",
         !isFront && "[transform:rotateY(180deg)]",
         ((isFront && !flipped) || (!isFront && flipped)) &&
           swipeAnimationDirection &&
-          "transition-opacity duration-700 opacity-0",
+          "opacity-0 transition-opacity duration-700",
         swipeAnimationDirection && flipped && isFront && "opacity-0",
       )}
     >
       <div
         className={cn(
-          "relative flex flex-col items-center justify-center h-full",
+          "relative flex h-full flex-col items-center justify-center",
           flipped && isFront && !flipAnimationPlaying && "opacity-0",
         )}
       >
         <div className="relative text-center">
-          <div className="flex w-fit mx-auto">
+          <div className="mx-auto flex w-fit">
             <IconLanguage className="my-auto mr-1" />
 
-            <p className="text-sm my-auto">
+            <p className="my-auto text-sm">
               {
                 LANGUAGES[
                   isFront
@@ -88,7 +89,7 @@ const FlashcardSide = ({
 
             <IconArrowRight className="mx-2 mt-1.5" size={16} />
 
-            <p className="text-sm my-auto">
+            <p className="my-auto text-sm">
               {
                 LANGUAGES[
                   isFront
@@ -101,7 +102,7 @@ const FlashcardSide = ({
             </p>
           </div>
 
-          <p className="text-xl line-clamp-3" ref={textRef}>
+          <p className="line-clamp-3 text-xl" ref={textRef}>
             {isFront
               ? flashcard.translation.word.word
               : flashcard.translation.translations
@@ -111,7 +112,7 @@ const FlashcardSide = ({
 
           {!isFront && (isClamped || !!flashcard.translation.definition) && (
             <Button
-              className="absolute left-1/2 top-full -translate-x-1/2 hover:bg-primary!"
+              className="hover:bg-primary! absolute top-full left-1/2 -translate-x-1/2"
               variant="ghost"
               size="icon"
               onClick={handleEditButtonClicked}
@@ -121,14 +122,14 @@ const FlashcardSide = ({
           )}
         </div>
 
-        <div className="absolute bottom-0 w-full text-center text-primary-muted-foreground text-sm">
+        <div className="text-primary-muted-foreground absolute bottom-0 w-full text-center text-sm">
           {!isMobile ? (
             <div>
               Click on the card or press{" "}
               <Kbd className="bg-muted/50">Space</Kbd> to see the translation(s)
             </div>
           ) : (
-            <div className="flex justify-center items-center gap-1.5">
+            <div className="flex items-center justify-center gap-1.5">
               Tap on the card to see the translation(s) <IconHandClick />
             </div>
           )}
@@ -140,7 +141,7 @@ const FlashcardSide = ({
 
 type FlashcardCompProps = {
   className?: string;
-  ref?: React.RefObject<HTMLDivElement | null>;
+  ref?: React.Ref<HTMLDivElement | null>;
   flashcard: Flashcard;
   flipped: boolean;
   animationPlaying: boolean;
@@ -175,10 +176,10 @@ export const FlashcardComp = ({
     <div className={cn("select-none", className)} ref={ref}>
       <div
         className={cn(
-          "relative rounded-xl h-60 hover:scale-102 cursor-pointer transition-all ease-out [transform-style:preserve-3d]",
+          "relative h-60 cursor-pointer rounded-xl transition-all ease-out [transform-style:preserve-3d] hover:scale-102",
           animationPlaying && "duration-1000",
           swipeAnimationDirection &&
-            "duration-700 hover:scale-100 translate-y-4",
+            "translate-y-4 duration-700 hover:scale-100",
           swipeAnimationDirection === "left" && "-translate-x-96 -rotate-5",
           swipeAnimationDirection === "right" && "translate-x-96 rotate-5",
           flipped && "[transform:rotateY(180deg)]",
@@ -205,9 +206,9 @@ export const FlashcardComp = ({
         />
       </div>
 
-      <div className="-mt-57 h-60 w-full rounded-xl ring-2 bg-primary"></div>
+      <div className="bg-primary -mt-57 h-60 w-full rounded-xl ring-2" />
 
-      <div className="-mt-61.5 h-60 w-full rounded-xl ring-2 bg-primary"></div>
+      <div className="bg-primary -mt-61.5 h-60 w-full rounded-xl ring-2" />
     </div>
   );
 };

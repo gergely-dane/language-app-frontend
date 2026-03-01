@@ -1,7 +1,8 @@
+import { IconX } from "@tabler/icons-react";
+import { type MouseEvent } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/utils/cn";
-import { IconX } from "@tabler/icons-react";
-import { MouseEvent } from "react";
 
 type MultiSelectChipListProps = {
   className?: string;
@@ -33,13 +34,13 @@ export const MultiSelectChipList = ({
       {items.map((item, index) => (
         <Badge
           key={index}
-          className="py-1 cursor-pointer"
+          className="cursor-pointer py-1"
           onClick={() => onItemClick?.(item)}
         >
           <p>{item}</p>
           <div
             onClick={(e) => handleRemoveItem(e, item)}
-            className="flex cursor-pointer h-full w-3.5"
+            className="flex h-full w-3.5 cursor-pointer"
           >
             <IconX className="m-auto" size={12} />
           </div>

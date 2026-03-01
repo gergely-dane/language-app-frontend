@@ -1,10 +1,11 @@
+import React, { type ReactNode } from "react";
+
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
-import React, { ReactNode } from "react";
 
 type InputWithKbdProps = {
   kbd: ReactNode;

@@ -1,6 +1,7 @@
-import { Language } from "@/interfaces/language.interface";
-import { apiClient } from "@/lib/api-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { type Language } from "@/interfaces/language.interface";
+import { apiClient } from "@/lib/api-client";
 
 export const useLanguages = () => {
   const queryResult = useSuspenseQuery({

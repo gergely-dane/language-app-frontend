@@ -1,17 +1,18 @@
 "use client";
 
-import { AlertProvider } from "@/context/alert-context";
-import { AuthProvider } from "@/context/auth-context";
-import { queryClient } from "@/lib/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextIntlClientProvider } from "next-intl";
-import { RequestConfig } from "next-intl/dist/types/server/react-server/getRequestConfig";
 import { ThemeProvider } from "next-themes";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
+
+import { AlertProvider } from "@/context/alert-context";
+import { AuthProvider } from "@/context/auth-context";
+import { type I18nConfig } from "@/interfaces/i18n-config.interface";
+import { queryClient } from "@/lib/query-client";
 
 type AppProviderProps = {
-  i18nConfig: RequestConfig;
+  i18nConfig: I18nConfig;
   children: ReactNode;
 };
 

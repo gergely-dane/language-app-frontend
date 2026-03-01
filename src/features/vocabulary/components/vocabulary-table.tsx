@@ -1,6 +1,17 @@
 "use client";
 
 import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFacetedUniqueValues,
+  type RowSelectionState,
+  type SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useState } from "react";
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -12,18 +23,8 @@ import { useTranslationsSuspense } from "@/features/vocabulary/api/get-translati
 import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { LanguagePair } from "@/interfaces/language-pair.interface";
-import { Translation } from "@/interfaces/translation.interface";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFacetedUniqueValues,
-  RowSelectionState,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
-import { useState } from "react";
+import { type LanguagePair } from "@/interfaces/language-pair.interface";
+import { type Translation } from "@/interfaces/translation.interface";
 
 type VocabularyTableFilters = {
   search: string;

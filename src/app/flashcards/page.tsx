@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  IconCheck,
+  IconHandMove,
+  IconPencil,
+  IconX,
+} from "@tabler/icons-react";
+import { useCallback, useEffect, useState } from "react";
+
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
@@ -10,15 +18,8 @@ import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { Flashcard } from "@/interfaces/flashcard.interface";
-import { LanguagePair } from "@/interfaces/language-pair.interface";
-import {
-  IconCheck,
-  IconHandMove,
-  IconPencil,
-  IconX,
-} from "@tabler/icons-react";
-import { useCallback, useEffect, useState } from "react";
+import { type Flashcard } from "@/interfaces/flashcard.interface";
+import { type LanguagePair } from "@/interfaces/language-pair.interface";
 
 const Flashcards = () => {
   const t = useI18n();
@@ -66,11 +67,11 @@ const Flashcards = () => {
         break;
       case "ArrowLeft":
         e.preventDefault();
-        sendResponse(false);
+        void sendResponse(false);
         break;
       case "ArrowRight":
         e.preventDefault();
-        sendResponse(true);
+        void sendResponse(true);
         break;
     }
   };
@@ -83,7 +84,7 @@ const Flashcards = () => {
   };
 
   const sendResponse = useCallback(
-    async (knewIt: boolean) => {
+    (knewIt: boolean) => {
       if (
         cardRefreshing ||
         animationPlaying ||
@@ -92,14 +93,14 @@ const Flashcards = () => {
       )
         return;
 
-      respondToFlashcard.mutateAsync({
+      void respondToFlashcard.mutateAsync({
         flashcardId: flashcard.id,
         response: { knewIt },
       });
 
       setSwipeAnimationDirection(knewIt ? "right" : "left");
       setAreButtonsDisabled(true);
-      setTimeout(async () => {
+      setTimeout(() => {
         refreshCard();
         setAreButtonsDisabled(false);
       }, 680);
@@ -122,7 +123,6 @@ const Flashcards = () => {
   };
 
   useEffect(() => {
-    console.log(!isLoading && flashcard && cardRefreshing);
     if (!isLoading && flashcard && cardRefreshing) {
       setCurrentFlashcard(flashcard);
       setCardRefreshing(false);
@@ -150,7 +150,7 @@ const Flashcards = () => {
   if (!flashcard) return <div>No flashcards found</div>;
 
   return (
-    <div className="flex flex-col mx-auto gap-4 w-full lg:w-120">
+    <div className="mx-auto flex w-full flex-col gap-4 lg:w-120">
       <div className="flex">
         <LanguagePairSelector
           className="w-fit"
@@ -183,14 +183,14 @@ const Flashcards = () => {
         />
       )}
 
-      <div className="grid grid-cols-2 gap-10 px-10 mx-auto mt-4">
+      <div className="mx-auto mt-4 grid grid-cols-2 gap-10 px-10">
         <Button
           className="flex"
           variant="outline"
           onClick={() => sendResponse(false)}
           disabled={areButtonsDisabled}
         >
-          <IconX className="mt-0.5 text-destructive" />
+          <IconX className="text-destructive mt-0.5" />
 
           <p>
             {!wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow")}
@@ -203,7 +203,7 @@ const Flashcards = () => {
           onClick={() => sendResponse(true)}
           disabled={areButtonsDisabled}
         >
-          <IconCheck className="mt-0.5 text-success" />
+          <IconCheck className="text-success mt-0.5" />
 
           <p>{!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}</p>
         </Button>
@@ -215,7 +215,7 @@ const Flashcards = () => {
           swiping on the card to respond.
         </p>
       ) : (
-        <p className="flex gap-1.5 text-muted-foreground/70 mx-auto text-center text-sm">
+        <p className="text-muted-foreground/70 mx-auto flex gap-1.5 text-center text-sm">
           Hint: try swiping on the card to respond <IconHandMove />
         </p>
       )}

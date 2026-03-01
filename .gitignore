@@ -320,3 +320,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/webstorm,yarn,node,react,nextjs,vercel
 
 .idea
+.vscode

@@ -1,9 +1,11 @@
-import { supabaseClient } from "@/lib/supabase-client";
-import axios, {
+import type {
   AxiosInstance,
   AxiosRequestConfig,
   RawAxiosRequestHeaders,
 } from "axios";
+import axios from "axios";
+
+import { supabaseClient } from "@/lib/supabase-client";
 
 class ApiClient {
   private static instance: ApiClient;

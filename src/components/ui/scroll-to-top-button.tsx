@@ -1,5 +1,6 @@
 import { IconChevronsUp } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+
 import { Button } from "./button";
 
 export const ScrollToTopButton = () => {
@@ -27,7 +28,7 @@ export const ScrollToTopButton = () => {
       {showButton && (
         <Button
           variant="outline"
-          className="fixed bottom-18 right-3 w-10 h-10 rounded-full z-50 opacity-70"
+          className="fixed right-3 bottom-18 z-50 h-10 w-10 rounded-full opacity-70"
           onClick={scrollToTop}
         >
           <IconChevronsUp />

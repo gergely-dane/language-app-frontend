@@ -1,14 +1,15 @@
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { StatisticsContainer } from "@/features/user/components/statistics-container";
 import { useI18n } from "@/hooks/use-i18n";
-import { UserStatistics } from "@/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/interfaces/user-statistics.interface";
 import { cn } from "@/utils/cn";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 type FlashcardsAddedLineChartProps = {
   stats: UserStatistics;
@@ -52,25 +53,24 @@ export const FlashcardsAddedBarChart = ({
             axisLine={false}
             tickMargin={8}
             minTickGap={28}
-            tickFormatter={(value) => {
-              const date = new Date(value);
-              return date.toLocaleDateString("en-US", {
+            tickFormatter={(value: Date) =>
+              new Date(value).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
-              });
-            }}
+              })
+            }
           />
 
           <ChartTooltip
             content={
               <ChartTooltipContent
-                labelFormatter={(value) => {
-                  return new Date(value).toLocaleDateString("en-US", {
+                labelFormatter={(value: Date) =>
+                  new Date(value).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
-                  });
-                }}
+                  })
+                }
               />
             }
           />

@@ -1,12 +1,13 @@
-import { buttonVariants, type Button } from "@/components/ui/button";
-import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/utils/cn";
 import {
   IconChevronLeft,
   IconChevronRight,
   IconDots,
 } from "@tabler/icons-react";
 import * as React from "react";
+
+import { type Button, buttonVariants } from "@/components/ui/button";
+import { useI18n } from "@/hooks/use-i18n";
+import { cn } from "@/utils/cn";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (

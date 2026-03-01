@@ -1,5 +1,8 @@
 "use client";
 
+import { IconArrowNarrowRight, IconSelector } from "@tabler/icons-react";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -18,11 +21,9 @@ import { useLanguagePairsSuspense } from "@/features/languages/api/get-language-
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { LanguagePair } from "@/interfaces/language-pair.interface";
+import { type LanguagePair } from "@/interfaces/language-pair.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
-import { IconArrowNarrowRight, IconSelector } from "@tabler/icons-react";
-import { useState } from "react";
 
 type LanguagePairSelectorProps = {
   className?: string;
@@ -121,14 +122,13 @@ export const LanguagePairSelector = ({
 
                   return (
                     <CommandItem
+                      key={i}
                       className={cn(
                         "gap-1",
                         isSelected
                           ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
                           : "",
                       )}
-                      key={i}
-                      value={pair}
                       onSelect={() => {
                         onChange(pair);
                         setOpen(false);

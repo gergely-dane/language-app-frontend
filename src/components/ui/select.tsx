@@ -1,14 +1,14 @@
 "use client";
 
 import * as SelectPrimitive from "@radix-ui/react-select";
-import * as React from "react";
-
-import { cn } from "@/utils/cn";
 import {
   IconCheck,
   IconChevronDown,
   IconChevronsUp,
 } from "@tabler/icons-react";
+import * as React from "react";
+
+import { cn } from "@/utils/cn";
 
 const Select = ({
   ...props

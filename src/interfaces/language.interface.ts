@@ -1,4 +1,4 @@
-import { BaseEntity } from "@/interfaces/base-entity.interface";
+import { type BaseEntity } from "@/interfaces/base-entity.interface";
 
 export interface Language extends BaseEntity {
   englishName: string;

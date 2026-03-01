@@ -1,3 +1,6 @@
+import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
+import { type KeyboardEvent, useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
@@ -23,10 +26,8 @@ import { useUpdateTranslation } from "@/features/vocabulary/api/update-translati
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { Language } from "@/interfaces/language.interface";
-import { Translation } from "@/interfaces/translation.interface";
-import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { type Language } from "@/interfaces/language.interface";
+import { type Translation } from "@/interfaces/translation.interface";
 
 type AddEditFormProps = {
   editMode?: boolean;
@@ -131,10 +132,7 @@ const AddEditForm = ({
 
     const payload = {
       word,
-      translations: [
-        ...translationList,
-        ...(!!translation ? [translation] : []),
-      ],
+      translations: [...translationList, ...(translation ? [translation] : [])],
       sourceLanguageId,
       translationLanguageId,
       definition,
@@ -162,7 +160,7 @@ const AddEditForm = ({
     } catch (error: any) {
       showAlert({
         title:
-          error.response?.data?.message ||
+          (error.response?.data?.message as string) ||
           t("vocabulary.errorAddingTranslation"),
         variant: "destructive",
       });
@@ -180,7 +178,7 @@ const AddEditForm = ({
     } catch (error: any) {
       showAlert({
         title:
-          error.response?.data?.message ||
+          (error.response?.data?.message as string) ||
           t("vocabulary.errorDeletingTranslation"),
         variant: "destructive",
       });
@@ -200,7 +198,7 @@ const AddEditForm = ({
     } catch (error: any) {
       showAlert({
         title:
-          error.response?.data?.message ||
+          (error.response?.data?.message as string) ||
           t("vocabulary.anErrorOccurredWhileImportingTranslations"),
         variant: "destructive",
       });
@@ -215,7 +213,7 @@ const AddEditForm = ({
   return (
     <Tabs className="mt-4" defaultValue="addWord">
       {!editMode && (
-        <TabsList className="w-full mb-1">
+        <TabsList className="mb-1 w-full">
           <TabsTrigger value="addWord">{t("vocabulary.addWord")}</TabsTrigger>
           <TabsTrigger value="import">{t("vocabulary.import")}</TabsTrigger>
         </TabsList>
@@ -318,11 +316,11 @@ const AddEditForm = ({
           </div>
         )}
 
-        <div className="relative flex mt-4">
+        <div className="relative mt-4 flex">
           <Button
             className="mx-auto w-30"
             variant="outline"
-            onClick={handleSave}
+            onClick={() => void handleSave()}
             disabled={
               createTranslation.isPending ||
               !word ||
@@ -337,7 +335,7 @@ const AddEditForm = ({
               className="absolute"
               variant="outline"
               size="icon"
-              onClick={handleDelete}
+              onClick={() => void handleDelete()}
             >
               <IconTrash className="text-destructive" />
             </Button>
@@ -349,9 +347,9 @@ const AddEditForm = ({
         <ImportDropzone file={file} onChange={setFile} />
 
         <Button
-          className="mt-4 mx-auto w-30"
+          className="mx-auto mt-4 w-30"
           variant="outline"
-          onClick={handleImport}
+          onClick={() => void handleImport()}
           disabled={!file}
         >
           {t("vocabulary.import")}

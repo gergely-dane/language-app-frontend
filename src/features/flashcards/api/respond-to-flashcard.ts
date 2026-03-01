@@ -1,5 +1,6 @@
-import { apiClient } from "@/lib/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { apiClient } from "@/lib/api-client";
 
 interface RespondToFlashcardRequest {
   flashcardId: number;
@@ -19,7 +20,7 @@ export const useRespondToFlashcard = () => {
       await apiClient.post(`/flashcards/${flashcardId}/respond`, response);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: ["flashcards"],
       });
     },

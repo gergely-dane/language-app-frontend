@@ -1,7 +1,8 @@
-import { apiClient } from "@/lib/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useDeleteTranslation = (id: number) => {
+import { apiClient } from "@/lib/api-client";
+
+export const useDeleteTranslation = (id?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -9,8 +10,8 @@ export const useDeleteTranslation = (id: number) => {
       await apiClient.delete(`/translations/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["translations"] });
-      queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+      void queryClient.invalidateQueries({ queryKey: ["translations"] });
+      void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
     },
   });
 };

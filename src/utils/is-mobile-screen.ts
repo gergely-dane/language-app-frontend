@@ -1,7 +1,9 @@
 "use server";
 
-import { MAX_MOBILE_WIDTH, MOBILE_AGENT_REGEX } from "@/lib/constants";
 import { headers } from "next/headers";
+
+import { MAX_MOBILE_WIDTH, MOBILE_AGENT_REGEX } from "@/lib/constants";
+
 export const isMobileScreen = async (): Promise<boolean> => {
   const h = await headers();
   const deviceWidth = h.get("sec-ch-viewport-width");

@@ -1,7 +1,12 @@
 import * as fs from "fs";
 import { getRequestConfig } from "next-intl/server";
 
-export default getRequestConfig(async () => {
+import type {
+  I18nConfig,
+  I18nMessages,
+} from "@/interfaces/i18n-config.interface";
+
+const buildI18nConfig = async (): Promise<I18nConfig> => {
   const locale = "en";
   const namespaces = fs.readdirSync("src/i18n/messages");
 
@@ -9,7 +14,11 @@ export default getRequestConfig(async () => {
     const messages = (
       await Promise.all(
         namespaces.map(async (ns) => ({
-          [ns]: (await import(`./messages/${ns}/${locale}.json`)).default,
+          [ns]: (
+            (await import(`./messages/${ns}/${locale}.json`)) as {
+              default: I18nMessages;
+            }
+          ).default,
         })),
       )
     ).reduce((acc, curr) => ({ ...acc, ...curr }), {});
@@ -22,4 +31,8 @@ export default getRequestConfig(async () => {
     console.error("Error loading messages:", error);
     throw error;
   }
-});
+};
+
+export const getI18nConfig = async () => buildI18nConfig();
+
+export default getRequestConfig(buildI18nConfig);

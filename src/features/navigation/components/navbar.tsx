@@ -1,5 +1,11 @@
 "use client";
 
+import { IconCards, IconHome, IconList } from "@tabler/icons-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useCallback } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   ThemeToggleButton,
@@ -8,11 +14,7 @@ import {
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { IconCards, IconHome, IconList } from "@tabler/icons-react";
-import { useTheme } from "next-themes";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useCallback } from "react";
+
 import { UserButton } from "./user-button";
 
 export const Navbar = () => {
@@ -30,9 +32,9 @@ export const Navbar = () => {
   }, [startTransition, theme, setTheme]);
 
   return (
-    <nav className="sticky top-0 flex w-full items-center justify-center gap-6 border-b h-[var(--navbar-height)] shadow-sm z-10 bg-background/80">
-      <div className="flex items-center px-2.5 w-full lg:w-3/5 gap-6">
-        <Link className="text-xl text-primary font-semibold" href="/">
+    <nav className="bg-background/80 sticky top-0 z-10 flex h-[var(--navbar-height)] w-full items-center justify-center gap-6 border-b shadow-sm">
+      <div className="flex w-full items-center gap-6 px-2.5 lg:w-3/5">
+        <Link className="text-primary text-xl font-semibold" href="/">
           LanguageApp
         </Link>
 
@@ -67,7 +69,7 @@ export const Navbar = () => {
           </>
         )}
 
-        <div className="flex gap-2.5 ml-auto">
+        <div className="ml-auto flex gap-2.5">
           <ThemeToggleButton
             theme={theme as "light" | "dark"}
             onClick={handleThemeToggle}

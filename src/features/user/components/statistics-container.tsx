@@ -21,7 +21,7 @@ export const StatisticsContainer = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 justify-center p-4 bg-card rounded-lg border shadow-sm lg:flex-row",
+        "bg-card flex flex-col justify-center gap-4 rounded-lg border p-4 shadow-sm lg:flex-row",
         className,
       )}
     >
@@ -29,9 +29,9 @@ export const StatisticsContainer = ({
         <p className="text-sm font-semibold text-nowrap">{title}</p>
         {total && (
           <div className="flex items-center gap-2 lg:flex-col lg:items-start lg:gap-0">
-            <p className="text-3xl font-bold mt-1">{total}</p>
+            <p className="mt-1 text-3xl font-bold">{total}</p>
             {days && (
-              <p className="text-sm text-muted-foreground text-nowrap">
+              <p className="text-muted-foreground text-sm text-nowrap">
                 {t("statistics.inTheLastXDays", { days })}
               </p>
             )}

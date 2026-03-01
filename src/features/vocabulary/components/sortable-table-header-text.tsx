@@ -3,7 +3,7 @@ import {
   IconArrowNarrowUp,
   IconArrowsSort,
 } from "@tabler/icons-react";
-import { Column } from "@tanstack/table-core";
+import { type Column } from "@tanstack/table-core";
 import React from "react";
 
 type SortableTableHeaderTextProps = {
@@ -19,7 +19,7 @@ export const SortableTableHeaderText = ({
 }: SortableTableHeaderTextProps) => {
   return (
     <div
-      className="flex gap-1 cursor-pointer hover:underline"
+      className="flex cursor-pointer gap-1 hover:underline"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       <p>{headerName}</p>

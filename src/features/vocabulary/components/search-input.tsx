@@ -1,7 +1,8 @@
+import { IconX } from "@tabler/icons-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils/cn";
-import { IconX } from "@tabler/icons-react";
 
 interface SearchInputProps {
   className?: string;
@@ -25,7 +26,7 @@ export const SearchInput = ({
 
     {value && (
       <Button
-        className="absolute right-0 top-0 opacity-50 hover:opacity-100"
+        className="absolute top-0 right-0 opacity-50 hover:opacity-100"
         variant={null}
         size="icon"
         onClick={() => onChange("")}

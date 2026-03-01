@@ -1,10 +1,10 @@
 "use client";
 
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { IconCheck } from "@tabler/icons-react";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";
-import { IconCheck } from "@tabler/icons-react";
 
 const Checkbox = ({
   className,
@@ -23,7 +23,7 @@ const Checkbox = ({
         className="flex items-center justify-center text-current transition-none"
         data-slot="checkbox-indicator"
       >
-        <IconCheck className="size-3.5 -mt-4" />
+        <IconCheck className="-mt-4 size-3.5" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

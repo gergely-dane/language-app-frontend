@@ -1,5 +1,5 @@
 import { useI18n } from "@/hooks/use-i18n";
-import { UserStatistics } from "@/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/interfaces/user-statistics.interface";
 import { cn } from "@/utils/cn";
 
 type StreakCardProps = {
@@ -14,7 +14,7 @@ export const StreakCard = ({ stats, className }: StreakCardProps) => {
   return (
     <div
       className={cn(
-        "flex flex-col justify-center gap-2 p-8 bg-card rounded-lg border shadow-sm",
+        "bg-card flex flex-col justify-center gap-2 rounded-lg border p-8 shadow-sm",
         className,
       )}
     >
@@ -27,7 +27,7 @@ export const StreakCard = ({ stats, className }: StreakCardProps) => {
 
         <p className="font-semibold">
           {days > 1 ? (
-            <span className="text-3xl text-primary">
+            <span className="text-primary text-3xl">
               {t("statistics.streakCard.streak", { days })}
             </span>
           ) : (
@@ -39,7 +39,7 @@ export const StreakCard = ({ stats, className }: StreakCardProps) => {
       </div>
 
       {days > 1 && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           {t("statistics.streakCard.keepGoing")}
         </p>
       )}

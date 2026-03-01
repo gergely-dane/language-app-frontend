@@ -1,10 +1,11 @@
 "use client";
 
-import { cn } from "@/utils/cn";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, type Transition } from "motion/react";
 import * as React from "react";
+
+import { cn } from "@/utils/cn";
 
 const buttonVariants = cva(
   "inline-flex relative overflow-hidden items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer",
@@ -64,35 +65,38 @@ export type ButtonProps = React.ComponentProps<"button"> &
     transition?: Transition;
   };
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      asChild = false,
-      ripple = true,
-      rippleClassName,
-      scale = 10,
-      transition = { duration: 0.55, ease: "easeOut" },
-      onClick,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
-    const Comp = asChild ? Slot : motion.button;
-    const buttonRef = React.useRef<HTMLButtonElement>(null);
-    React.useImperativeHandle(ref, () => buttonRef.current!);
+const Button = ({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ripple = true,
+  rippleClassName,
+  scale = 10,
+  transition = { duration: 0.55, ease: "easeOut" },
+  onClick,
+  children,
+  ref,
+  ...props
+}: ButtonProps) => {
+  const Comp: React.ElementType = asChild ? Slot : motion.button;
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const [ripples, setRipples] = React.useState<Ripple[]>([]);
 
-    const [ripples, setRipples] = React.useState<Ripple[]>([]);
+  const setButtonRef = (node: HTMLButtonElement | null) => {
+    buttonRef.current = node;
 
-    const createRipple = React.useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (!ripple) return;
-        const button = buttonRef.current;
-        if (!button) return;
+    if (typeof ref === "function") {
+      ref(node);
+    } else if (ref) {
+      ref.current = node;
+    }
+  };
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (ripple) {
+      const button = buttonRef.current;
+      if (button) {
         const rect = button.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
@@ -108,49 +112,39 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         setTimeout(() => {
           setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
         }, 600);
-      },
-      [ripple],
-    );
+      }
+    }
 
-    const handleClick = React.useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        createRipple(event);
-        onClick?.(event);
-      },
-      [createRipple, onClick],
-    );
+    onClick?.(event);
+  };
 
-    return (
-      <Comp
-        ref={buttonRef}
-        data-slot="button"
-        onClick={handleClick}
-        whileTap={{ scale: 0.97 }}
-        className={cn(buttonVariants({ variant, size, className }))}
-        {...props}
-      >
-        {children}
+  return (
+    <Comp
+      ref={setButtonRef}
+      data-slot="button"
+      onClick={handleClick}
+      whileTap={{ scale: 0.97 }}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    >
+      {children}
 
-        {/* Ripple Elements */}
-        {ripple &&
-          ripples.map((r) => (
-            <motion.span
-              key={r.id}
-              initial={{ scale: 0, opacity: 0.5 }}
-              animate={{ scale, opacity: 0 }}
-              transition={transition}
-              className={cn(rippleVariants({ variant }), rippleClassName)}
-              style={{
-                top: r.y - 10,
-                left: r.x - 10,
-              }}
-            />
-          ))}
-      </Comp>
-    );
-  },
-);
-
-Button.displayName = "Button";
+      {ripple &&
+        ripples.map((r) => (
+          <motion.span
+            key={r.id}
+            initial={{ scale: 0, opacity: 0.5 }}
+            animate={{ scale, opacity: 0 }}
+            transition={transition}
+            className={cn(rippleVariants({ variant }), rippleClassName)}
+            style={{
+              top: r.y - 10,
+              left: r.x - 10,
+            }}
+          />
+        ))}
+    </Comp>
+  );
+};
 
 export { Button, buttonVariants };

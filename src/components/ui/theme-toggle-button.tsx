@@ -1,9 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/utils/cn";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useCallback } from "react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/utils/cn";
 
 type AnimationVariant = "circle" | "circle-blur" | "gif" | "polygon";
 
@@ -207,7 +208,7 @@ export const ThemeToggleButton = ({
 export const useThemeTransition = () => {
   const startTransition = useCallback((updateFn: () => void) => {
     if ("startViewTransition" in document) {
-      (document as any).startViewTransition(updateFn);
+      document.startViewTransition(updateFn);
     } else {
       updateFn();
     }

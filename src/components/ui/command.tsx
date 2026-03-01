@@ -1,5 +1,6 @@
 "use client";
 
+import { IconSearch } from "@tabler/icons-react";
 import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";
 
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
-import { IconSearch } from "@tabler/icons-react";
 
 const Command = ({
   className,

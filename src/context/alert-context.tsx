@@ -1,16 +1,17 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useContext,
   useMemo,
   useRef,
   useState,
 } from "react";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type AlertState = {
   title: string;
@@ -66,7 +67,7 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
       {children}
       {alert.open && (
         <div
-          className={`fixed bottom-6 right-6 z-50 transition-opacity duration-700 ${
+          className={`fixed right-6 bottom-6 z-50 transition-opacity duration-700 ${
             visible ? "opacity-100" : "opacity-0"
           }`}
         >

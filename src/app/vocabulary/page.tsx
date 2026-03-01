@@ -1,5 +1,8 @@
 "use client";
 
+import { IconPlus } from "@tabler/icons-react";
+import { useState } from "react";
+
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
@@ -9,9 +12,7 @@ import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useI18n } from "@/hooks/use-i18n";
-import { LanguagePair } from "@/interfaces/language-pair.interface";
-import { IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
+import { type LanguagePair } from "@/interfaces/language-pair.interface";
 
 const Vocabulary = () => {
   const t = useI18n();
@@ -26,16 +27,16 @@ const Vocabulary = () => {
   const debouncedSearchFilter = useDebounce(searchFilter);
 
   return (
-    <div className="w-full min-h-[calc(100vh-var(--navbar-height))]">
+    <div className="min-h-[calc(100vh-var(--navbar-height))] w-full">
       <p className="text-3xl font-bold">{t("vocabulary.title")}</p>
 
       <p className="text-muted-foreground font-semibold">
         {t("vocabulary.anOverviewOfAllYourWords")}
       </p>
 
-      <div className="flex gap-1.5 flex-wrap mt-6 mb-1.5">
+      <div className="mt-6 mb-1.5 flex flex-wrap gap-1.5">
         <SearchInput
-          className="flex-7 lg:flex-none lg:w-70"
+          className="flex-7 lg:w-70 lg:flex-none"
           value={searchFilter}
           onChange={(value) => setSearchFilter(value)}
           placeholder={t("vocabulary.searchForAWord")}

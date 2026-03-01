@@ -7,7 +7,7 @@ import { cn } from "@/utils/cn";
 const Table = ({ className, ...props }: React.ComponentProps<"table">) => {
   return (
     <div
-      className="border-muted relative w-full overflow-x-auto rounded-lg shadow-md border-1"
+      className="border-muted relative w-full overflow-x-auto rounded-lg border-1 shadow-md"
       data-slot="table-container"
     >
       <table
@@ -35,7 +35,7 @@ const TableHeader = ({
 const TableBody = ({ className, ...props }: React.ComponentProps<"tbody">) => {
   return (
     <tbody
-      className={cn("[&_tr:last-child]:border-0 bg-card", className)}
+      className={cn("bg-card [&_tr:last-child]:border-0", className)}
       data-slot="table-body"
       {...props}
     />
@@ -75,7 +75,7 @@ const TableHead = ({ className, ...props }: React.ComponentProps<"th">) => {
   return (
     <th
       className={cn(
-        "text-foreground h-10 border-b-1 bg-primary text-primary-foreground px-2 text-left align-middle font-bold whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "text-foreground bg-primary text-primary-foreground h-10 border-b-1 px-2 text-left align-middle font-bold whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className,
       )}
       data-slot="table-head"

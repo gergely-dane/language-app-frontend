@@ -1,5 +1,8 @@
 "use client";
 
+import { IconCheck, IconSelector } from "@tabler/icons-react";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -16,11 +19,9 @@ import {
 } from "@/components/ui/popover";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { Language } from "@/interfaces/language.interface";
+import { type Language } from "@/interfaces/language.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
-import { IconCheck, IconSelector } from "@tabler/icons-react";
-import { useState } from "react";
 
 type LanguageSelectorProps = {
   value: Language | null;
@@ -76,7 +77,7 @@ export const LanguageSelector = ({
                 {languages.map((language, i) => (
                   <CommandItem
                     key={i}
-                    value={language.id}
+                    value={language.id.toString()}
                     onSelect={() => {
                       onChange(language);
                       setOpen(false);

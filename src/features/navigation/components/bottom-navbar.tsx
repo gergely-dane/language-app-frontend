@@ -1,13 +1,14 @@
 "use client";
 
+import { IconCards, IconHome, IconList } from "@tabler/icons-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
-import { IconCards, IconHome, IconList } from "@tabler/icons-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export const BottomNavbar = () => {
   const t = useI18n();
@@ -20,11 +21,11 @@ export const BottomNavbar = () => {
   }
 
   return (
-    <nav className="fixed bottom-0 flex flex-cols gap-4 py-1.5 px-2 bg-accent w-full shadow-sm h-16 z-10 text-muted-foreground border-t">
+    <nav className="flex-cols bg-accent text-muted-foreground fixed bottom-0 z-10 flex h-16 w-full gap-4 border-t px-2 py-1.5 shadow-sm">
       <Link href="/" className="flex-1">
         <Button
           variant="ghost"
-          className={cn("flex flex-col w-full h-full gap-0.5 bg-accent", {
+          className={cn("bg-accent flex h-full w-full flex-col gap-0.5", {
             "bg-primary text-white": pathname === "/",
           })}
         >
@@ -36,7 +37,7 @@ export const BottomNavbar = () => {
       <Link href="/vocabulary" className="flex-1">
         <Button
           variant="ghost"
-          className={cn("flex flex-col w-full h-full gap-0.5 bg-accent", {
+          className={cn("bg-accent flex h-full w-full flex-col gap-0.5", {
             "bg-primary text-white": pathname === "/vocabulary",
           })}
         >
@@ -48,7 +49,7 @@ export const BottomNavbar = () => {
       <Link href="/flashcards" className="flex-1">
         <Button
           variant="ghost"
-          className={cn("flex flex-col w-full h-full gap-0.5 bg-accent", {
+          className={cn("bg-accent flex h-full w-full flex-col gap-0.5", {
             "bg-primary text-white": pathname === "/flashcards",
           })}
         >
