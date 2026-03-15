@@ -38,12 +38,13 @@ export const MultiSelectChipList = ({
           onClick={() => onItemClick?.(item)}
         >
           <p>{item}</p>
-          <div
+
+          <button
             onClick={(e) => handleRemoveItem(e, item)}
             className="flex h-full w-3.5 cursor-pointer"
           >
             <IconX className="m-auto" size={12} />
-          </div>
+          </button>
         </Badge>
       ))}
     </div>
