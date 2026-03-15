@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { type Translation } from "@/interfaces/translation.interface";
+import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { apiClient } from "@/lib/api-client";
 
 export interface UpdateTranslationRequest {

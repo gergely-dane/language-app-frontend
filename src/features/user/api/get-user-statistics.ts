@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { type UserStatistics } from "@/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/features/user/interfaces/user-statistics.interface";
 import { apiClient } from "@/lib/api-client";
 
 interface GetUserStatisticsParams {

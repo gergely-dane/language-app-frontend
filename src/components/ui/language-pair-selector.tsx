@@ -19,10 +19,9 @@ import {
 } from "@/components/ui/popover";
 import { useLanguagePairsSuspense } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type LanguagePair } from "@/interfaces/language-pair.interface";
-import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
 
 type LanguagePairSelectorProps = {
@@ -43,7 +42,7 @@ export const LanguagePairSelector = ({
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
-  const { getLanguage } = useLanguages();
+  const { getLanguageString, getLanguageCode } = useLanguages();
   let { data: languagePairs } = useLanguagePairsSuspense();
   if (!languagePairs) {
     languagePairs = [];
@@ -63,18 +62,16 @@ export const LanguagePairSelector = ({
               <>
                 <p>
                   {!isMobile
-                    ? LANGUAGES[getLanguage(value.sourceLanguageId)?.code || ""]
-                    : getLanguage(value.sourceLanguageId)?.code?.toUpperCase()}
+                    ? getLanguageString(value.sourceLanguageId)
+                    : getLanguageCode(value.sourceLanguageId).toUpperCase()}
                 </p>
                 <IconArrowNarrowRight />
                 <p>
                   {!isMobile
-                    ? LANGUAGES[
-                        getLanguage(value.translationLanguageId)?.code || ""
-                      ]
-                    : getLanguage(
+                    ? getLanguageString(value.translationLanguageId)
+                    : getLanguageCode(
                         value.translationLanguageId,
-                      )?.code?.toUpperCase()}
+                      ).toUpperCase()}
                 </p>
               </>
             ) : (
@@ -134,13 +131,7 @@ export const LanguagePairSelector = ({
                         setOpen(false);
                       }}
                     >
-                      <p>
-                        {
-                          LANGUAGES[
-                            getLanguage(pair.sourceLanguageId)?.code || ""
-                          ]
-                        }
-                      </p>
+                      <p>{getLanguageString(pair.sourceLanguageId)}</p>
 
                       <IconArrowNarrowRight
                         className={cn(
@@ -151,13 +142,7 @@ export const LanguagePairSelector = ({
                         )}
                       />
 
-                      <p>
-                        {
-                          LANGUAGES[
-                            getLanguage(pair.translationLanguageId)?.code || ""
-                          ]
-                        }
-                      </p>
+                      <p>{getLanguageString(pair.translationLanguageId)}</p>
                     </CommandItem>
                   );
                 })}

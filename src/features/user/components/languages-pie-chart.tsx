@@ -9,9 +9,8 @@ import {
 } from "@/components/ui/chart";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { StatisticsContainer } from "@/features/user/components/statistics-container";
+import { type UserStatistics } from "@/features/user/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { type UserStatistics } from "@/interfaces/user-statistics.interface";
-import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
 
 type LanguagesPieChartProps = {
@@ -34,7 +33,7 @@ export const LanguagesPieChart = ({
   className,
 }: LanguagesPieChartProps) => {
   const t = useI18n();
-  const { getLanguage } = useLanguages();
+  const { getLanguageString } = useLanguages();
 
   const languagePairs = useMemo(
     () => stats?.total?.languagePairs ?? [],
@@ -56,19 +55,19 @@ export const LanguagesPieChart = ({
       const share = totalTranslations
         ? translationsCount / totalTranslations
         : 0;
-      const source = getLanguage(lp.sourceLanguageId)?.code ?? "";
-      const target = getLanguage(lp.translationLanguageId)?.code ?? "";
+      const source = getLanguageString(lp.sourceLanguageId);
+      const target = getLanguageString(lp.translationLanguageId);
 
       (share >= MIN_SLICE_SHARE ? visible : other).push({
         key: `${lp.sourceLanguageId}-${lp.translationLanguageId}`,
-        label: `${LANGUAGES[source]} -> ${LANGUAGES[target]}`,
+        label: `${source} -> ${target}`,
         translationsCount,
         share,
       });
     }
 
     return { visible, other };
-  }, [getLanguage, languagePairs, totalTranslations]);
+  }, [getLanguageString, languagePairs, totalTranslations]);
 
   const finalItems = useMemo(
     () => (other.length === 1 ? [...visible, other[0]] : visible),

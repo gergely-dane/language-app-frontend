@@ -17,9 +17,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { type Language } from "@/features/languages/interfaces/language.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type Language } from "@/interfaces/language.interface";
 import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
 

@@ -1,9 +1,6 @@
 import { type BaseEntity } from "@/interfaces/base-entity.interface";
 
-export interface Word {
-  id: number;
-  word: string;
-}
+import type { Word } from "./word.interface";
 
 export interface Translation extends BaseEntity {
   id: number;

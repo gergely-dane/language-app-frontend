@@ -6,10 +6,11 @@ import type { CellContext } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import type { Translation, Word } from "@/interfaces/translation.interface";
-import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
+
+import type { Word } from "../interfaces/word.interface";
 
 export const TranslationsCell = ({
   getValue,
@@ -21,7 +22,7 @@ export const LanguageCell = ({
   getValue,
 }: CellContext<Translation, unknown>) => {
   const isMobile = useIsMobileScreen();
-  const { getLanguage } = useLanguages();
+  const { getLanguageString, getLanguageCode } = useLanguages();
 
   const [sourceLanguageId, translationLanguageId] = (
     getValue() as string
@@ -29,18 +30,18 @@ export const LanguageCell = ({
 
   return (
     <div className="flex gap-0.5">
-      <p className={isMobile ? "uppercase" : ""}>
+      <p>
         {!isMobile
-          ? LANGUAGES[getLanguage(Number(sourceLanguageId))?.code || ""]
-          : getLanguage(Number(sourceLanguageId))?.code}
+          ? getLanguageString(Number(sourceLanguageId))
+          : getLanguageCode(Number(sourceLanguageId)).toUpperCase()}
       </p>
 
       <IconArrowNarrowRight className="mt-0.5 shrink-0" size={16} />
 
-      <p className={isMobile ? "uppercase" : ""}>
+      <p>
         {!isMobile
-          ? LANGUAGES[getLanguage(Number(translationLanguageId))?.code || ""]
-          : getLanguage(Number(translationLanguageId))?.code}
+          ? getLanguageString(Number(translationLanguageId))
+          : getLanguageCode(Number(translationLanguageId)).toUpperCase()}
       </p>
     </div>
   );

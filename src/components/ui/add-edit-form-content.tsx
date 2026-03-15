@@ -17,15 +17,15 @@ import {
 } from "@/components/ui/tooltip";
 import { useAlert } from "@/context/alert-context";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import { type Language } from "@/features/languages/interfaces/language.interface";
 import { useCreateTranslation } from "@/features/vocabulary/api/create-translation";
 import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
 import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadsheet";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
+import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type Language } from "@/interfaces/language.interface";
-import { type Translation } from "@/interfaces/translation.interface";
 
 type AddEditFormContentProps = {
   editMode?: boolean;

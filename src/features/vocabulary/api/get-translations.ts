@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { type PaginatedResponse } from "@/interfaces/paginated-response.interface";
-import { type Translation } from "@/interfaces/translation.interface";
 import { apiClient } from "@/lib/api-client";
 
 interface GetTranslationsQuery {

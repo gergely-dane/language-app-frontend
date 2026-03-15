@@ -7,8 +7,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { StatisticsContainer } from "@/features/user/components/statistics-container";
+import { type UserStatistics } from "@/features/user/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { type UserStatistics } from "@/interfaces/user-statistics.interface";
 import { cn } from "@/utils/cn";
 
 type FlashcardsAddedLineChartProps = {

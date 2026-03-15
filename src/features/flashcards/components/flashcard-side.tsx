@@ -13,9 +13,9 @@ import { Kbd } from "@/components/ui/kbd";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type Flashcard } from "@/interfaces/flashcard.interface";
-import { LANGUAGES } from "@/lib/constants";
 import { cn } from "@/utils/cn";
+
+import type { Flashcard } from "../interfaces/flashcard.interface";
 
 type FlashcardSideProps = {
   flashcard: Flashcard;
@@ -34,7 +34,7 @@ export const FlashcardSide = ({
 }: FlashcardSideProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
-  const { getLanguage } = useLanguages();
+  const { getLanguageString } = useLanguages();
 
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const [isClamped, setIsClamped] = useState(false);
@@ -70,29 +70,19 @@ export const FlashcardSide = ({
             <IconLanguage className="my-auto mr-1" />
 
             <p className="my-auto text-sm">
-              {
-                LANGUAGES[
-                  isFront
-                    ? getLanguage(flashcard.translation.sourceLanguageId)
-                        ?.code || ""
-                    : getLanguage(flashcard.translation.translationLanguageId)
-                        ?.code || ""
-                ]
-              }
+              {isFront
+                ? getLanguageString(flashcard.translation.sourceLanguageId)
+                : getLanguageString(
+                    flashcard.translation.translationLanguageId,
+                  )}
             </p>
 
             <IconArrowRight className="mx-2 mt-1.5" size={16} />
 
             <p className="my-auto text-sm">
-              {
-                LANGUAGES[
-                  isFront
-                    ? getLanguage(flashcard.translation.translationLanguageId)
-                        ?.code || ""
-                    : getLanguage(flashcard.translation.sourceLanguageId)
-                        ?.code || ""
-                ]
-              }
+              {isFront
+                ? getLanguageString(flashcard.translation.translationLanguageId)
+                : getLanguageString(flashcard.translation.sourceLanguageId)}
             </p>
           </div>
 

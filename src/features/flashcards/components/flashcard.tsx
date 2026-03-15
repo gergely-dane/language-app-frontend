@@ -9,10 +9,10 @@ import React, {
 } from "react";
 
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
-import { type Flashcard } from "@/interfaces/flashcard.interface";
 import { cn } from "@/utils/cn";
 
 import { FLIP_TRANSITION, SWIPE_TRANSITION } from "../constants";
+import type { Flashcard } from "../interfaces/flashcard.interface";
 import { getCardAnimation } from "../utils";
 import { FlashcardSide } from "./flashcard-side";
 

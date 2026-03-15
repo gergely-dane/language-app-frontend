@@ -21,9 +21,9 @@ import {
   FlashcardComp,
   type FlashcardCompHandle,
 } from "@/features/flashcards/components/flashcard";
+import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type LanguagePair } from "@/interfaces/language-pair.interface";
 
 const Flashcards = () => {
   const t = useI18n();

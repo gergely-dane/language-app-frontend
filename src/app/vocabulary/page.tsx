@@ -7,13 +7,13 @@ import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
+import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
+import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useI18n } from "@/hooks/use-i18n";
-import { type LanguagePair } from "@/interfaces/language-pair.interface";
-import { type Translation } from "@/interfaces/translation.interface";
 
 const Vocabulary = () => {
   const t = useI18n();

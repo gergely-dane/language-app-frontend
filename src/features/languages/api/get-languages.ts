@@ -1,7 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { type Language } from "@/interfaces/language.interface";
+import { type Language } from "@/features/languages/interfaces/language.interface";
 import { apiClient } from "@/lib/api-client";
+import { LANGUAGES } from "@/lib/constants";
 
 export const useLanguages = () => {
   const queryResult = useSuspenseQuery({
@@ -13,8 +14,13 @@ export const useLanguages = () => {
     staleTime: 24 * 60 * 60 * 1000,
   });
 
-  const getLanguage = (id?: number) =>
-    queryResult?.data?.find((lang) => lang.id === id);
+  const getLanguageCode = (id?: number) =>
+    queryResult?.data?.find((lang) => lang.id === id)?.code || "";
 
-  return { ...queryResult, getLanguage };
+  const getLanguageString = (id?: number) => {
+    const code = getLanguageCode(id);
+    return code ? LANGUAGES[code] || "" : "";
+  };
+
+  return { ...queryResult, getLanguageString, getLanguageCode };
 };

@@ -19,12 +19,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
+import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type LanguagePair } from "@/interfaces/language-pair.interface";
-import { type Translation } from "@/interfaces/translation.interface";
 
 type VocabularyTableFilters = {
   search: string;

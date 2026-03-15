@@ -4,9 +4,9 @@ import { IconStar } from "@tabler/icons-react";
 import type { HeaderContext } from "@tanstack/react-table";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import type { Translation } from "@/interfaces/translation.interface";
 
 import { SortableTableHeaderText } from "./sortable-table-header-text";
 

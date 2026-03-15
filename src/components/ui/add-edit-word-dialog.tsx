@@ -1,9 +1,9 @@
 import { AddEditFormContent } from "@/components/ui/add-edit-form-content";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type Translation } from "@/interfaces/translation.interface";
 
 type AddEditWordDialogProps = {
   open: boolean;
