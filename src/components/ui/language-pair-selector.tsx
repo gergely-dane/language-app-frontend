@@ -113,6 +113,13 @@ export const LanguagePairSelector = ({
                 </CommandItem>
 
                 {languagePairs.map((pair, i) => {
+                  const sourceLanguage = getLanguageString(
+                    pair.sourceLanguageId,
+                  );
+                  const translationLanguage = getLanguageString(
+                    pair.translationLanguageId,
+                  );
+
                   const isSelected =
                     value?.sourceLanguageId === pair.sourceLanguageId &&
                     value?.translationLanguageId === pair.translationLanguageId;
@@ -120,6 +127,7 @@ export const LanguagePairSelector = ({
                   return (
                     <CommandItem
                       key={i}
+                      value={`${sourceLanguage} ${translationLanguage}`}
                       className={cn(
                         "gap-1",
                         isSelected
@@ -131,7 +139,7 @@ export const LanguagePairSelector = ({
                         setOpen(false);
                       }}
                     >
-                      <p>{getLanguageString(pair.sourceLanguageId)}</p>
+                      <p>{sourceLanguage}</p>
 
                       <IconArrowNarrowRight
                         className={cn(
@@ -142,7 +150,7 @@ export const LanguagePairSelector = ({
                         )}
                       />
 
-                      <p>{getLanguageString(pair.translationLanguageId)}</p>
+                      <p>{translationLanguage}</p>
                     </CommandItem>
                   );
                 })}

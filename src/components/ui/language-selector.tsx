@@ -58,9 +58,11 @@ export const LanguageSelector = ({
                   : value.code.toUpperCase()
                 : t("vocabulary.selectLanguage")}
             </p>
+
             <IconSelector className="opacity-50" />
           </Button>
         </PopoverTrigger>
+
         <PopoverContent className="w-fit p-0">
           <Command>
             <CommandInput
@@ -71,13 +73,14 @@ export const LanguageSelector = ({
                   : t("general.search")
               }
             />
+
             <CommandList>
               <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
               <CommandGroup>
                 {languages.map((language, i) => (
                   <CommandItem
                     key={i}
-                    value={language.id.toString()}
+                    value={LANGUAGES[language.code]}
                     onSelect={() => {
                       onChange(language);
                       setOpen(false);
@@ -88,6 +91,7 @@ export const LanguageSelector = ({
                         value?.id === language.id ? "opacity-100" : "opacity-0"
                       }
                     />
+
                     <p>{LANGUAGES[language.code]}</p>
                   </CommandItem>
                 ))}
