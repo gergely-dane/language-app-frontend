@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {};
 
 async function initCloudflareDev() {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV === "development") {
     try {
       const { initOpenNextCloudflareForDev } = await import(
         "@opennextjs/cloudflare"
