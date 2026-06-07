@@ -14,7 +14,7 @@ export const StreakCard = ({ stats, className }: StreakCardProps) => {
   return (
     <div
       className={cn(
-        "bg-card flex flex-col justify-center gap-2 rounded-lg border p-8 shadow-sm",
+        "bg-card flex flex-col justify-center gap-2 rounded-lg border p-4 shadow-sm",
         className,
       )}
     >

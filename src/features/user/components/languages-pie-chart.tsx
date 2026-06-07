@@ -122,10 +122,13 @@ export const LanguagesPieChart = ({
 
   return (
     <StatisticsContainer
-      className={cn("w-full", className)}
+      className={cn("relative h-[400px] lg:h-auto lg:flex-col", className)}
       title={t("statistics.yourLanguages")}
     >
-      <ChartContainer className="aspect-square w-full" config={chartConfig}>
+      <ChartContainer
+        className="absolute inset-0 aspect-square size-full min-w-0 lg:mt-4"
+        config={chartConfig}
+      >
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 

@@ -33,7 +33,7 @@ export const Navbar = () => {
 
   return (
     <nav className="bg-background/80 sticky top-0 z-10 flex h-[var(--navbar-height)] w-full items-center justify-center gap-6 border-b shadow-sm">
-      <div className="flex w-full items-center gap-6 px-2.5 lg:w-3/5">
+      <div className="flex w-full items-center gap-6 px-2.5 xl:max-w-9/10 2xl:max-w-5/7">
         <Link className="text-primary text-xl font-semibold" href="/">
           LanguageApp
         </Link>

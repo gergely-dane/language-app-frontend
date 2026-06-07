@@ -21,14 +21,14 @@ export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
   if (!isMobile) {
     return (
       <div className={cn("flex flex-col gap-5", className)}>
-        <div className="flex h-60 gap-5">
-          <StreakCard className="w-2/9" stats={stats} />
-          <TranslationsAddedBarChart className="w-7/9" stats={stats} />
+        <div className="flex h-70 gap-5">
+          <StreakCard className="w-2/7" stats={stats} />
+          <TranslationsAddedBarChart className="w-5/7" stats={stats} />
         </div>
 
-        <div className="flex h-80 w-full gap-5">
-          <LanguagesPieChart className="w-2/5" stats={stats} />
-          <FlashcardsAddedBarChart className="w-full" stats={stats} />
+        <div className="flex h-70 w-full gap-5">
+          <LanguagesPieChart className="w-2/7" stats={stats} />
+          <FlashcardsAddedBarChart className="w-5/7" stats={stats} />
         </div>
       </div>
     );

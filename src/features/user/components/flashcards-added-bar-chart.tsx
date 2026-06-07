@@ -9,7 +9,6 @@ import {
 import { StatisticsContainer } from "@/features/user/components/statistics-container";
 import { type UserStatistics } from "@/features/user/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/utils/cn";
 
 type FlashcardsAddedLineChartProps = {
   stats: UserStatistics;
@@ -38,7 +37,7 @@ export const FlashcardsAddedBarChart = ({
 
   return (
     <StatisticsContainer
-      className={cn("w-full", className)}
+      className={className}
       title={t("statistics.flashcardsCompleted")}
       total={totalFlashcards}
       days={stats.daily.length}

@@ -9,7 +9,6 @@ import {
 import { StatisticsContainer } from "@/features/user/components/statistics-container";
 import { type UserStatistics } from "@/features/user/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/utils/cn";
 
 type TranslationsAddedChartProps = {
   stats: UserStatistics;
@@ -35,7 +34,7 @@ export const TranslationsAddedBarChart = ({
 
   return (
     <StatisticsContainer
-      className={cn("w-full", className)}
+      className={className}
       title={t("statistics.newWords")}
       total={totalWords}
       days={stats.daily.length}
