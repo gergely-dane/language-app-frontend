@@ -3,6 +3,8 @@
 import { StatisticsDisplay } from "@/features/user/components/statistics-display";
 import { useI18n } from "@/hooks/use-i18n";
 
+export const dynamic = "force-dynamic";
+
 const Home = () => {
   const t = useI18n();
 

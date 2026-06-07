@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useLanguagePairsSuspense } from "@/features/languages/api/get-language-pairs";
+import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useI18n } from "@/hooks/use-i18n";
@@ -43,7 +43,7 @@ export const LanguagePairSelector = ({
   const isMobile = useIsMobileScreen();
 
   const { getLanguageString, getLanguageCode } = useLanguages();
-  let { data: languagePairs } = useLanguagePairsSuspense();
+  let { data: languagePairs } = useLanguagePairs();
   if (!languagePairs) {
     languagePairs = [];
   }
