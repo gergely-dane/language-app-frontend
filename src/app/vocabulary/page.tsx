@@ -36,9 +36,6 @@ const Vocabulary = () => {
   const columns = useColumns(onEdit);
 
   const onWordDialogOpenChange = (open: boolean) => {
-    if (!open) {
-      setEditingTranslation(undefined);
-    }
     setIsEditDialogOpen(open);
   };
 

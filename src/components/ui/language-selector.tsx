@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useLanguages } from "@/features/languages/api/get-languages";
 import { type Language } from "@/features/languages/interfaces/language.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
@@ -26,18 +27,17 @@ import { cn } from "@/utils/cn";
 type LanguageSelectorProps = {
   value: Language | null;
   onChange: (value: Language | null) => void;
-  languages: Language[];
   className?: string;
 };
 
 export const LanguageSelector = ({
   value,
   onChange,
-  languages,
   className,
 }: LanguageSelectorProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
+  const { data: languages } = useLanguages();
 
   const [open, setOpen] = useState(false);
 
@@ -77,7 +77,7 @@ export const LanguageSelector = ({
             <CommandList>
               <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
               <CommandGroup>
-                {languages.map((language, i) => (
+                {(languages || []).map((language, i) => (
                   <CommandItem
                     key={i}
                     value={LANGUAGES[language.code]}

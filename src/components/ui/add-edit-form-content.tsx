@@ -1,5 +1,5 @@
 import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
-import { type KeyboardEvent, useEffect, useState } from "react";
+import { type KeyboardEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +56,6 @@ export const AddEditFormContent = ({
   const [translationLanguageId, setTranslationLanguageId] = useState<
     number | null
   >(currentTranslation?.translationLanguageId || null);
-
   const [word, setWord] = useState<string>(
     currentTranslation?.word?.word || "",
   );
@@ -77,10 +76,16 @@ export const AddEditFormContent = ({
   const [knowledgeLevel, setKnowledgeLevel] = useState<number[]>([0]);
   const [file, setFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    setSourceLanguageId(languages?.[0]?.id ?? null);
-    setTranslationLanguageId(languages?.[1]?.id ?? null);
-  }, [languages]);
+  const effectiveSourceLanguageId =
+    sourceLanguageId ?? languages?.[0]?.id ?? null;
+  const effectiveTranslationLanguageId =
+    translationLanguageId ?? languages?.[1]?.id ?? languages?.[0]?.id ?? null;
+
+  const sourceLanguage =
+    languages?.find((lang) => lang.id === effectiveSourceLanguageId) || null;
+  const translationLanguage =
+    languages?.find((lang) => lang.id === effectiveTranslationLanguageId) ||
+    null;
 
   const resetForm = () => {
     setWord("");
@@ -94,16 +99,18 @@ export const AddEditFormContent = ({
     value: Language | null,
     translation: boolean,
   ) => {
+    const selectedId = value?.id ?? null;
+
     if (translation) {
-      if (value === sourceLanguageId) {
-        setSourceLanguageId(translationLanguageId);
+      if (selectedId === effectiveSourceLanguageId) {
+        setSourceLanguageId(effectiveTranslationLanguageId);
       }
-      setTranslationLanguageId(value?.id || null);
+      setTranslationLanguageId(selectedId);
     } else {
-      if (value === translationLanguageId) {
-        setTranslationLanguageId(sourceLanguageId);
+      if (selectedId === effectiveTranslationLanguageId) {
+        setTranslationLanguageId(effectiveSourceLanguageId);
       }
-      setSourceLanguageId(value?.id || null);
+      setSourceLanguageId(selectedId);
     }
   };
 
@@ -122,8 +129,8 @@ export const AddEditFormContent = ({
     if (
       !word ||
       (!translation && !translationList.length) ||
-      !sourceLanguageId ||
-      !translationLanguageId
+      !effectiveSourceLanguageId ||
+      !effectiveTranslationLanguageId
     ) {
       return;
     }
@@ -131,8 +138,8 @@ export const AddEditFormContent = ({
     const payload = {
       word,
       translations: [...translationList, ...(translation ? [translation] : [])],
-      sourceLanguageId,
-      translationLanguageId,
+      sourceLanguageId: effectiveSourceLanguageId,
+      translationLanguageId: effectiveTranslationLanguageId,
       definition,
     };
 
@@ -229,11 +236,8 @@ export const AddEditFormContent = ({
 
             <LanguageSelector
               className="w-14 lg:w-32"
-              value={
-                languages?.find((lang) => lang.id === sourceLanguageId) || null
-              }
+              value={sourceLanguage}
               onChange={(value) => handleLanguageChange(value, false)}
-              languages={languages || []}
             />
           </div>
 
@@ -253,13 +257,8 @@ export const AddEditFormContent = ({
 
               <LanguageSelector
                 className="w-14 lg:w-32"
-                value={
-                  languages?.find(
-                    (lang) => lang.id === translationLanguageId,
-                  ) || null
-                }
+                value={translationLanguage}
                 onChange={(value) => handleLanguageChange(value, true)}
-                languages={languages || []}
               />
             </div>
 
