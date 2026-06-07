@@ -1,7 +1,7 @@
 "use client";
 
 import { IconMoon, IconSun } from "@tabler/icons-react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/cn";
@@ -34,6 +34,18 @@ export const ThemeToggleButton = ({
   className,
   onClick,
 }: ThemeToggleButtonProps) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setMounted(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  const currentTheme = mounted ? theme : "light";
+
   const handleClick = useCallback(() => {
     // Inject animation styles for this specific transition
     const styleId = `theme-transition-${Date.now()}`;
@@ -192,13 +204,15 @@ export const ThemeToggleButton = ({
         className,
       )}
     >
-      {theme === "light" ? (
+      {currentTheme === "light" ? (
         <IconSun className="scale-130" />
       ) : (
         <IconMoon className="scale-130" />
       )}
       {showLabel && (
-        <span className="text-sm">{theme === "light" ? "Light" : "Dark"}</span>
+        <span className="text-sm">
+          {currentTheme === "light" ? "Light" : "Dark"}
+        </span>
       )}
     </Button>
   );
