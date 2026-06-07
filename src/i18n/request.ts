@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import { getRequestConfig } from "next-intl/server";
 
 import type {
@@ -8,7 +7,13 @@ import type {
 
 const buildI18nConfig = async (): Promise<I18nConfig> => {
   const locale = "en";
-  const namespaces = fs.readdirSync("src/i18n/messages");
+  const namespaces = [
+    "auth",
+    "flashcards",
+    "general",
+    "statistics",
+    "vocabulary",
+  ];
 
   try {
     const messages = (
