@@ -27,6 +27,9 @@ import { type Translation } from "@/features/vocabulary/interfaces/translation.i
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
+const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";
+const LAST_ADDED_TRANSLATION_LANGUAGE_KEY = "lastAddedTranslationLanguageId";
+
 type AddEditFormContentProps = {
   editMode?: boolean;
   onClose: () => void;
@@ -51,11 +54,17 @@ export const AddEditFormContent = ({
   const importSpreadsheet = useImportSpreadsheet();
 
   const [sourceLanguageId, setSourceLanguageId] = useState<number | null>(
-    currentTranslation?.sourceLanguageId || null,
+    currentTranslation?.sourceLanguageId ||
+      Number(localStorage.getItem(LAST_ADDED_SOURCE_LANGUAGE_KEY)) ||
+      null,
   );
   const [translationLanguageId, setTranslationLanguageId] = useState<
     number | null
-  >(currentTranslation?.translationLanguageId || null);
+  >(
+    currentTranslation?.translationLanguageId ||
+      Number(localStorage.getItem(LAST_ADDED_TRANSLATION_LANGUAGE_KEY)) ||
+      null,
+  );
   const [word, setWord] = useState<string>(
     currentTranslation?.word?.word || "",
   );
@@ -157,6 +166,16 @@ export const AddEditFormContent = ({
       if (onSave) {
         onSave();
       }
+
+      window.localStorage.setItem(
+        LAST_ADDED_SOURCE_LANGUAGE_KEY,
+        String(effectiveSourceLanguageId),
+      );
+      window.localStorage.setItem(
+        LAST_ADDED_TRANSLATION_LANGUAGE_KEY,
+        String(effectiveTranslationLanguageId),
+      );
+
       onClose();
       showAlert({
         title: t("vocabulary.translationSavedSuccessfully"),
