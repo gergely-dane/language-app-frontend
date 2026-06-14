@@ -5,6 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { motion, type Transition } from "motion/react";
 import * as React from "react";
 
+import { DotsBounceIcon } from "@/components/icons/dots-bounce-icon";
 import { cn } from "@/utils/cn";
 
 const buttonVariants = cva(
@@ -63,6 +64,7 @@ export type ButtonProps = React.ComponentProps<"button"> &
     rippleClassName?: string;
     scale?: number;
     transition?: Transition;
+    isLoading?: boolean;
   };
 
 const Button = ({
@@ -77,6 +79,8 @@ const Button = ({
   onClick,
   children,
   ref,
+  isLoading = false,
+  disabled,
   ...props
 }: ButtonProps) => {
   const Comp: React.ElementType = asChild ? Slot : motion.button;
@@ -125,9 +129,10 @@ const Button = ({
       onClick={handleClick}
       whileTap={{ scale: 0.97 }}
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={disabled || isLoading}
       {...props}
     >
-      {children}
+      {isLoading ? <DotsBounceIcon /> : children}
 
       {ripple &&
         ripples.map((r) => (

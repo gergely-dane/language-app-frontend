@@ -367,8 +367,12 @@ export const AddEditFormContent = ({
             className="mx-auto w-30"
             variant="outline"
             onClick={() => void handleSave()}
+            isLoading={
+              createTranslation.isPending || updateTranslation.isPending
+            }
             disabled={
               createTranslation.isPending ||
+              updateTranslation.isPending ||
               !word ||
               (!translationList.length && !translation)
             }
