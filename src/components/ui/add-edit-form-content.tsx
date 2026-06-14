@@ -125,13 +125,38 @@ export const AddEditFormContent = ({
 
   const translationInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
-    e.preventDefault();
+    e.stopPropagation();
 
     const trimmed = translation.trim();
-    if (trimmed && !translationList.includes(trimmed)) {
+    if (!trimmed) {
+      formOnKeyDown(e);
+      return;
+    }
+
+    if (trimmed.includes(",")) {
+      const newTranslations = trimmed
+        .split(",")
+        .map((part) => part.trim())
+        .filter((part) => part && !translationList.includes(part));
+
+      if (newTranslations.length) {
+        setTranslationList([...translationList, ...newTranslations]);
+      }
+      setTranslation("");
+      return;
+    }
+
+    if (!translationList.includes(trimmed)) {
       setTranslationList([...translationList, trimmed]);
       setTranslation("");
+    } else {
+      setTranslation("");
     }
+  };
+
+  const formOnKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "Enter") return;
+    void handleSave();
   };
 
   const handleSave = async () => {
@@ -243,11 +268,16 @@ export const AddEditFormContent = ({
         </TabsList>
       )}
 
-      <TabsContent className="flex flex-col" value="addWord">
+      <TabsContent
+        className="flex flex-col"
+        value="addWord"
+        onKeyDown={formOnKeyDown}
+      >
         <div className="grid gap-3">
           <div className="flex items-center gap-2">
             <Input
               id="name"
+              autoFocus={true}
               placeholder={t("vocabulary.enterTheWord")}
               value={word}
               onChange={(e) => setWord(e.target.value)}
