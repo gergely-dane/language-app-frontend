@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useDetectSwipeOnElement<T extends HTMLElement>(
   minSwipeLength = 50,
+  onSwipe?: (direction: "left" | "right") => void,
 ) {
   const [el, setEl] = useState<T | null>(null);
   const startX = useRef<number | null>(null);
@@ -21,7 +22,9 @@ export function useDetectSwipeOnElement<T extends HTMLElement>(
         startX.current -
         ("changedTouches" in e ? e.changedTouches[0].clientX : e.clientX);
       if (Math.abs(diff) > minSwipeLength) {
-        setSwipeDirection(diff > 0 ? "left" : "right");
+        const direction = diff > 0 ? "left" : "right";
+        setSwipeDirection(direction);
+        onSwipe?.(direction);
         startX.current = null;
       } else {
         setSwipeDirection(null);
@@ -59,7 +62,7 @@ export function useDetectSwipeOnElement<T extends HTMLElement>(
       el.removeEventListener("mousemove", detectSwipe);
       el.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [el, minSwipeLength]);
+  }, [el, minSwipeLength, onSwipe]);
 
   const ref = useCallback((node: T | null) => {
     if (node) setEl(node);

@@ -48,9 +48,6 @@ export const FlashcardComp = React.forwardRef<
     },
     ref,
   ) => {
-    const { ref: swipeRef, swipeDirection } =
-      useDetectSwipeOnElement<HTMLDivElement>();
-
     const [flipped, setFlipped] = useState(false);
     const [isFlipAnimating, setIsFlipAnimating] = useState(false);
     const [swipeAnimationDirection, setSwipeAnimationDirection] = useState<
@@ -80,6 +77,16 @@ export const FlashcardComp = React.forwardRef<
       [disabled, onRespond],
     );
 
+    const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
+      50,
+      useCallback(
+        (direction: "left" | "right") => {
+          respond(direction === "left" ? false : true);
+        },
+        [respond],
+      ),
+    );
+
     const handleAnimationComplete = () => {
       onAnimationStateChange?.(false);
       if (swipeAnimationDirection) {
@@ -102,12 +109,6 @@ export const FlashcardComp = React.forwardRef<
     useEffect(() => {
       onAnimationStateChange?.(isFlipAnimating || !!swipeAnimationDirection);
     }, [isFlipAnimating, onAnimationStateChange, swipeAnimationDirection]);
-
-    useEffect(() => {
-      if (!swipeDirection) return;
-
-      respond(swipeDirection === "left" ? false : true);
-    }, [respond, swipeDirection]);
 
     useEffect(() => {
       const handleKeyDown = (e: globalThis.KeyboardEvent) => {
