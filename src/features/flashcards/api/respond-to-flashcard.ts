@@ -3,19 +3,19 @@ import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 
 interface RespondToFlashcardRequest {
-  flashcardId: number;
+  translationId: number;
   response: {
-    knewIt: boolean;
+    response: number;
   };
 }
 
 export const useRespondToFlashcard = () =>
   useMutation({
     mutationFn: async ({
-      flashcardId,
+      translationId,
       response,
     }: RespondToFlashcardRequest) => {
-      await apiClient.post(`/flashcards/${flashcardId}/respond`, response);
+      await apiClient.post(`/translations/${translationId}/review`, response);
     },
     onError: (error) => {
       console.error("Failed to respond to flashcard:", error);

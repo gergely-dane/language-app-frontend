@@ -11,14 +11,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
 
-import type { Flashcard } from "../interfaces/flashcard.interface";
-
 type FlashcardSideProps = {
-  flashcard: Flashcard;
+  translation: Translation;
   isFront: boolean;
   flipped: boolean;
   swipeAnimationPlaying?: boolean;
@@ -26,7 +25,7 @@ type FlashcardSideProps = {
 };
 
 export const FlashcardSide = ({
-  flashcard,
+  translation,
   isFront,
   flipped,
   swipeAnimationPlaying,
@@ -44,7 +43,7 @@ export const FlashcardSide = ({
     if (!el) return;
 
     setIsClamped(el.scrollHeight > el.clientHeight);
-  }, [flashcard]);
+  }, [translation]);
 
   const handleEditButtonClicked = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -71,30 +70,28 @@ export const FlashcardSide = ({
 
             <p className="my-auto text-sm">
               {isFront
-                ? getLanguageString(flashcard.translation.sourceLanguageId)
-                : getLanguageString(
-                    flashcard.translation.translationLanguageId,
-                  )}
+                ? getLanguageString(translation.sourceLanguageId)
+                : getLanguageString(translation.translationLanguageId)}
             </p>
 
             <IconArrowRight className="mx-2 mt-1.5" size={16} />
 
             <p className="my-auto text-sm">
               {isFront
-                ? getLanguageString(flashcard.translation.translationLanguageId)
-                : getLanguageString(flashcard.translation.sourceLanguageId)}
+                ? getLanguageString(translation.translationLanguageId)
+                : getLanguageString(translation.sourceLanguageId)}
             </p>
           </div>
 
           <p className="line-clamp-3 text-xl" ref={textRef}>
             {isFront
-              ? flashcard.translation.word.word
-              : flashcard.translation.translations
+              ? translation.word.word
+              : translation.translations
                   .map((translation) => translation.word)
                   .join(", ")}
           </p>
 
-          {!isFront && (isClamped || !!flashcard.translation.definition) && (
+          {!isFront && (isClamped || !!translation.definition) && (
             <Button
               className="hover:bg-primary! absolute top-full left-1/2 -translate-x-1/2"
               variant="ghost"

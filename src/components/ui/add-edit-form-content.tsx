@@ -350,7 +350,7 @@ export const AddEditFormContent = ({
                 value={knowledgeLevel}
                 onValueChange={setKnowledgeLevel}
                 min={0}
-                max={4}
+                max={3}
                 step={1}
               />
 

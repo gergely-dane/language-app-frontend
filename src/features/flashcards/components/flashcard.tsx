@@ -8,17 +8,17 @@ import React, {
   useState,
 } from "react";
 
+import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { cn } from "@/utils/cn";
 
 import { FLIP_TRANSITION, SWIPE_TRANSITION } from "../constants";
-import type { Flashcard } from "../interfaces/flashcard.interface";
 import { getCardAnimation } from "../utils";
 import { FlashcardSide } from "./flashcard-side";
 
 type FlashcardCompProps = {
   className?: string;
-  flashcard: Flashcard;
+  translation: Translation;
   disabled?: boolean;
   onAnimationStateChange?: (isAnimating: boolean) => void;
   onRespond?: (knewIt: boolean) => void;
@@ -39,7 +39,7 @@ export const FlashcardComp = React.forwardRef<
   (
     {
       className,
-      flashcard,
+      translation,
       disabled = false,
       onAnimationStateChange,
       onRespond,
@@ -165,7 +165,7 @@ export const FlashcardComp = React.forwardRef<
             onAnimationComplete={() => handleAnimationComplete()}
           >
             <FlashcardSide
-              flashcard={flashcard}
+              translation={translation}
               isFront={true}
               flipped={flipped}
               swipeAnimationPlaying={!!swipeAnimationDirection}
@@ -173,7 +173,7 @@ export const FlashcardComp = React.forwardRef<
             />
 
             <FlashcardSide
-              flashcard={flashcard}
+              translation={translation}
               isFront={false}
               flipped={flipped}
               swipeAnimationPlaying={!!swipeAnimationDirection}

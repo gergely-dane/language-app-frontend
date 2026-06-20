@@ -28,19 +28,19 @@ import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 const Flashcards = () => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
-  const flashcardRef = useRef<FlashcardCompHandle | null>(null);
+  const translationRef = useRef<FlashcardCompHandle | null>(null);
 
   const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
-  const [flashcardIndex, setFlashcardIndex] = useState(0);
+  const [translationIndex, setTranslationIndex] = useState(0);
   const [wasFlipped, setWasFlipped] = useState(false);
   const [isCardAnimating, setIsCardAnimating] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const {
-    data: flashcard,
+    data: translation,
     isLoading,
     error,
-  } = useFlashcard(languagePair, flashcardIndex);
+  } = useFlashcard(languagePair, translationIndex);
   const respondToFlashcard = useRespondToFlashcard();
 
   const areButtonsDisabled =
@@ -48,40 +48,40 @@ const Flashcards = () => {
 
   const handleRespond = useCallback(
     (knewIt: boolean) => {
-      if (isCardAnimating || respondToFlashcard.isPending || !flashcard) {
+      if (isCardAnimating || respondToFlashcard.isPending || !translation) {
         return;
       }
 
       void respondToFlashcard.mutateAsync({
-        flashcardId: flashcard.id,
-        response: { knewIt },
+        translationId: translation.id,
+        response: { response: knewIt ? 3 : 1 },
       });
 
-      void prefetchFlashcard(languagePair, flashcardIndex);
+      void prefetchFlashcard(languagePair, translationIndex);
     },
     [
       isCardAnimating,
       respondToFlashcard,
-      flashcard,
+      translation,
       languagePair,
-      flashcardIndex,
+      translationIndex,
     ],
   );
 
   const onSwipeAnimationComplete = () => {
-    setFlashcardIndex((prev) => prev + 1);
+    setTranslationIndex((prev) => prev + 1);
     setWasFlipped(false);
   };
 
   const onLanguagePairChange = (newPair: LanguagePair | null) => {
     setLanguagePair(newPair);
-    setFlashcardIndex(0);
-    flashcardRef.current?.reset();
+    setTranslationIndex(0);
+    translationRef.current?.reset();
   };
 
   if (isLoading) return <p>{t("flashcards.loadingFlashcard")}</p>;
   if (error) return <p>{t("flashcards.errorLoadingFlashcard")}</p>;
-  if (!flashcard) return <p>{t("flashcards.noFlashcardsFound")}</p>;
+  if (!translation) return <p>{t("flashcards.noFlashcardsFound")}</p>;
 
   return (
     <div className="mx-auto flex w-full flex-col gap-4 lg:w-120">
@@ -105,9 +105,9 @@ const Flashcards = () => {
       </div>
 
       <FlashcardComp
-        key={flashcard.id}
-        ref={flashcardRef}
-        flashcard={flashcard}
+        key={translation.id}
+        ref={translationRef}
+        translation={translation}
         disabled={areButtonsDisabled}
         onAnimationStateChange={setIsCardAnimating}
         onRespond={handleRespond}
@@ -119,7 +119,7 @@ const Flashcards = () => {
         <Button
           className="flex"
           variant="outline"
-          onClick={() => flashcardRef.current?.respond(false)}
+          onClick={() => translationRef.current?.respond(false)}
           disabled={areButtonsDisabled}
         >
           <IconX className="text-destructive mt-0.5" />
@@ -132,7 +132,7 @@ const Flashcards = () => {
         <Button
           className="flex"
           variant="outline"
-          onClick={() => flashcardRef.current?.respond(true)}
+          onClick={() => translationRef.current?.respond(true)}
           disabled={areButtonsDisabled}
         >
           <IconCheck className="text-success mt-0.5" />
@@ -160,8 +160,8 @@ const Flashcards = () => {
         open={editDialogOpen}
         onOpenChange={(open) => setEditDialogOpen(open)}
         editMode={true}
-        currentTranslation={flashcard.translation}
-        onSave={() => flashcardRef.current?.reset()}
+        currentTranslation={translation}
+        onSave={() => translationRef.current?.reset()}
       />
     </div>
   );
