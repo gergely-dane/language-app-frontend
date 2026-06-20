@@ -3,6 +3,7 @@
 import {
   IconCheck,
   IconHandMove,
+  IconHelp,
   IconPencil,
   IconX,
 } from "@tabler/icons-react";
@@ -44,7 +45,7 @@ const Flashcards = () => {
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
   const handleRespond = useCallback(
-    async (knewIt: boolean) => {
+    async (response: 1 | 2 | 3) => {
       if (isCardAnimating || respondToFlashcard.isPending || !translation) {
         return;
       }
@@ -52,10 +53,15 @@ const Flashcards = () => {
       await respondToFlashcard.mutateAsync({
         translationId: translation.id,
         response: {
-          response: knewIt ? 3 : 1,
+          response,
           nextCardQuery: languagePair,
         },
       });
+
+      if (response === 2) {
+        setTranslationIndex((prev) => prev + 1);
+        translationRef.current?.reset();
+      }
     },
     [isCardAnimating, respondToFlashcard, translation, languagePair],
   );
@@ -103,13 +109,13 @@ const Flashcards = () => {
         disabled={areButtonsDisabled}
         onAnimationStateChange={setIsCardAnimating}
         onRespond={(knewIt) => {
-          void handleRespond(knewIt);
+          void handleRespond(knewIt ? 3 : 1);
         }}
         onSwipeAnimationComplete={onSwipeAnimationComplete}
         setEditDialogOpen={setEditDialogOpen}
       />
 
-      <div className="mx-auto mt-4 grid grid-cols-2 gap-10 px-10">
+      <div className="mx-auto mt-4 grid grid-cols-3 gap-3 md:gap-6 md:px-8">
         <Button
           className="flex"
           variant="outline"
@@ -120,6 +126,19 @@ const Flashcards = () => {
 
           <p>
             {!wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow")}
+          </p>
+        </Button>
+
+        <Button
+          className="flex"
+          variant="outline"
+          onClick={() => void handleRespond(2)}
+          disabled={areButtonsDisabled}
+        >
+          <IconHelp className="text-muted-foreground mt-0.5" />
+
+          <p>
+            {!wasFlipped ? t("flashcards.notSure") : t("flashcards.wasntSure")}
           </p>
         </Button>
 

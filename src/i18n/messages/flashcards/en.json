@@ -4,12 +4,14 @@
   "errorLoadingFlashcard": "Error loading flashcard",
   "didntKnow": "Didn't know",
   "dontKnow": "Don't know",
+  "notSure": "Not sure",
   "hintTrySwiping": "Hint: try swiping on the card to respond <hand></hand>",
   "hintUseArrowKeysOrSwipe": "Hint: try using the arrow keys (<left>◀</left> and <right>▶</right>), or swiping on the card to respond.",
   "knewIt": "Knew it",
   "knowIt": "Know it",
   "loadingFlashcard": "Loading flashcard...",
   "noFlashcardsFound": "No flashcards found",
+  "wasntSure": "Wasn't sure",
   "tapToSeeTranslationsFront": "Tap on the card to see the translation(s) <hand></hand>",
   "tapToSeeTranslationsBack": "Tap on the card to go back to the original word <hand></hand>"
 }
