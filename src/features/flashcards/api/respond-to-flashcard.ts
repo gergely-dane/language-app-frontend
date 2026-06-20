@@ -8,13 +8,11 @@ interface RespondToFlashcardRequest {
   translationId: number;
   response: {
     response: number;
+    nextCardQuery: LanguagePair | null;
   };
 }
 
-export const useRespondToFlashcard = (
-  languagePair?: LanguagePair | null,
-  translationIndex?: number,
-) => {
+export const useRespondToFlashcard = (translationIndex?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -31,13 +29,13 @@ export const useRespondToFlashcard = (
     onError: (error) => {
       console.error("Failed to respond to flashcard:", error);
     },
-    onSuccess: (nextTranslation) => {
+    onSuccess: (nextTranslation, variables) => {
       if (translationIndex === undefined) {
         return;
       }
 
       queryClient.setQueryData(
-        ["flashcards", languagePair, translationIndex + 1],
+        ["flashcards", variables.response.nextCardQuery, translationIndex + 1],
         nextTranslation,
       );
     },

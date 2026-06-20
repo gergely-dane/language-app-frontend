@@ -38,10 +38,7 @@ const Flashcards = () => {
     isLoading,
     error,
   } = useFlashcard(languagePair, translationIndex);
-  const respondToFlashcard = useRespondToFlashcard(
-    languagePair,
-    translationIndex,
-  );
+  const respondToFlashcard = useRespondToFlashcard(translationIndex);
 
   const areButtonsDisabled =
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
@@ -54,10 +51,13 @@ const Flashcards = () => {
 
       await respondToFlashcard.mutateAsync({
         translationId: translation.id,
-        response: { response: knewIt ? 3 : 1 },
+        response: {
+          response: knewIt ? 3 : 1,
+          nextCardQuery: languagePair,
+        },
       });
     },
-    [isCardAnimating, respondToFlashcard, translation],
+    [isCardAnimating, respondToFlashcard, translation, languagePair],
   );
 
   const onSwipeAnimationComplete = () => {
