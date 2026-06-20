@@ -12,10 +12,7 @@ import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
-import {
-  prefetchFlashcard,
-  useFlashcard,
-} from "@/features/flashcards/api/get-flashcard";
+import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import {
   FlashcardComp,
@@ -41,31 +38,26 @@ const Flashcards = () => {
     isLoading,
     error,
   } = useFlashcard(languagePair, translationIndex);
-  const respondToFlashcard = useRespondToFlashcard();
+  const respondToFlashcard = useRespondToFlashcard(
+    languagePair,
+    translationIndex,
+  );
 
   const areButtonsDisabled =
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
   const handleRespond = useCallback(
-    (knewIt: boolean) => {
+    async (knewIt: boolean) => {
       if (isCardAnimating || respondToFlashcard.isPending || !translation) {
         return;
       }
 
-      void respondToFlashcard.mutateAsync({
+      await respondToFlashcard.mutateAsync({
         translationId: translation.id,
         response: { response: knewIt ? 3 : 1 },
       });
-
-      void prefetchFlashcard(languagePair, translationIndex);
     },
-    [
-      isCardAnimating,
-      respondToFlashcard,
-      translation,
-      languagePair,
-      translationIndex,
-    ],
+    [isCardAnimating, respondToFlashcard, translation],
   );
 
   const onSwipeAnimationComplete = () => {
@@ -105,12 +97,14 @@ const Flashcards = () => {
       </div>
 
       <FlashcardComp
-        key={translation.id}
+        key={translationIndex}
         ref={translationRef}
         translation={translation}
         disabled={areButtonsDisabled}
         onAnimationStateChange={setIsCardAnimating}
-        onRespond={handleRespond}
+        onRespond={(knewIt) => {
+          void handleRespond(knewIt);
+        }}
         onSwipeAnimationComplete={onSwipeAnimationComplete}
         setEditDialogOpen={setEditDialogOpen}
       />
