@@ -1,5 +1,4 @@
 import { IconLogout, IconUser } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,12 +18,13 @@ type UserButtonProps = {
 export const UserButton = ({ className }: UserButtonProps) => {
   const t = useI18n();
   const { user, logout } = useAuth();
-  const router = useRouter();
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
     logout()
-      .then(() => router.push("/login"))
+      .then(() => {
+        window.location.href = "/login";
+      })
       .catch((err) => {
         console.error("Logout failed:", err);
       });

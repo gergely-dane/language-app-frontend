@@ -38,7 +38,7 @@ export const Navbar = () => {
           LanguageApp
         </Link>
 
-        {!isMobile && isAuthenticated && (
+        {!isMobile && isAuthenticated && pathname !== "/login" && (
           <>
             <div className="flex gap-2">
               <Link href="/">

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,6 @@ const LoginPage = () => {
   const t = useI18n();
   const { showAlert } = useAlert();
   const { login } = useAuth();
-  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +30,7 @@ const LoginPage = () => {
           return;
         }
 
-        router.push("/");
+        window.location.href = "/";
       })
       .catch((err) => {
         console.error("Login failed:", err);

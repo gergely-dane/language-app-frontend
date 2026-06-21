@@ -21,6 +21,7 @@ type FlashcardCompProps = {
   translation: Translation;
   disabled?: boolean;
   onAnimationStateChange?: (isAnimating: boolean) => void;
+  onFlipStateChange?: (flipped: boolean) => void;
   onRespond?: (knewIt: boolean) => void;
   onSwipeAnimationComplete?: (direction: "left" | "right") => void;
   setEditDialogOpen?: (open: boolean) => void;
@@ -42,6 +43,7 @@ export const FlashcardComp = React.forwardRef<
       translation,
       disabled = false,
       onAnimationStateChange,
+      onFlipStateChange,
       onRespond,
       onSwipeAnimationComplete,
       setEditDialogOpen,
@@ -56,9 +58,10 @@ export const FlashcardComp = React.forwardRef<
 
     const reset = useCallback(() => {
       setFlipped(false);
+      onFlipStateChange?.(false);
       setIsFlipAnimating(false);
       setSwipeAnimationDirection(null);
-    }, []);
+    }, [onFlipStateChange]);
 
     const startFlip = useCallback(() => {
       if (disabled) return;
@@ -109,6 +112,12 @@ export const FlashcardComp = React.forwardRef<
     useEffect(() => {
       onAnimationStateChange?.(isFlipAnimating || !!swipeAnimationDirection);
     }, [isFlipAnimating, onAnimationStateChange, swipeAnimationDirection]);
+
+    useEffect(() => {
+      if (flipped) {
+        onFlipStateChange?.(true);
+      }
+    }, [flipped, onFlipStateChange]);
 
     useEffect(() => {
       const handleKeyDown = (e: globalThis.KeyboardEvent) => {

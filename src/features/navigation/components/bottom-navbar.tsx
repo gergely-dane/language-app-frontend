@@ -16,7 +16,7 @@ export const BottomNavbar = () => {
   const pathname = usePathname();
   const isMobile = useIsMobileScreen();
 
-  if (!isMobile || !isAuthenticated) {
+  if (!isMobile || !isAuthenticated || pathname === "/login") {
     return null;
   }
 

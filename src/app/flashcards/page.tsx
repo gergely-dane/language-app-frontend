@@ -108,6 +108,7 @@ const Flashcards = () => {
         translation={translation}
         disabled={areButtonsDisabled}
         onAnimationStateChange={setIsCardAnimating}
+        onFlipStateChange={setWasFlipped}
         onRespond={(knewIt) => {
           void handleRespond(knewIt ? 3 : 1);
         }}
