@@ -1,6 +1,8 @@
+import type { Direction } from "./types";
+
 export const getCardAnimation = (
   flipped: boolean,
-  swipeAnimationDirection: "left" | "right" | null,
+  swipeAnimationDirection: Direction | null,
 ) => {
   if (swipeAnimationDirection === "left") {
     return {
@@ -21,6 +23,17 @@ export const getCardAnimation = (
       scale: 0.98,
       x: 384,
       y: 16,
+    };
+  }
+
+  if (swipeAnimationDirection === "down") {
+    return {
+      opacity: 0,
+      rotateY: flipped ? 180 : 0,
+      rotateZ: 0,
+      scale: 0.98,
+      x: 0,
+      y: 184,
     };
   }
 

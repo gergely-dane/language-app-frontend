@@ -6,7 +6,7 @@
   "dontKnow": "Don't know",
   "notSure": "Not sure",
   "hintTrySwiping": "Hint: try swiping on the card to respond <hand></hand>",
-  "hintUseArrowKeysOrSwipe": "Hint: try using the arrow keys (<left>◀</left> and <right>▶</right>), or swiping on the card to respond.",
+  "hintUseArrowKeysOrSwipe": "Hint: try using the arrow keys (<left>◀</left> <down>▼</down> <right>▶</right>), or swiping on the card to respond.",
   "knewIt": "Knew it",
   "knowIt": "Know it",
   "loadingFlashcard": "Loading flashcard...",

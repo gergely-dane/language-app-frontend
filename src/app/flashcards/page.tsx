@@ -15,10 +15,11 @@ import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
-import {
-  FlashcardComp,
-  type FlashcardCompHandle,
-} from "@/features/flashcards/components/flashcard";
+import { FlashcardComp } from "@/features/flashcards/components/flashcard";
+import type {
+  Direction,
+  FlashcardCompHandle,
+} from "@/features/flashcards/types";
 import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
@@ -45,10 +46,15 @@ const Flashcards = () => {
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
   const handleRespond = useCallback(
-    async (response: 1 | 2 | 3) => {
+    async (direction: Direction) => {
       if (isCardAnimating || respondToFlashcard.isPending || !translation) {
         return;
       }
+
+      let response: 1 | 2 | 3;
+      if (direction === "left") response = 1;
+      else if (direction === "down") response = 2;
+      else response = 3;
 
       await respondToFlashcard.mutateAsync({
         translationId: translation.id,
@@ -109,8 +115,8 @@ const Flashcards = () => {
         disabled={areButtonsDisabled}
         onAnimationStateChange={setIsCardAnimating}
         onFlipStateChange={setWasFlipped}
-        onRespond={(knewIt) => {
-          void handleRespond(knewIt ? 3 : 1);
+        onRespond={(direction) => {
+          void handleRespond(direction);
         }}
         onSwipeAnimationComplete={onSwipeAnimationComplete}
         setEditDialogOpen={setEditDialogOpen}
@@ -120,7 +126,7 @@ const Flashcards = () => {
         <Button
           className="flex"
           variant="outline"
-          onClick={() => translationRef.current?.respond(false)}
+          onClick={() => translationRef.current?.respond("left")}
           disabled={areButtonsDisabled}
         >
           <IconX className="text-destructive mt-0.5" />
@@ -133,7 +139,7 @@ const Flashcards = () => {
         <Button
           className="flex"
           variant="outline"
-          onClick={() => void handleRespond(2)}
+          onClick={() => void handleRespond("down")}
           disabled={areButtonsDisabled}
         >
           <IconHelp className="text-muted-foreground mt-0.5" />
@@ -146,7 +152,7 @@ const Flashcards = () => {
         <Button
           className="flex"
           variant="outline"
-          onClick={() => translationRef.current?.respond(true)}
+          onClick={() => translationRef.current?.respond("right")}
           disabled={areButtonsDisabled}
         >
           <IconCheck className="text-success mt-0.5" />
@@ -159,6 +165,7 @@ const Flashcards = () => {
         <p className="text-muted-foreground/70 mx-auto text-center text-sm">
           {t.rich("flashcards.hintUseArrowKeysOrSwipe", {
             left: (chunks) => <Kbd>{chunks}</Kbd>,
+            down: (chunks) => <Kbd>{chunks}</Kbd>,
             right: (chunks) => <Kbd>{chunks}</Kbd>,
           })}
         </p>

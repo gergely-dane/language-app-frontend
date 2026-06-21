@@ -13,6 +13,7 @@ import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { cn } from "@/utils/cn";
 
 import { FLIP_TRANSITION, SWIPE_TRANSITION } from "../constants";
+import type { Direction, FlashcardCompHandle } from "../types";
 import { getCardAnimation } from "../utils";
 import { FlashcardSide } from "./flashcard-side";
 
@@ -22,15 +23,9 @@ type FlashcardCompProps = {
   disabled?: boolean;
   onAnimationStateChange?: (isAnimating: boolean) => void;
   onFlipStateChange?: (flipped: boolean) => void;
-  onRespond?: (knewIt: boolean) => void;
-  onSwipeAnimationComplete?: (direction: "left" | "right") => void;
+  onRespond?: (direction: Direction) => void;
+  onSwipeAnimationComplete?: (direction: Direction) => void;
   setEditDialogOpen?: (open: boolean) => void;
-};
-
-export type FlashcardCompHandle = {
-  flip: () => void;
-  respond: (knewIt: boolean) => void;
-  reset: () => void;
 };
 
 export const FlashcardComp = React.forwardRef<
@@ -52,9 +47,8 @@ export const FlashcardComp = React.forwardRef<
   ) => {
     const [flipped, setFlipped] = useState(false);
     const [isFlipAnimating, setIsFlipAnimating] = useState(false);
-    const [swipeAnimationDirection, setSwipeAnimationDirection] = useState<
-      "left" | "right" | null
-    >(null);
+    const [swipeAnimationDirection, setSwipeAnimationDirection] =
+      useState<Direction | null>(null);
 
     const reset = useCallback(() => {
       setFlipped(false);
@@ -71,11 +65,11 @@ export const FlashcardComp = React.forwardRef<
     }, [disabled]);
 
     const respond = useCallback(
-      (knewIt: boolean) => {
+      (direction: Direction) => {
         if (disabled) return;
 
-        onRespond?.(knewIt);
-        setSwipeAnimationDirection(knewIt ? "right" : "left");
+        onRespond?.(direction);
+        setSwipeAnimationDirection(direction);
       },
       [disabled, onRespond],
     );
@@ -83,8 +77,8 @@ export const FlashcardComp = React.forwardRef<
     const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
       50,
       useCallback(
-        (direction: "left" | "right") => {
-          respond(direction === "left" ? false : true);
+        (direction: Direction) => {
+          respond(direction);
         },
         [respond],
       ),
@@ -130,11 +124,15 @@ export const FlashcardComp = React.forwardRef<
             break;
           case "ArrowLeft":
             e.preventDefault();
-            respond(false);
+            respond("left");
+            break;
+          case "ArrowDown":
+            e.preventDefault();
+            respond("down");
             break;
           case "ArrowRight":
             e.preventDefault();
-            respond(true);
+            respond("right");
             break;
         }
       };
@@ -147,7 +145,7 @@ export const FlashcardComp = React.forwardRef<
     }, [disabled, respond, startFlip]);
 
     return (
-      <div className={cn("select-none", className)} ref={swipeRef}>
+      <div className={cn("touch-none select-none", className)} ref={swipeRef}>
         <div className="relative h-68" style={{ perspective: 1600 }}>
           <div
             aria-hidden="true"

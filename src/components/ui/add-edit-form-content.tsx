@@ -128,6 +128,7 @@ export const AddEditFormContent = ({
   const translationInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
     e.stopPropagation();
+    e.preventDefault();
 
     const trimmed = translation.trim();
     if (!trimmed) {
