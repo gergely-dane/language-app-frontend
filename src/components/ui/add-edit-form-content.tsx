@@ -34,14 +34,14 @@ type AddEditFormContentProps = {
   editMode?: boolean;
   onClose: () => void;
   currentTranslation?: Translation;
-  onSave?: () => void;
+  flashcardQueryKey?: readonly unknown[];
 };
 
 export const AddEditFormContent = ({
   editMode = false,
   onClose,
   currentTranslation,
-  onSave,
+  flashcardQueryKey,
 }: AddEditFormContentProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
@@ -49,7 +49,9 @@ export const AddEditFormContent = ({
   const { data: languages } = useLanguages();
 
   const createTranslation = useCreateTranslation();
-  const updateTranslation = useUpdateTranslation(currentTranslation?.id);
+  const updateTranslation = useUpdateTranslation(currentTranslation?.id, {
+    flashcardQueryKey,
+  });
   const deleteTranslation = useDeleteTranslation(currentTranslation?.id);
   const importSpreadsheet = useImportSpreadsheet();
 
@@ -185,11 +187,8 @@ export const AddEditFormContent = ({
           ...payload,
           knowledgeLevel: knowledgeLevel[0],
         });
-        resetForm();
-      }
 
-      if (onSave) {
-        onSave();
+        resetForm();
       }
 
       window.localStorage.setItem(

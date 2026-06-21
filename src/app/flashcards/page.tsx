@@ -175,7 +175,7 @@ const Flashcards = () => {
         onOpenChange={(open) => setEditDialogOpen(open)}
         editMode={true}
         currentTranslation={translation}
-        onSave={() => translationRef.current?.reset()}
+        flashcardQueryKey={["flashcards", languagePair, translationIndex]}
       />
     </div>
   );

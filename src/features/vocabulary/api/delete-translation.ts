@@ -12,6 +12,7 @@ export const useDeleteTranslation = (id?: number) => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });
       void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+      void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
     },
   });
 };

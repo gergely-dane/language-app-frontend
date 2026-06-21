@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  type QueryKey,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { apiClient } from "@/lib/api-client";
@@ -11,8 +15,16 @@ export interface UpdateTranslationRequest {
   definition?: string;
 }
 
-export const useUpdateTranslation = (id?: number) => {
+type UseUpdateTranslationOptions = {
+  flashcardQueryKey?: QueryKey;
+};
+
+export const useUpdateTranslation = (
+  id?: number,
+  options: UseUpdateTranslationOptions = {},
+) => {
   const queryClient = useQueryClient();
+  const { flashcardQueryKey } = options;
 
   return useMutation({
     mutationFn: async (updatedTranslation: UpdateTranslationRequest) => {
@@ -22,10 +34,15 @@ export const useUpdateTranslation = (id?: number) => {
       );
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (updatedTranslation) => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });
       void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
-      void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
+
+      if (flashcardQueryKey) {
+        queryClient.setQueryData(flashcardQueryKey, updatedTranslation);
+      } else {
+        void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
+      }
     },
   });
 };

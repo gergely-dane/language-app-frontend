@@ -22,6 +22,7 @@ export const useCreateTranslation = () => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });
       void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+      void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
     },
     onError: (error) => {
       console.error("Failed to create translation:", error);
