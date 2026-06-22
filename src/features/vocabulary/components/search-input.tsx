@@ -19,6 +19,7 @@ export const SearchInput = ({
 }: SearchInputProps) => (
   <div className={cn("relative", className)}>
     <Input
+      className="pr-8"
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
