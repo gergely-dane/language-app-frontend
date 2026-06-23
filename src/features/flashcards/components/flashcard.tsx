@@ -24,6 +24,7 @@ type FlashcardCompProps = {
   onAnimationStateChange?: (isAnimating: boolean) => void;
   onFlipStateChange?: (flipped: boolean) => void;
   onRespond?: (direction: Direction) => void;
+  onSwipeAnimationStart?: () => void;
   onSwipeAnimationComplete?: (direction: Direction) => void;
   setEditDialogOpen?: (open: boolean) => void;
 };
@@ -40,6 +41,7 @@ export const FlashcardComp = React.forwardRef<
       onAnimationStateChange,
       onFlipStateChange,
       onRespond,
+      onSwipeAnimationStart,
       onSwipeAnimationComplete,
       setEditDialogOpen,
     },
@@ -70,8 +72,9 @@ export const FlashcardComp = React.forwardRef<
 
         onRespond?.(direction);
         setSwipeAnimationDirection(direction);
+        onSwipeAnimationStart?.();
       },
-      [disabled, onRespond],
+      [disabled, onRespond, onSwipeAnimationStart],
     );
 
     const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
