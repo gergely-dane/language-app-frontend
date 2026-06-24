@@ -112,20 +112,22 @@ const Flashcards = () => {
         </Button>
       </div>
 
-      <FlashcardComp
-        key={flashcardIndex}
-        ref={flashcardRef}
-        translation={flashcard.translation}
-        disabled={areButtonsDisabled}
-        onAnimationStateChange={setIsCardAnimating}
-        onFlipStateChange={setWasFlipped}
-        onRespond={(direction) => {
-          void handleRespond(direction);
-        }}
-        onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
-        onSwipeAnimationComplete={onSwipeAnimationComplete}
-        setEditDialogOpen={setEditDialogOpen}
-      />
+      {flashcard?.translation && (
+        <FlashcardComp
+          key={flashcardIndex}
+          ref={flashcardRef}
+          translation={flashcard.translation}
+          disabled={areButtonsDisabled}
+          onAnimationStateChange={setIsCardAnimating}
+          onFlipStateChange={setWasFlipped}
+          onRespond={(direction) => {
+            void handleRespond(direction);
+          }}
+          onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
+          onSwipeAnimationComplete={onSwipeAnimationComplete}
+          setEditDialogOpen={setEditDialogOpen}
+        />
+      )}
 
       <div className="mx-auto mt-4 grid grid-cols-3 gap-3 md:gap-6 md:px-8">
         <div className="flex flex-col items-center gap-1">

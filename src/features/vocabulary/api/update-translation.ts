@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
+import type { Flashcard } from "@/features/flashcards/interfaces/flashcard.interface";
 import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { apiClient } from "@/lib/api-client";
 
@@ -39,7 +40,14 @@ export const useUpdateTranslation = (
       void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
 
       if (flashcardQueryKey) {
-        queryClient.setQueryData(flashcardQueryKey, updatedTranslation);
+        queryClient.setQueryData<Flashcard>(flashcardQueryKey, (oldData) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            translation: updatedTranslation,
+          };
+        });
       } else {
         void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
       }
