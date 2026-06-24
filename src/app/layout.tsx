@@ -5,7 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppProvider } from "@/app/provider";
 import { BaseContentLayout } from "@/components/layouts/base-content-layout";
-import { BottomNavbar } from "@/features/navigation/components/bottom-navbar";
+import { BottomNavbar } from "@/features/navigation/components/bottom-navbar/bottom-navbar";
 import { Navbar } from "@/features/navigation/components/navbar";
 import { getI18nConfig } from "@/i18n/request";
 
