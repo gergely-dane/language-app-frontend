@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { apiClient } from "@/lib/api-client";
 
 import type { Flashcard } from "../interfaces/flashcard.interface";
+import type { FlashcardParams } from "./get-flashcard";
 
 interface RespondToFlashcardRequest {
   flashcardId: number;
   response: {
     response: number;
-    nextCardQuery: LanguagePair | null;
+    nextCardQuery: FlashcardParams | null;
   };
 }
 

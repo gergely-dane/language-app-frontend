@@ -7,10 +7,11 @@ import {
   IconPencil,
   IconX,
 } from "@tabler/icons-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
+import { CheckboxButton } from "@/components/ui/checkbox-button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
@@ -35,17 +36,27 @@ const Flashcards = () => {
   const flashcardRef = useRef<FlashcardCompHandle | null>(null);
 
   const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
+  const [isReverse, setIsReverse] = useState(false);
   const [flashcardIndex, setFlashcardIndex] = useState(0);
   const [wasFlipped, setWasFlipped] = useState(false);
   const [isCardAnimating, setIsCardAnimating] = useState(false);
   const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
+  const flashcardParams = useMemo(
+    () => ({
+      sourceLanguageId: languagePair?.sourceLanguageId,
+      translationLanguageId: languagePair?.translationLanguageId,
+      isReverse,
+    }),
+    [languagePair, isReverse],
+  );
+
   const {
     data: flashcard,
     isLoading,
     error,
-  } = useFlashcard(languagePair, flashcardIndex);
+  } = useFlashcard(flashcardParams, flashcardIndex);
   const respondToFlashcard = useRespondToFlashcard(flashcardIndex);
 
   const areButtonsDisabled =
@@ -66,7 +77,7 @@ const Flashcards = () => {
         flashcardId: flashcard.id,
         response: {
           response,
-          nextCardQuery: languagePair,
+          nextCardQuery: flashcardParams,
         },
       });
 
@@ -75,7 +86,7 @@ const Flashcards = () => {
         flashcardRef.current?.reset();
       }
     },
-    [isCardAnimating, respondToFlashcard, flashcard, languagePair],
+    [isCardAnimating, respondToFlashcard, flashcard, flashcardParams],
   );
 
   const onSwipeAnimationComplete = () => {
@@ -90,6 +101,13 @@ const Flashcards = () => {
     flashcardRef.current?.reset();
   };
 
+  const onReverseChange = (checked: boolean) => {
+    setIsReverse(checked);
+    setFlashcardIndex(0);
+    flashcardRef.current?.reset();
+    setWasFlipped(false);
+  };
+
   useEffect(() => {
     void invalidateFlashcards();
   }, []);
@@ -101,12 +119,21 @@ const Flashcards = () => {
   return (
     <div className="mx-auto flex w-full flex-col gap-4 md:w-120">
       <div className="flex">
-        <LanguagePairSelector
-          className="w-fit"
-          value={languagePair}
-          onChange={(newPair) => onLanguagePairChange(newPair)}
-          disabled={areButtonsDisabled}
-        />
+        <div className="flex gap-2">
+          <LanguagePairSelector
+            className="w-fit"
+            value={languagePair}
+            onChange={(newPair) => onLanguagePairChange(newPair)}
+            disabled={areButtonsDisabled}
+          />
+
+          <CheckboxButton
+            label={t("flashcards.reverseCards")}
+            checked={isReverse}
+            onCheckedChange={(checked) => onReverseChange(!!checked)}
+            disabled={areButtonsDisabled}
+          />
+        </div>
 
         <Button
           className="ml-auto"
@@ -121,10 +148,11 @@ const Flashcards = () => {
 
       {flashcard?.translation && (
         <FlashcardComp
-          key={flashcardIndex}
+          key={`${flashcardIndex}-${isReverse}`}
           ref={flashcardRef}
           translation={flashcard.translation}
           disabled={areButtonsDisabled}
+          isReverse={isReverse}
           onAnimationStateChange={setIsCardAnimating}
           onFlipStateChange={setWasFlipped}
           onRespond={(direction) => {
@@ -163,7 +191,7 @@ const Flashcards = () => {
           <Button
             className="flex w-28 sm:w-32"
             variant="outline"
-            onClick={() => void handleRespond("down")}
+            onClick={() => flashcardRef.current?.respond("down")}
             disabled={areButtonsDisabled}
           >
             <IconHelp className="text-muted-foreground mt-0.5" />
@@ -223,7 +251,7 @@ const Flashcards = () => {
         onOpenChange={(open) => setEditDialogOpen(open)}
         editMode={true}
         currentTranslation={flashcard.translation}
-        flashcardQueryKey={["flashcards", languagePair, flashcardIndex]}
+        flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
       />
     </div>
   );

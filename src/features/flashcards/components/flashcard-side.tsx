@@ -20,7 +20,7 @@ type FlashcardSideProps = {
   translation: Translation;
   isFront: boolean;
   flipped: boolean;
-  swipeAnimationPlaying?: boolean;
+  forceHideBackface?: boolean;
   setEditDialogOpen?: (open: boolean) => void;
 };
 
@@ -28,7 +28,7 @@ export const FlashcardSide = ({
   translation,
   isFront,
   flipped,
-  swipeAnimationPlaying,
+  forceHideBackface,
   setEditDialogOpen,
 }: FlashcardSideProps) => {
   const t = useI18n();
@@ -54,16 +54,12 @@ export const FlashcardSide = ({
     <div
       className={cn(
         "bg-primary text-primary-foreground ring-foreground absolute inset-0 rounded-xl p-2 ring-2",
-        !swipeAnimationPlaying && "backface-hidden",
+        !forceHideBackface && "backface-hidden",
+        forceHideBackface && isFront === flipped && "hidden",
       )}
       style={{ transform: isFront ? undefined : "rotateY(180deg)" }}
     >
-      <div
-        className={cn(
-          "relative flex h-full flex-col items-center justify-center",
-          swipeAnimationPlaying && isFront === flipped && "hidden",
-        )}
-      >
+      <div className="relative flex h-full flex-col items-center justify-center">
         <div className="relative text-center">
           <div className="mx-auto flex w-fit">
             <IconLanguage className="my-auto mr-1" />

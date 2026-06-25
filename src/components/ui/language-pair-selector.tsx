@@ -65,7 +65,7 @@ export const LanguagePairSelector = ({
                     ? getLanguageString(value.sourceLanguageId)
                     : getLanguageCode(value.sourceLanguageId).toUpperCase()}
                 </p>
-                <IconArrowNarrowRight />
+                <IconArrowNarrowRight className="mt-0.5" />
                 <p>
                   {!isMobile
                     ? getLanguageString(value.translationLanguageId)

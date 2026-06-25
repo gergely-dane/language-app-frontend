@@ -1,6 +1,6 @@
 {
   "clickOrPressSpaceFront": "Click on the card or press <space>Space</space> to see the translation(s)",
-  "clickOrPressSpaceBack": "Click on the card or press <space>Space</space> to go back to the original word",
+  "clickOrPressSpaceBack": "Click on the card or press <space>Space</space> to go to the original word",
   "errorLoadingFlashcard": "Error loading flashcard",
   "day": "day",
   "days": "days",
@@ -15,7 +15,8 @@
   "minute": "minute",
   "minutes": "minutes",
   "noFlashcardsFound": "No flashcards found",
+  "reverseCards": "Reverse Cards",
   "wasntSure": "Wasn't sure",
   "tapToSeeTranslationsFront": "Tap on the card to see the translation(s) <hand></hand>",
-  "tapToSeeTranslationsBack": "Tap on the card to go back to the original word <hand></hand>"
+  "tapToSeeTranslationsBack": "Tap on the card to go to the original word <hand></hand>"
 }

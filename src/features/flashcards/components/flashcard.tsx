@@ -21,6 +21,7 @@ type FlashcardCompProps = {
   className?: string;
   translation: Translation;
   disabled?: boolean;
+  isReverse?: boolean;
   onAnimationStateChange?: (isAnimating: boolean) => void;
   onFlipStateChange?: (flipped: boolean) => void;
   onRespond?: (direction: Direction) => void;
@@ -38,6 +39,7 @@ export const FlashcardComp = React.forwardRef<
       className,
       translation,
       disabled = false,
+      isReverse = false,
       onAnimationStateChange,
       onFlipStateChange,
       onRespond,
@@ -47,17 +49,27 @@ export const FlashcardComp = React.forwardRef<
     },
     ref,
   ) => {
-    const [flipped, setFlipped] = useState(false);
+    const [displayTranslation, setDisplayTranslation] = useState(translation);
+
+    const [flipped, setFlipped] = useState(isReverse);
     const [isFlipAnimating, setIsFlipAnimating] = useState(false);
     const [swipeAnimationDirection, setSwipeAnimationDirection] =
       useState<Direction | null>(null);
+    const [isEntering, setIsEntering] = useState(true);
+
+    useEffect(() => {
+      if (!swipeAnimationDirection) {
+        setDisplayTranslation(translation);
+      }
+    }, [translation, swipeAnimationDirection]);
 
     const reset = useCallback(() => {
-      setFlipped(false);
-      onFlipStateChange?.(false);
+      setFlipped(isReverse);
+      onFlipStateChange?.(isReverse);
       setIsFlipAnimating(false);
       setSwipeAnimationDirection(null);
-    }, [onFlipStateChange]);
+      setIsEntering(true);
+    }, [isReverse, onFlipStateChange]);
 
     const startFlip = useCallback(() => {
       if (disabled) return;
@@ -93,6 +105,7 @@ export const FlashcardComp = React.forwardRef<
         onSwipeAnimationComplete?.(swipeAnimationDirection);
       } else {
         setIsFlipAnimating(false);
+        setIsEntering(false);
       }
     };
 
@@ -160,8 +173,16 @@ export const FlashcardComp = React.forwardRef<
           />
 
           <motion.div
-            className="relative h-60 flex-1 cursor-pointer rounded-xl [transform-style:preserve-3d] hover:will-change-transform"
-            initial={{ opacity: 0, scale: 0.98, y: 16 }}
+            className={cn(
+              "relative h-60 flex-1 cursor-pointer rounded-xl [transform-style:preserve-3d] hover:will-change-transform",
+              swipeAnimationDirection && "pointer-events-none",
+            )}
+            initial={{
+              ...getCardAnimation(isReverse, null),
+              opacity: 0,
+              scale: 0.98,
+              y: 16,
+            }}
             animate={getCardAnimation(flipped, swipeAnimationDirection)}
             transition={
               swipeAnimationDirection ? SWIPE_TRANSITION : FLIP_TRANSITION
@@ -176,18 +197,18 @@ export const FlashcardComp = React.forwardRef<
             onAnimationComplete={() => handleAnimationComplete()}
           >
             <FlashcardSide
-              translation={translation}
+              translation={displayTranslation}
               isFront={true}
               flipped={flipped}
-              swipeAnimationPlaying={!!swipeAnimationDirection}
+              forceHideBackface={!!swipeAnimationDirection || isEntering}
               setEditDialogOpen={setEditDialogOpen}
             />
 
             <FlashcardSide
-              translation={translation}
+              translation={displayTranslation}
               isFront={false}
               flipped={flipped}
-              swipeAnimationPlaying={!!swipeAnimationDirection}
+              forceHideBackface={!!swipeAnimationDirection || isEntering}
               setEditDialogOpen={setEditDialogOpen}
             />
           </motion.div>
