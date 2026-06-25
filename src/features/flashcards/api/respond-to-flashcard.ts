@@ -6,38 +6,43 @@ import { apiClient } from "@/lib/api-client";
 import type { Flashcard } from "../interfaces/flashcard.interface";
 
 interface RespondToFlashcardRequest {
-  translationId: number;
+  flashcardId: number;
   response: {
     response: number;
     nextCardQuery: LanguagePair | null;
   };
 }
 
-export const useRespondToFlashcard = (translationIndex?: number) => {
+export const useRespondToFlashcard = (flashcardIndex?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      translationId,
-      response,
-    }: RespondToFlashcardRequest) =>
+    mutationFn: async ({ flashcardId, response }: RespondToFlashcardRequest) =>
       (
         await apiClient.post<Flashcard>(
-          `/translations/${translationId}/review`,
+          `/flashcards/${flashcardId}/review`,
           response,
         )
       ).data,
     onError: (error) => {
       console.error("Failed to respond to flashcard:", error);
     },
-    onSuccess: (nextTranslation, variables) => {
-      if (translationIndex === undefined) {
+    onSuccess: (nextFlashcard, variables) => {
+      if (flashcardIndex === undefined) {
         return;
       }
 
+      void queryClient.invalidateQueries({
+        queryKey: [
+          "flashcards",
+          variables.response.nextCardQuery,
+          flashcardIndex,
+        ],
+      });
+
       queryClient.setQueryData(
-        ["flashcards", variables.response.nextCardQuery, translationIndex + 1],
-        nextTranslation,
+        ["flashcards", variables.response.nextCardQuery, flashcardIndex + 1],
+        nextFlashcard,
       );
     },
   });

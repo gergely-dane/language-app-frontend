@@ -7,13 +7,16 @@ import {
   IconPencil,
   IconX,
 } from "@tabler/icons-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
-import { useFlashcard } from "@/features/flashcards/api/get-flashcard";
+import {
+  invalidateFlashcards,
+  useFlashcard,
+} from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
@@ -60,7 +63,7 @@ const Flashcards = () => {
       else response = 3;
 
       await respondToFlashcard.mutateAsync({
-        translationId: flashcard.translation.id,
+        flashcardId: flashcard.id,
         response: {
           response,
           nextCardQuery: languagePair,
@@ -86,6 +89,10 @@ const Flashcards = () => {
     setFlashcardIndex(0);
     flashcardRef.current?.reset();
   };
+
+  useEffect(() => {
+    void invalidateFlashcards();
+  }, []);
 
   if (isLoading) return <p>{t("flashcards.loadingFlashcard")}</p>;
   if (error) return <p>{t("flashcards.errorLoadingFlashcard")}</p>;

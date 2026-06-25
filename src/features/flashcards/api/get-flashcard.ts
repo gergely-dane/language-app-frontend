@@ -7,7 +7,7 @@ import { queryClient } from "@/lib/query-client";
 import type { Flashcard } from "../interfaces/flashcard.interface";
 
 const getFlashcard = async (params?: LanguagePair | null) => {
-  const { data } = await apiClient.get<Flashcard>("/translations/next-review", {
+  const { data } = await apiClient.get<Flashcard>("/flashcards/next", {
     params,
   });
   return data;
@@ -26,4 +26,9 @@ export const prefetchFlashcard = (
   queryClient.prefetchQuery({
     queryKey: ["flashcards", params, index],
     queryFn: () => getFlashcard(params),
+  });
+
+export const invalidateFlashcards = () =>
+  queryClient.invalidateQueries({
+    queryKey: ["flashcards"],
   });
