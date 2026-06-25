@@ -34,7 +34,7 @@ const RootLayout = async ({
   return (
     <html suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} overflow-x-hidden antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AppProvider i18nConfig={i18nConfig}>
           <Navbar />

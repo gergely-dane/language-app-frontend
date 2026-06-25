@@ -161,7 +161,13 @@ export const FlashcardComp = React.forwardRef<
     }, [disabled, respond, startFlip]);
 
     return (
-      <div className={cn("touch-none select-none", className)} ref={swipeRef}>
+      <div
+        className={cn(
+          "cursor-pointer touch-none p-1 select-none [&:not(:hover)]:overflow-x-hidden",
+          className,
+        )}
+        ref={swipeRef}
+      >
         <div className="relative h-68" style={{ perspective: 1600 }}>
           <div
             aria-hidden="true"
@@ -174,7 +180,7 @@ export const FlashcardComp = React.forwardRef<
 
           <motion.div
             className={cn(
-              "relative h-60 flex-1 cursor-pointer rounded-xl [transform-style:preserve-3d] hover:will-change-transform",
+              "relative h-60 flex-1 cursor-pointer rounded-xl will-change-transform [transform-style:preserve-3d]",
               swipeAnimationDirection && "pointer-events-none",
             )}
             initial={{
