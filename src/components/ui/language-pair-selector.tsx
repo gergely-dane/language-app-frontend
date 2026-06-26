@@ -50,11 +50,13 @@ export const LanguagePairSelector = ({
   const { data: languagePairs = [] } = useLanguagePairs();
 
   const sourceLanguages = useMemo(() => {
-    return languagePairs.map((p) => p.sourceLanguageId);
+    return Array.from(new Set(languagePairs.map((p) => p.sourceLanguageId)));
   }, [languagePairs]);
 
   const translationLanguages = useMemo(() => {
-    return languagePairs.map((p) => p.translationLanguageId);
+    return Array.from(
+      new Set(languagePairs.map((p) => p.translationLanguageId)),
+    );
   }, [languagePairs]);
 
   const currentSourceId = value?.sourceLanguageId || null;
