@@ -15,12 +15,14 @@ import { CheckboxButton } from "@/components/ui/checkbox-button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
+  type FlashcardParams,
   invalidateFlashcards,
   useFlashcard,
 } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
+import { FLASHCARD_FILTERS_STATE_STORAGE_KEY } from "@/features/flashcards/constants";
 import type {
   Direction,
   FlashcardCompHandle,
@@ -35,22 +37,59 @@ const Flashcards = () => {
   const isMobile = useIsMobileScreen();
   const flashcardRef = useRef<FlashcardCompHandle | null>(null);
 
-  const [languagePair, setLanguagePair] = useState<LanguagePair | null>(null);
-  const [isReverse, setIsReverse] = useState(false);
+  const storedFiltersState = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const storedState = window.localStorage.getItem(
+      FLASHCARD_FILTERS_STATE_STORAGE_KEY,
+    );
+
+    if (!storedState) return null;
+
+    try {
+      return JSON.parse(storedState) as FlashcardParams;
+    } catch (error) {
+      console.error("Error parsing stored flashcard filters state:", error);
+      return null;
+    }
+  }, []);
+
+  const [languagePair, setLanguagePair] = useState<LanguagePair | null>(() => {
+    if (storedFiltersState) {
+      return {
+        sourceLanguageId: storedFiltersState.sourceLanguageId ?? null,
+        translationLanguageId: storedFiltersState.translationLanguageId ?? null,
+      } satisfies LanguagePair;
+    }
+    return null;
+  });
+  const [isReverse, setIsReverse] = useState(() => {
+    if (storedFiltersState) {
+      return storedFiltersState.isReverse ?? false;
+    }
+    return false;
+  });
   const [flashcardIndex, setFlashcardIndex] = useState(0);
   const [wasFlipped, setWasFlipped] = useState(false);
   const [isCardAnimating, setIsCardAnimating] = useState(false);
   const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-  const flashcardParams = useMemo(
-    () => ({
+  const flashcardParams = useMemo<FlashcardParams>(() => {
+    const params = {
       sourceLanguageId: languagePair?.sourceLanguageId,
       translationLanguageId: languagePair?.translationLanguageId,
       isReverse,
-    }),
-    [languagePair, isReverse],
-  );
+    };
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(
+        FLASHCARD_FILTERS_STATE_STORAGE_KEY,
+        JSON.stringify(params),
+      );
+    }
+
+    return params;
+  }, [languagePair, isReverse]);
 
   const {
     data: flashcard,
@@ -114,7 +153,6 @@ const Flashcards = () => {
 
   if (isLoading) return <p>{t("flashcards.loadingFlashcard")}</p>;
   if (error) return <p>{t("flashcards.errorLoadingFlashcard")}</p>;
-  if (!flashcard) return <p>{t("flashcards.noFlashcardsFound")}</p>;
 
   return (
     <div className="mx-auto flex w-full flex-col gap-4 md:w-120">
@@ -139,32 +177,49 @@ const Flashcards = () => {
           className="ml-auto"
           variant="outline"
           onClick={() => setEditDialogOpen(true)}
-          disabled={areButtonsDisabled}
+          disabled={areButtonsDisabled || !flashcard}
         >
           <IconPencil />
           {t("general.edit")}
         </Button>
       </div>
 
-      {flashcard?.translation && (
-        <FlashcardComp
-          key={`${flashcardIndex}-${isReverse}`}
-          ref={flashcardRef}
-          translation={flashcard.translation}
-          disabled={areButtonsDisabled}
-          isReverse={isReverse}
-          onAnimationStateChange={setIsCardAnimating}
-          onFlipStateChange={setWasFlipped}
-          onRespond={(direction) => {
-            void handleRespond(direction);
-          }}
-          onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
-          onSwipeAnimationComplete={onSwipeAnimationComplete}
-          setEditDialogOpen={setEditDialogOpen}
-        />
+      {!flashcard ? (
+        <div className="bg-muted text-primary-foreground ring-foreground mb-10 flex h-60 w-full flex-col items-center justify-center gap-1 rounded-xl p-6 text-center ring-2">
+          <p className="text-xl font-semibold whitespace-pre-line">
+            {t("flashcards.congratulations")}
+          </p>
+
+          <p className="text-muted-foreground">
+            {t("flashcards.keepPracticing")}
+          </p>
+        </div>
+      ) : (
+        flashcard.translation && (
+          <FlashcardComp
+            key={`${flashcardIndex}-${isReverse}`}
+            ref={flashcardRef}
+            translation={flashcard.translation}
+            disabled={areButtonsDisabled}
+            isReverse={isReverse}
+            onAnimationStateChange={setIsCardAnimating}
+            onFlipStateChange={setWasFlipped}
+            onRespond={(direction) => {
+              void handleRespond(direction);
+            }}
+            onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
+            onSwipeAnimationComplete={onSwipeAnimationComplete}
+            setEditDialogOpen={setEditDialogOpen}
+          />
+        )
       )}
 
-      <div className="mx-auto mt-4 grid grid-cols-3 gap-3 md:gap-6 md:px-8">
+      <div
+        className={cn(
+          "mx-auto mt-4 grid grid-cols-3 gap-3 transition-opacity md:gap-6 md:px-8",
+          !flashcard && "pointer-events-none opacity-0",
+        )}
+      >
         <div className="flex flex-col items-center gap-1">
           <Button
             className="flex w-28 sm:w-32"
@@ -182,7 +237,7 @@ const Flashcards = () => {
           </Button>
 
           <ReviewTimeDisplay
-            minutes={flashcard.dontKnowNextReviewMinutes}
+            minutes={flashcard?.dontKnowNextReviewMinutes ?? 0}
             className={cn(isSwipeAnimating && "opacity-0")}
           />
         </div>
@@ -204,7 +259,7 @@ const Flashcards = () => {
           </Button>
 
           <ReviewTimeDisplay
-            minutes={flashcard.notSureNextReviewMinutes}
+            minutes={flashcard?.notSureNextReviewMinutes ?? 0}
             className={cn(isSwipeAnimating && "opacity-0")}
           />
         </div>
@@ -224,14 +279,19 @@ const Flashcards = () => {
           </Button>
 
           <ReviewTimeDisplay
-            minutes={flashcard.knowItNextReviewMinutes}
+            minutes={flashcard?.knowItNextReviewMinutes ?? 0}
             className={cn(isSwipeAnimating && "opacity-0")}
           />
         </div>
       </div>
 
       {!isMobile ? (
-        <p className="text-muted-foreground/70 mx-auto text-center text-sm">
+        <p
+          className={cn(
+            "text-muted-foreground/70 mx-auto text-center text-sm transition-opacity",
+            !flashcard && "pointer-events-none opacity-0",
+          )}
+        >
           {t.rich("flashcards.hintUseArrowKeysOrSwipe", {
             left: (chunks) => <Kbd>{chunks}</Kbd>,
             down: (chunks) => <Kbd>{chunks}</Kbd>,
@@ -239,20 +299,27 @@ const Flashcards = () => {
           })}
         </p>
       ) : (
-        <p className="text-muted-foreground/70 mx-auto flex gap-1.5 text-center text-sm">
+        <p
+          className={cn(
+            "text-muted-foreground/70 mx-auto flex gap-1.5 text-center text-sm transition-opacity",
+            !flashcard && "pointer-events-none opacity-0",
+          )}
+        >
           {t.rich("flashcards.hintTrySwiping", {
             hand: () => <IconHandMove />,
           })}
         </p>
       )}
 
-      <AddEditWordDialog
-        open={editDialogOpen}
-        onOpenChange={(open) => setEditDialogOpen(open)}
-        editMode={true}
-        currentTranslation={flashcard.translation}
-        flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
-      />
+      {!!flashcard && (
+        <AddEditWordDialog
+          open={editDialogOpen}
+          onOpenChange={(open) => setEditDialogOpen(open)}
+          editMode={true}
+          currentTranslation={flashcard.translation}
+          flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
+        />
+      )}
     </div>
   );
 };

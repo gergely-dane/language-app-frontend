@@ -10,8 +10,8 @@ interface GetTranslationsQuery {
   pageSize?: number;
   sortBy?: string;
   sortAscending?: boolean;
-  sourceLanguageId?: number;
-  translationLanguageId?: number;
+  sourceLanguageId?: number | null;
+  translationLanguageId?: number | null;
 }
 
 export const useTranslations = (params: GetTranslationsQuery) =>

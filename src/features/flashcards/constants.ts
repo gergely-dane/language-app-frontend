@@ -11,3 +11,5 @@ export const SWIPE_TRANSITION = {
 } as const satisfies Transition;
 
 export const MINUTES_IN_DAY = 1440;
+
+export const FLASHCARD_FILTERS_STATE_STORAGE_KEY = "flashcardFiltersState";

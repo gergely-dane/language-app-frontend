@@ -162,10 +162,7 @@ export const FlashcardComp = React.forwardRef<
 
     return (
       <div
-        className={cn(
-          "cursor-pointer touch-none p-1 select-none [&:not(:hover)]:overflow-x-hidden",
-          className,
-        )}
+        className={cn("cursor-pointer touch-none p-1 select-none", className)}
         ref={swipeRef}
       >
         <div className="relative h-68" style={{ perspective: 1600 }}>

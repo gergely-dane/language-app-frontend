@@ -1,7 +1,7 @@
 "use client";
 
 import { IconArrowNarrowRight, IconSelector } from "@tabler/icons-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,15 +19,19 @@ import {
 } from "@/components/ui/popover";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
-import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
 
+export type LanguageFilterValue = {
+  sourceLanguageId: number | null;
+  translationLanguageId: number | null;
+};
+
 type LanguagePairSelectorProps = {
   className?: string;
-  value: LanguagePair | null;
-  onChange: (value: LanguagePair | null) => void;
+  value: LanguageFilterValue | null;
+  onChange: (value: LanguageFilterValue) => void;
   disabled?: boolean;
 };
 
@@ -43,10 +47,25 @@ export const LanguagePairSelector = ({
   const isMobile = useIsMobileScreen();
 
   const { getLanguageString, getLanguageCode } = useLanguages();
-  let { data: languagePairs } = useLanguagePairs();
-  if (!languagePairs) {
-    languagePairs = [];
-  }
+  const { data: languagePairs = [] } = useLanguagePairs();
+
+  const sourceLanguages = useMemo(() => {
+    return languagePairs.map((p) => p.sourceLanguageId);
+  }, [languagePairs]);
+
+  const translationLanguages = useMemo(() => {
+    return languagePairs.map((p) => p.translationLanguageId);
+  }, [languagePairs]);
+
+  const currentSourceId = value?.sourceLanguageId || null;
+  const currentTranslationId = value?.translationLanguageId || null;
+
+  const handleSelect = (type: "source" | "translation", id: number | null) => {
+    onChange({
+      sourceLanguageId: type === "source" ? id : currentSourceId,
+      translationLanguageId: type === "translation" ? id : currentTranslationId,
+    });
+  };
 
   return (
     <div className={className}>
@@ -58,105 +77,120 @@ export const LanguagePairSelector = ({
             role="combobox"
             aria-expanded={open}
           >
-            {value ? (
-              <>
-                <p>
-                  {!isMobile
-                    ? getLanguageString(value.sourceLanguageId)
-                    : getLanguageCode(value.sourceLanguageId).toUpperCase()}
-                </p>
-                <IconArrowNarrowRight className="mt-0.5" />
-                <p>
-                  {!isMobile
-                    ? getLanguageString(value.translationLanguageId)
-                    : getLanguageCode(
-                        value.translationLanguageId,
-                      ).toUpperCase()}
-                </p>
-              </>
-            ) : (
-              <p>
-                {!isMobile ? t("vocabulary.allLanguages") : t("vocabulary.all")}
+            <div className="flex items-center gap-2 truncate">
+              <p className="truncate">
+                {currentSourceId
+                  ? !isMobile
+                    ? getLanguageString(currentSourceId)
+                    : getLanguageCode(currentSourceId).toUpperCase()
+                  : t("vocabulary.any")}
               </p>
-            )}
+
+              <IconArrowNarrowRight className="mt-0.5 shrink-0" />
+
+              <p className="truncate">
+                {currentTranslationId
+                  ? !isMobile
+                    ? getLanguageString(currentTranslationId)
+                    : getLanguageCode(currentTranslationId).toUpperCase()
+                  : t("vocabulary.any")}
+              </p>
+            </div>
 
             <IconSelector className="shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-fit p-0">
-          <Command>
-            <CommandInput
-              className="w-20 lg:w-30"
-              placeholder={
-                !isMobile
-                  ? t("vocabulary.searchLanguages")
-                  : t("general.search")
-              }
-            />
+        <PopoverContent
+          className="w-[300px] p-0"
+          align="start"
+          onOpenAutoFocus={(e) => isMobile && e.preventDefault()}
+        >
+          <div className="flex flex-row divide-x">
+            <Command className="flex-1 rounded-r-none">
+              <CommandInput placeholder={t("general.search")} />
+              <CommandList>
+                <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
+                <CommandGroup heading="Source Language">
+                  <CommandItem
+                    value="any-source"
+                    className={cn(
+                      "gap-1",
+                      !currentSourceId
+                        ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
+                        : "",
+                    )}
+                    onSelect={() => handleSelect("source", null)}
+                  >
+                    {t("vocabulary.any")}
+                  </CommandItem>
 
-            <CommandList>
-              <CommandEmpty>
-                {t("vocabulary.noLanguagePairsFound")}
-              </CommandEmpty>
+                  {sourceLanguages.map((id) => {
+                    const label = getLanguageString(id);
+                    const isSelected = currentSourceId === id;
 
-              <CommandGroup>
-                <CommandItem
-                  className={cn("gap-1", !value ? "bg-primary" : "")}
-                  value="all"
-                  onSelect={() => {
-                    onChange(null);
-                    setOpen(false);
-                  }}
-                >
-                  {t("vocabulary.allLanguages")}
-                </CommandItem>
-
-                {languagePairs.map((pair, i) => {
-                  const sourceLanguage = getLanguageString(
-                    pair.sourceLanguageId,
-                  );
-                  const translationLanguage = getLanguageString(
-                    pair.translationLanguageId,
-                  );
-
-                  const isSelected =
-                    value?.sourceLanguageId === pair.sourceLanguageId &&
-                    value?.translationLanguageId === pair.translationLanguageId;
-
-                  return (
-                    <CommandItem
-                      key={i}
-                      value={`${sourceLanguage} ${translationLanguage}`}
-                      className={cn(
-                        "gap-1",
-                        isSelected
-                          ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
-                          : "",
-                      )}
-                      onSelect={() => {
-                        onChange(pair);
-                        setOpen(false);
-                      }}
-                    >
-                      <p>{sourceLanguage}</p>
-
-                      <IconArrowNarrowRight
+                    return (
+                      <CommandItem
+                        key={`source-${id}`}
+                        value={label}
                         className={cn(
-                          "mt-0.5",
+                          "gap-1",
                           isSelected
-                            ? "text-primary-foreground"
-                            : "text-foreground",
+                            ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
+                            : "",
                         )}
-                      />
+                        onSelect={() => handleSelect("source", id)}
+                      >
+                        {label}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              </CommandList>
+            </Command>
 
-                      <p>{translationLanguage}</p>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
+            <Command className="flex-1">
+              <CommandInput placeholder={t("general.search")} />
+              <CommandList>
+                <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
+                <CommandGroup heading="Translation Language">
+                  <CommandItem
+                    value="any-translation"
+                    className={cn(
+                      "gap-1",
+                      !currentTranslationId
+                        ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
+                        : "",
+                    )}
+                    onSelect={() => handleSelect("translation", null)}
+                  >
+                    {t("vocabulary.any")}
+                  </CommandItem>
+
+                  {translationLanguages.map((id) => {
+                    const label = getLanguageString(id);
+                    const isSelected = currentTranslationId === id;
+
+                    return (
+                      <CommandItem
+                        key={`translation-${id}`}
+                        value={label}
+                        className={cn(
+                          "gap-1",
+                          isSelected
+                            ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
+                            : "",
+                        )}
+                        onSelect={() => handleSelect("translation", id)}
+                      >
+                        {label}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </div>
         </PopoverContent>
       </Popover>
     </div>

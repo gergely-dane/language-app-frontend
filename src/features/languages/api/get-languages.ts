@@ -17,8 +17,8 @@ export const useLanguages = () => {
   const getLanguageCode = (id?: number) =>
     queryResult?.data?.find((lang) => lang.id === id)?.code || "";
 
-  const getLanguageString = (id?: number) => {
-    const code = getLanguageCode(id);
+  const getLanguageString = (id?: number | null) => {
+    const code = id ? getLanguageCode(id) : undefined;
     return code ? LANGUAGES[code] || "" : "";
   };
 
