@@ -278,6 +278,7 @@ export const AddEditFormContent = ({
             <Input
               id="name"
               autoFocus={true}
+              enterKeyHint="done"
               placeholder={t("vocabulary.enterTheWord")}
               value={word}
               onChange={(e) => setWord(e.target.value)}
@@ -294,6 +295,7 @@ export const AddEditFormContent = ({
             <div className="flex items-center gap-2">
               <InputWithKbd
                 placeholder={t("vocabulary.enterTheTranslation")}
+                enterKeyHint="done"
                 kbd={
                   <>
                     {!isMobile && <p>Enter</p>} <IconCornerDownLeft />
