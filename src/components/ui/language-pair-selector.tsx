@@ -49,18 +49,24 @@ export const LanguagePairSelector = ({
   const { getLanguageString, getLanguageCode } = useLanguages();
   const { data: languagePairs = [] } = useLanguagePairs();
 
-  const sourceLanguages = useMemo(() => {
-    return Array.from(new Set(languagePairs.map((p) => p.sourceLanguageId)));
-  }, [languagePairs]);
-
-  const translationLanguages = useMemo(() => {
-    return Array.from(
-      new Set(languagePairs.map((p) => p.translationLanguageId)),
-    );
-  }, [languagePairs]);
-
   const currentSourceId = value?.sourceLanguageId || null;
   const currentTranslationId = value?.translationLanguageId || null;
+
+  const sourceLanguages = useMemo(() => {
+    const filtered = currentTranslationId
+      ? languagePairs.filter(
+          (p) => p.translationLanguageId === currentTranslationId,
+        )
+      : languagePairs;
+    return Array.from(new Set(filtered.map((p) => p.sourceLanguageId)));
+  }, [languagePairs, currentTranslationId]);
+
+  const translationLanguages = useMemo(() => {
+    const filtered = currentSourceId
+      ? languagePairs.filter((p) => p.sourceLanguageId === currentSourceId)
+      : languagePairs;
+    return Array.from(new Set(filtered.map((p) => p.translationLanguageId)));
+  }, [languagePairs, currentSourceId]);
 
   const handleSelect = (type: "source" | "translation", id: number | null) => {
     onChange({
