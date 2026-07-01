@@ -217,7 +217,7 @@ const Flashcards = () => {
 
       <div
         className={cn(
-          "mx-auto mt-4 grid w-full grid-cols-2 gap-3 transition-opacity max-sm:p-2 sm:grid-cols-4 md:gap-2",
+          "mx-auto -mt-4 grid w-full grid-cols-2 gap-3 transition-opacity max-sm:p-2 sm:mt-4 sm:grid-cols-4 md:gap-2",
           !flashcard && "pointer-events-none opacity-0",
         )}
       >
