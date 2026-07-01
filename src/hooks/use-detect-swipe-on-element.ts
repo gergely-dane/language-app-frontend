@@ -39,14 +39,18 @@ export function useDetectSwipeOnElement<T extends HTMLElement>(
         }
       } else {
         if (Math.abs(diffY) > minSwipeLength) {
-          if (diffY < 0) {
-            const direction = "down" as Direction;
+          if (diffY > 0) {
+            const direction = "up" as Direction;
             setSwipeDirection(direction);
             onSwipe?.(direction);
             startX.current = null;
             startY.current = null;
           } else {
-            setSwipeDirection(null);
+            const direction = "down" as Direction;
+            setSwipeDirection(direction);
+            onSwipe?.(direction);
+            startX.current = null;
+            startY.current = null;
           }
         } else {
           setSwipeDirection(null);

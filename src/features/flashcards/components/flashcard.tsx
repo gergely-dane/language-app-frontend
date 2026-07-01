@@ -57,11 +57,9 @@ export const FlashcardComp = React.forwardRef<
       useState<Direction | null>(null);
     const [isEntering, setIsEntering] = useState(true);
 
-    useEffect(() => {
-      if (!swipeAnimationDirection) {
-        setDisplayTranslation(translation);
-      }
-    }, [translation, swipeAnimationDirection]);
+    const currentDisplayTranslation = swipeAnimationDirection
+      ? displayTranslation
+      : translation;
 
     const reset = useCallback(() => {
       setFlipped(isReverse);
@@ -82,11 +80,12 @@ export const FlashcardComp = React.forwardRef<
       (direction: Direction) => {
         if (disabled) return;
 
+        setDisplayTranslation(translation);
         onRespond?.(direction);
         setSwipeAnimationDirection(direction);
         onSwipeAnimationStart?.();
       },
-      [disabled, onRespond, onSwipeAnimationStart],
+      [disabled, onRespond, onSwipeAnimationStart, translation],
     );
 
     const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
@@ -146,6 +145,10 @@ export const FlashcardComp = React.forwardRef<
             e.preventDefault();
             respond("down");
             break;
+          case "ArrowUp":
+            e.preventDefault();
+            respond("up");
+            break;
           case "ArrowRight":
             e.preventDefault();
             respond("right");
@@ -200,7 +203,7 @@ export const FlashcardComp = React.forwardRef<
             onAnimationComplete={() => handleAnimationComplete()}
           >
             <FlashcardSide
-              translation={displayTranslation}
+              translation={currentDisplayTranslation}
               isFront={true}
               flipped={flipped}
               forceHideBackface={!!swipeAnimationDirection || isEntering}
@@ -208,7 +211,7 @@ export const FlashcardComp = React.forwardRef<
             />
 
             <FlashcardSide
-              translation={displayTranslation}
+              translation={currentDisplayTranslation}
               isFront={false}
               flipped={flipped}
               forceHideBackface={!!swipeAnimationDirection || isEntering}

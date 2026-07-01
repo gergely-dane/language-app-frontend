@@ -1,4 +1,4 @@
-export type Direction = "left" | "down" | "right";
+export type Direction = "left" | "down" | "right" | "up";
 
 export type FlashcardCompHandle = {
   flip: () => void;

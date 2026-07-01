@@ -32,14 +32,6 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
         return;
       }
 
-      void queryClient.invalidateQueries({
-        queryKey: [
-          "flashcards",
-          variables.response.nextCardQuery,
-          flashcardIndex,
-        ],
-      });
-
       queryClient.setQueryData(
         ["flashcards", variables.response.nextCardQuery, flashcardIndex + 1],
         nextFlashcard,

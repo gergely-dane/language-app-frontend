@@ -37,6 +37,17 @@ export const getCardAnimation = (
     };
   }
 
+  if (swipeAnimationDirection === "up") {
+    return {
+      opacity: 0,
+      rotateY: flipped ? 180 : 0,
+      rotateZ: 0,
+      scale: 0.98,
+      x: 0,
+      y: -184,
+    };
+  }
+
   return {
     opacity: 1,
     rotateY: flipped ? 180 : 0,

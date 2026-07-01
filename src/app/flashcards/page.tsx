@@ -5,6 +5,7 @@ import {
   IconHandMove,
   IconHelp,
   IconPencil,
+  IconStar,
   IconX,
 } from "@tabler/icons-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -22,7 +23,10 @@ import {
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
-import { FLASHCARD_FILTERS_STATE_STORAGE_KEY } from "@/features/flashcards/constants";
+import {
+  FLASHCARD_DIRECTION_RATINGS,
+  FLASHCARD_FILTERS_STATE_STORAGE_KEY,
+} from "@/features/flashcards/constants";
 import type {
   Direction,
   FlashcardCompHandle,
@@ -101,16 +105,11 @@ const Flashcards = () => {
   const areButtonsDisabled =
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
-  const handleRespond = useCallback(
-    async (direction: Direction) => {
+  const handleRespondByRating = useCallback(
+    async (response: 1 | 2 | 3 | 4) => {
       if (isCardAnimating || respondToFlashcard.isPending || !flashcard) {
         return;
       }
-
-      let response: 1 | 2 | 3;
-      if (direction === "left") response = 1;
-      else if (direction === "down") response = 2;
-      else response = 3;
 
       await respondToFlashcard.mutateAsync({
         flashcardId: flashcard.id,
@@ -119,13 +118,15 @@ const Flashcards = () => {
           nextCardQuery: flashcardParams,
         },
       });
-
-      if (response === 2) {
-        setFlashcardIndex((prev) => prev + 1);
-        flashcardRef.current?.reset();
-      }
     },
     [isCardAnimating, respondToFlashcard, flashcard, flashcardParams],
+  );
+
+  const handleRespond = useCallback(
+    (direction: Direction) => {
+      void handleRespondByRating(FLASHCARD_DIRECTION_RATINGS[direction]);
+    },
+    [handleRespondByRating],
   );
 
   const onSwipeAnimationComplete = () => {
@@ -216,13 +217,13 @@ const Flashcards = () => {
 
       <div
         className={cn(
-          "mx-auto mt-4 grid grid-cols-3 gap-3 transition-opacity md:gap-6 md:px-8",
+          "mx-auto mt-4 grid w-full grid-cols-2 gap-3 transition-opacity max-sm:p-2 sm:grid-cols-4 md:gap-2",
           !flashcard && "pointer-events-none opacity-0",
         )}
       >
-        <div className="flex flex-col items-center gap-1">
+        <div className="order-3 flex flex-col items-center gap-1 sm:order-none">
           <Button
-            className="flex w-28 sm:w-32"
+            className="flex w-full"
             variant="outline"
             onClick={() => flashcardRef.current?.respond("left")}
             disabled={areButtonsDisabled}
@@ -242,9 +243,9 @@ const Flashcards = () => {
           />
         </div>
 
-        <div className="flex flex-col items-center gap-1">
+        <div className="order-1 flex flex-col items-center gap-1 sm:order-none">
           <Button
-            className="flex w-28 sm:w-32"
+            className="flex w-full"
             variant="outline"
             onClick={() => flashcardRef.current?.respond("down")}
             disabled={areButtonsDisabled}
@@ -264,9 +265,9 @@ const Flashcards = () => {
           />
         </div>
 
-        <div className="flex flex-col items-center gap-1">
+        <div className="order-4 flex flex-col items-center gap-1 sm:order-none">
           <Button
-            className="flex w-28 sm:w-32"
+            className="flex w-full"
             variant="outline"
             onClick={() => flashcardRef.current?.respond("right")}
             disabled={areButtonsDisabled}
@@ -283,6 +284,24 @@ const Flashcards = () => {
             className={cn(isSwipeAnimating && "opacity-0")}
           />
         </div>
+
+        <div className="order-2 flex flex-col items-center gap-1 sm:order-none">
+          <Button
+            className="flex w-full"
+            variant="outline"
+            onClick={() => flashcardRef.current?.respond("up")}
+            disabled={areButtonsDisabled}
+          >
+            <IconStar className="mt-0.5 text-amber-500" />
+
+            <p>{t("flashcards.easy")}</p>
+          </Button>
+
+          <ReviewTimeDisplay
+            minutes={flashcard?.easyNextReviewMinutes ?? 0}
+            className={cn(isSwipeAnimating && "opacity-0")}
+          />
+        </div>
       </div>
 
       {!isMobile ? (
@@ -294,6 +313,7 @@ const Flashcards = () => {
         >
           {t.rich("flashcards.hintUseArrowKeysOrSwipe", {
             left: (chunks) => <Kbd>{chunks}</Kbd>,
+            up: (chunks) => <Kbd>{chunks}</Kbd>,
             down: (chunks) => <Kbd>{chunks}</Kbd>,
             right: (chunks) => <Kbd>{chunks}</Kbd>,
           })}
