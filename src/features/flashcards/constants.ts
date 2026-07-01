@@ -3,13 +3,13 @@ import type { Transition } from "motion/react";
 import type { Direction } from "./types";
 
 export const FLIP_TRANSITION = {
-  duration: 0.85,
-  ease: [0.22, 1, 0.36, 1],
+  duration: 0.6,
+  ease: [0.22, 0.85, 0.1, 1],
 } as const satisfies Transition;
 
 export const SWIPE_TRANSITION = {
-  duration: 1,
-  ease: [0.32, 0.72, 0, 1],
+  duration: 0.55,
+  ease: [0.3, 0.85, 0.1, 1],
 } as const satisfies Transition;
 
 export const MINUTES_IN_DAY = 1440;
