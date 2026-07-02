@@ -68,7 +68,6 @@ export const VocabularyPage = () => {
           value={searchFilter}
           onChange={(value) => setSearchFilter(value)}
           placeholder={t("vocabulary.searchForAWord")}
-          disabled={isFetching}
         />
 
         <LanguagePairSelector
