@@ -1,22 +1,22 @@
-"use client";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-import { StatisticsDisplay } from "@/features/user/components/statistics-display";
-import { useI18n } from "@/hooks/use-i18n";
+import { HomePage } from "@/app/_components/home-page";
+import { getUserStatisticsQueryOptions } from "@/features/user/api/get-user-statistics";
 
-const Home = () => {
-  const t = useI18n();
+export default async function Page() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(
+    getUserStatisticsQueryOptions({ previousDays: 30 }),
+  );
 
   return (
-    <div className="min-h-[calc(100vh-var(--navbar-height))] w-full">
-      <p className="text-3xl font-bold">{t("general.welcomeBack")}</p>
-
-      <p className="text-muted-foreground font-semibold">
-        {t("general.heresSomeInfo")}
-      </p>
-
-      <StatisticsDisplay className="mt-6" />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <HomePage />
+    </HydrationBoundary>
   );
-};
-
-export default Home;
+}
