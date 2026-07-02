@@ -5,11 +5,10 @@ import {
   flexRender,
   getCoreRowModel,
   getFacetedUniqueValues,
-  type RowSelectionState,
+  type OnChangeFn,
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
 
 import {
   Table,
@@ -19,57 +18,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
-import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { PaginationNavigator } from "@/features/vocabulary/components/pagination-navigator";
 import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-
-type VocabularyTableFilters = {
-  search: string;
-  languageFilter: LanguagePair | null;
-  pageNumber: number;
-};
+import { type PaginatedResponse } from "@/interfaces/paginated-response.interface";
 
 type VocabularyTableProps<TValue> = {
   columns: ColumnDef<Translation, TValue>[];
-  filters: VocabularyTableFilters;
+  words: PaginatedResponse<Translation> | undefined;
+  sorting: SortingState;
+  onSortingChange: OnChangeFn<SortingState>;
   onPageChange?: (page: number) => void;
 };
 
 export const VocabularyTable = <TValue,>({
   columns,
-  filters,
+  words,
+  sorting,
+  onSortingChange,
   onPageChange,
 }: VocabularyTableProps<TValue>) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: "createdAt", desc: true },
-  ]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
-  const { data: words } = useTranslations({
-    pageNumber: filters.pageNumber,
-    search: filters.search,
-    sourceLanguageId: filters.languageFilter?.sourceLanguageId,
-    translationLanguageId: filters.languageFilter?.translationLanguageId,
-    sortBy: sorting[0].id,
-    sortAscending: !sorting[0].desc,
-  });
-
   const table = useReactTable({
     data: words?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
+    onSortingChange,
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
-      rowSelection,
       columnVisibility: { createdAt: !isMobile, select: false },
     },
     getRowId: (row: Translation) => row.id.toString(),

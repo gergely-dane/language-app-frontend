@@ -9,6 +9,7 @@ interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export const SearchInput = ({
@@ -16,6 +17,7 @@ export const SearchInput = ({
   value,
   onChange,
   placeholder,
+  disabled,
 }: SearchInputProps) => (
   <div className={cn("relative", className)}>
     <Input
@@ -23,6 +25,7 @@ export const SearchInput = ({
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
     />
 
     {value && (
@@ -32,6 +35,7 @@ export const SearchInput = ({
         size="icon"
         onClick={() => onChange("")}
         aria-label="Clear filter"
+        disabled={disabled}
       >
         <IconX />
       </Button>

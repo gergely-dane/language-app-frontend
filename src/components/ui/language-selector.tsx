@@ -63,7 +63,10 @@ export const LanguageSelector = ({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-fit p-0">
+        <PopoverContent
+          className="w-fit p-0"
+          onOpenAutoFocus={(e) => isMobile && e.preventDefault()}
+        >
           <Command>
             <CommandInput
               className="w-20 lg:w-30"

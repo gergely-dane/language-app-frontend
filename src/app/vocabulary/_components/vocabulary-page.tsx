@@ -1,6 +1,7 @@
 "use client";
 
 import { IconPlus } from "@tabler/icons-react";
+import { type SortingState } from "@tanstack/react-table";
 import { useCallback, useState } from "react";
 
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
 import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
+import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
@@ -27,8 +29,21 @@ export const VocabularyPage = () => {
   const [languageFilter, setLanguageFilter] = useState<LanguagePair | null>(
     null,
   );
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "createdAt", desc: true },
+  ]);
 
   const debouncedSearchFilter = useDebounce(searchFilter);
+
+  const { data: words, isFetching } = useTranslations({
+    pageNumber,
+    search: debouncedSearchFilter,
+    sourceLanguageId: languageFilter?.sourceLanguageId,
+    translationLanguageId: languageFilter?.translationLanguageId,
+    sortBy: sorting[0]?.id ?? "createdAt",
+    sortAscending: sorting[0] ? !sorting[0].desc : false,
+  });
+
   const onEdit = useCallback((translation: Translation) => {
     setEditingTranslation(translation);
     setIsEditDialogOpen(true);
@@ -53,12 +68,14 @@ export const VocabularyPage = () => {
           value={searchFilter}
           onChange={(value) => setSearchFilter(value)}
           placeholder={t("vocabulary.searchForAWord")}
+          disabled={isFetching}
         />
 
         <LanguagePairSelector
           className="flex-1 lg:flex-none"
           value={languageFilter}
           onChange={(value) => setLanguageFilter(value)}
+          disabled={isFetching}
         />
 
         <Button
@@ -67,6 +84,7 @@ export const VocabularyPage = () => {
             setEditingTranslation(undefined);
             setIsEditDialogOpen(true);
           }}
+          disabled={isFetching}
         >
           <IconPlus className="h-4 w-4" />
           <p className="hidden lg:block">{t("vocabulary.addWord")}</p>
@@ -82,11 +100,9 @@ export const VocabularyPage = () => {
 
       <VocabularyTable
         columns={columns}
-        filters={{
-          search: debouncedSearchFilter,
-          languageFilter,
-          pageNumber,
-        }}
+        words={words}
+        sorting={sorting}
+        onSortingChange={setSorting}
         onPageChange={(page) => setPageNumber(page)}
       />
 
