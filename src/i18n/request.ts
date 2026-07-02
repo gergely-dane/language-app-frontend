@@ -11,6 +11,7 @@ const buildI18nConfig = async (): Promise<I18nConfig> => {
     "auth",
     "flashcards",
     "general",
+    "settings",
     "statistics",
     "vocabulary",
   ];

@@ -1,0 +1,11 @@
+{
+  "title": "Settings",
+  "profile": "Profile",
+  "profileDescription": "Update your personal information.",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "save": "Save",
+  "success": "Profile updated successfully",
+  "error": "Failed to update profile",
+  "loading": "Loading..."
+}

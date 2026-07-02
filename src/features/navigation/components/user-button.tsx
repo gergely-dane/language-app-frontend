@@ -1,4 +1,5 @@
-import { IconLogout, IconUser } from "@tabler/icons-react";
+import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/auth-context";
+import { useGetUser } from "@/features/user/api/get-user";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/utils/cn";
 
@@ -17,7 +19,8 @@ type UserButtonProps = {
 
 export const UserButton = ({ className }: UserButtonProps) => {
   const t = useI18n();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const { data: userProfile } = useGetUser();
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -29,6 +32,11 @@ export const UserButton = ({ className }: UserButtonProps) => {
         console.error("Logout failed:", err);
       });
   };
+
+  const displayName =
+    userProfile?.firstName || userProfile?.lastName
+      ? `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim()
+      : "";
 
   return (
     <Popover>
@@ -46,21 +54,30 @@ export const UserButton = ({ className }: UserButtonProps) => {
         className="flex w-fit flex-col gap-2 px-1 pt-2 pb-1"
         align="end"
       >
-        <div className="flex items-center gap-1 px-2.5">
-          <IconUser size={16} />
-          <p className="text-muted-foreground text-xs">{user?.email}</p>
+        <div className="flex flex-col gap-0.5 px-2.5">
+          {displayName && <p className="text-sm font-medium">{displayName}</p>}
+          <p className="text-muted-foreground text-xs">{userProfile?.email}</p>
         </div>
 
         <Separator />
 
-        <Button
-          variant="ghost"
-          className="justify-start"
-          onClick={handleLogout}
-        >
-          <IconLogout />
-          {t("auth.logOut")}
-        </Button>
+        <div className="gap-1">
+          <Button variant="ghost" className="w-full justify-start px-2.5">
+            <Link href="/settings" className="flex w-full items-center gap-2">
+              <IconSettings />
+              <span className="mb-0.5">{t("settings.title")}</span>
+            </Link>
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="text-destructive w-full items-center justify-start"
+            onClick={handleLogout}
+          >
+            <IconLogout />
+            <span className="mb-0.5">{t("auth.logOut")}</span>
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   );
