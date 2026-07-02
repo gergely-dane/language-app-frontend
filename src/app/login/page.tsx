@@ -1,5 +1,17 @@
-import { LoginPage } from "@/app/login/_components/login-page";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+import { LoginPage } from "@/app/login/_components/login-page";
+import { createClient } from "@/lib/supabase-server";
+
+export default async function Page() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/");
+  }
+
   return <LoginPage />;
 }
