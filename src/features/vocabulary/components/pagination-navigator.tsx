@@ -2,11 +2,14 @@ import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
+  PaginationFirst,
   PaginationItem,
+  PaginationLast,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 type PaginationNavigatorProps = {
   className?: string;
@@ -21,93 +24,75 @@ export const PaginationNavigator = ({
   totalPages,
   onChange,
 }: PaginationNavigatorProps) => {
-  let firstNumber: number;
+  const isMobile = useIsMobileScreen();
+  const siblings = isMobile ? 1 : 2;
+  const visiblePages = siblings * 2 + 1;
 
-  if (currentPage < 2) {
-    firstNumber = 1;
-  } else if (currentPage < totalPages - 3) {
-    firstNumber = currentPage - 1;
-  } else {
-    firstNumber = Math.max(totalPages - 4, 1);
+  let startPage = Math.max(1, currentPage - siblings);
+  let endPage = Math.min(totalPages, startPage + visiblePages - 1);
+  if (endPage - startPage + 1 < visiblePages) {
+    startPage = Math.max(1, endPage - visiblePages + 1);
   }
+
+  if (totalPages === 0) {
+    startPage = 1;
+    endPage = 0;
+  }
+
+  const pages = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, i) => startPage + i,
+  );
 
   return (
     <Pagination className={className}>
       <PaginationContent>
-        <PaginationItem className={currentPage <= 1 ? "invisible" : ""}>
+        <PaginationItem>
+          <PaginationFirst
+            disabled={currentPage <= 1}
+            onClick={() => onChange(1)}
+          />
+        </PaginationItem>
+        <PaginationItem>
           <PaginationPrevious
-            onClick={() => (currentPage > 1 ? onChange(currentPage - 1) : 1)}
+            disabled={currentPage <= 1}
+            onClick={() => onChange(currentPage - 1)}
           />
         </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink
-            isActive={currentPage === firstNumber}
-            onClick={() => onChange(firstNumber)}
-          >
-            {firstNumber}
-          </PaginationLink>
-        </PaginationItem>
-
-        {firstNumber + 1 <= totalPages && (
-          <PaginationItem>
-            <PaginationLink
-              isActive={currentPage === firstNumber + 1}
-              onClick={() => onChange(firstNumber + 1)}
-            >
-              {firstNumber + 1}
-            </PaginationLink>
-          </PaginationItem>
-        )}
-
-        {firstNumber + 2 <= totalPages && (
-          <PaginationItem>
-            <PaginationLink
-              isActive={currentPage === firstNumber + 2}
-              onClick={() => onChange(firstNumber + 2)}
-            >
-              {firstNumber + 2}
-            </PaginationLink>
-          </PaginationItem>
-        )}
-
-        {currentPage < totalPages - 3 ? (
+        {startPage > 1 && (
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
-        ) : (
-          <>
-            {totalPages >= 4 && (
-              <PaginationItem>
-                <PaginationLink
-                  isActive={currentPage === totalPages - 1}
-                  onClick={() => onChange(totalPages - 1)}
-                >
-                  {totalPages - 1}
-                </PaginationLink>
-              </PaginationItem>
-            )}
-          </>
         )}
 
-        {totalPages >= 5 && (
-          <PaginationItem>
+        {pages.map((page) => (
+          <PaginationItem key={page}>
             <PaginationLink
-              isActive={currentPage === totalPages}
-              onClick={() => onChange(totalPages)}
+              isActive={currentPage === page}
+              onClick={() => onChange(page)}
             >
-              {totalPages}
+              {page}
             </PaginationLink>
+          </PaginationItem>
+        ))}
+
+        {endPage > 0 && endPage < totalPages && (
+          <PaginationItem>
+            <PaginationEllipsis />
           </PaginationItem>
         )}
 
-        <PaginationItem
-          className={currentPage >= totalPages ? "invisible" : ""}
-        >
+        <PaginationItem>
           <PaginationNext
-            onClick={() =>
-              currentPage < totalPages ? onChange(currentPage + 1) : totalPages
-            }
+            disabled={currentPage >= totalPages || totalPages === 0}
+            onClick={() => onChange(currentPage + 1)}
+          />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLast
+            disabled={currentPage >= totalPages || totalPages === 0}
+            onClick={() => onChange(totalPages > 0 ? totalPages : 1)}
           />
         </PaginationItem>
       </PaginationContent>

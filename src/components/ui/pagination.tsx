@@ -1,6 +1,8 @@
 import {
   IconChevronLeft,
   IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
   IconDots,
 } from "@tabler/icons-react";
 import * as React from "react";
@@ -40,30 +42,60 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean;
+  disabled?: boolean;
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">;
+  React.ComponentProps<"button">;
 
 function PaginationLink({
   className,
   isActive,
+  disabled,
   size = "icon",
   ...props
 }: PaginationLinkProps) {
   return (
-    <a
+    <button
       aria-current={isActive ? "page" : undefined}
       data-slot="pagination-link"
       data-active={isActive}
+      disabled={disabled}
       className={cn(
         buttonVariants({
           variant: isActive ? "outline" : "ghost",
           size,
         }),
-        "select-none",
+        "cursor-pointer select-none disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
       {...props}
     />
+  );
+}
+
+function PaginationFirst({
+  className,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) {
+  const t = useI18n();
+
+  return (
+    <PaginationLink
+      aria-label="Go to first page"
+      size="default"
+      className={cn(
+        "gap-1 px-2.5 select-none sm:pl-2.5",
+        buttonVariants({
+          variant: "outline",
+        }),
+        className,
+      )}
+      {...props}
+    >
+      <IconChevronsLeft className="mt-0.5" />
+      <span className="hidden sm:block">
+        {t("vocabulary.first" as any) || "First"}
+      </span>
+    </PaginationLink>
   );
 }
 
@@ -117,6 +149,33 @@ function PaginationNext({
   );
 }
 
+function PaginationLast({
+  className,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) {
+  const t = useI18n();
+
+  return (
+    <PaginationLink
+      aria-label="Go to last page"
+      size="default"
+      className={cn(
+        "gap-1 px-2.5 select-none sm:pr-2.5",
+        buttonVariants({
+          variant: "outline",
+        }),
+        className,
+      )}
+      {...props}
+    >
+      <span className="hidden sm:block">
+        {t("vocabulary.last" as any) || "Last"}
+      </span>
+      <IconChevronsRight className="mt-0.5" />
+    </PaginationLink>
+  );
+}
+
 function PaginationEllipsis({
   className,
   ...props
@@ -129,7 +188,6 @@ function PaginationEllipsis({
       {...props}
     >
       <IconDots className="size-4" />
-      <span className="sr-only">More pages</span>
     </span>
   );
 }
@@ -138,7 +196,9 @@ export {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
+  PaginationFirst,
   PaginationItem,
+  PaginationLast,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
