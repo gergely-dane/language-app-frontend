@@ -20,6 +20,8 @@ export const useFlashcard = (params?: FlashcardParams | null, index?: number) =>
   useQuery({
     queryKey: ["flashcards", params, index],
     queryFn: () => getFlashcard(params),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
 export const prefetchFlashcard = (
@@ -29,9 +31,4 @@ export const prefetchFlashcard = (
   queryClient.prefetchQuery({
     queryKey: ["flashcards", params, index],
     queryFn: () => getFlashcard(params),
-  });
-
-export const invalidateFlashcards = () =>
-  queryClient.invalidateQueries({
-    queryKey: ["flashcards"],
   });

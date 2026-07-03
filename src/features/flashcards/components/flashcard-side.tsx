@@ -17,7 +17,7 @@ import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
 
 type FlashcardSideProps = {
-  translation: Translation;
+  translation?: Translation;
   isFront: boolean;
   flipped: boolean;
   forceHideBackface?: boolean;
@@ -59,74 +59,76 @@ export const FlashcardSide = ({
       )}
       style={{ transform: isFront ? undefined : "rotateY(180deg)" }}
     >
-      <div className="relative flex h-full flex-col items-center justify-center">
-        <div className="relative text-center">
-          <div className="mx-auto flex w-fit">
-            <IconLanguage className="my-auto mr-1" />
+      {translation && (
+        <div className="relative flex h-full flex-col items-center justify-center">
+          <div className="relative text-center">
+            <div className="mx-auto flex w-fit">
+              <IconLanguage className="my-auto mr-1" />
 
-            <p className="my-auto text-sm">
+              <p className="my-auto text-sm">
+                {isFront
+                  ? getLanguageString(translation.sourceLanguageId)
+                  : getLanguageString(translation.translationLanguageId)}
+              </p>
+
+              <IconArrowRight className="mx-2 mt-1.5" size={16} />
+
+              <p className="my-auto text-sm">
+                {isFront
+                  ? getLanguageString(translation.translationLanguageId)
+                  : getLanguageString(translation.sourceLanguageId)}
+              </p>
+            </div>
+
+            <p className="line-clamp-3 text-xl" ref={textRef}>
               {isFront
-                ? getLanguageString(translation.sourceLanguageId)
-                : getLanguageString(translation.translationLanguageId)}
+                ? translation.word.word
+                : translation.translations
+                    .map((translation) => translation.word)
+                    .join(", ")}
             </p>
 
-            <IconArrowRight className="mx-2 mt-1.5" size={16} />
-
-            <p className="my-auto text-sm">
-              {isFront
-                ? getLanguageString(translation.translationLanguageId)
-                : getLanguageString(translation.sourceLanguageId)}
-            </p>
+            {!isFront && (isClamped || !!translation.definition) && (
+              <Button
+                className="hover:bg-primary! absolute top-full left-1/2 -translate-x-1/2"
+                variant="ghost"
+                size="icon"
+                onClick={handleEditButtonClicked}
+              >
+                <IconChevronDown className="mt-0.5" />
+              </Button>
+            )}
           </div>
 
-          <p className="line-clamp-3 text-xl" ref={textRef}>
-            {isFront
-              ? translation.word.word
-              : translation.translations
-                  .map((translation) => translation.word)
-                  .join(", ")}
-          </p>
-
-          {!isFront && (isClamped || !!translation.definition) && (
-            <Button
-              className="hover:bg-primary! absolute top-full left-1/2 -translate-x-1/2"
-              variant="ghost"
-              size="icon"
-              onClick={handleEditButtonClicked}
-            >
-              <IconChevronDown className="mt-0.5" />
-            </Button>
-          )}
+          <div className="text-primary-muted-foreground absolute bottom-0 w-full text-center text-sm">
+            {!isMobile ? (
+              <div>
+                {t.rich(
+                  isFront
+                    ? "flashcards.clickOrPressSpaceFront"
+                    : "flashcards.clickOrPressSpaceBack",
+                  {
+                    space: (chunks) => (
+                      <Kbd className="bg-muted/50">{chunks}</Kbd>
+                    ),
+                  },
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-1.5">
+                {t.rich(
+                  isFront
+                    ? "flashcards.tapToSeeTranslationsFront"
+                    : "flashcards.tapToSeeTranslationsBack",
+                  {
+                    hand: () => <IconHandClick />,
+                  },
+                )}
+              </div>
+            )}
+          </div>
         </div>
-
-        <div className="text-primary-muted-foreground absolute bottom-0 w-full text-center text-sm">
-          {!isMobile ? (
-            <div>
-              {t.rich(
-                isFront
-                  ? "flashcards.clickOrPressSpaceFront"
-                  : "flashcards.clickOrPressSpaceBack",
-                {
-                  space: (chunks) => (
-                    <Kbd className="bg-muted/50">{chunks}</Kbd>
-                  ),
-                },
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-1.5">
-              {t.rich(
-                isFront
-                  ? "flashcards.tapToSeeTranslationsFront"
-                  : "flashcards.tapToSeeTranslationsBack",
-                {
-                  hand: () => <IconHandClick />,
-                },
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 };

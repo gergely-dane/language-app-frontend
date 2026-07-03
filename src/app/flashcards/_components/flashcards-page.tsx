@@ -8,7 +8,7 @@ import {
   IconStar,
   IconX,
 } from "@tabler/icons-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,6 @@ import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
   type FlashcardParams,
-  invalidateFlashcards,
   useFlashcard,
 } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
@@ -97,7 +96,7 @@ export const FlashcardsPage = () => {
 
   const {
     data: flashcard,
-    isLoading,
+    isFetching,
     error,
   } = useFlashcard(flashcardParams, flashcardIndex);
   const respondToFlashcard = useRespondToFlashcard(flashcardIndex);
@@ -148,13 +147,6 @@ export const FlashcardsPage = () => {
     setWasFlipped(false);
   };
 
-  useEffect(() => {
-    void invalidateFlashcards();
-  }, []);
-
-  if (isLoading) return <p>{t("flashcards.loadingFlashcard")}</p>;
-  if (error) return <p>{t("flashcards.errorLoadingFlashcard")}</p>;
-
   return (
     <div className="mx-auto flex w-full flex-col gap-4 md:w-120">
       <div className="flex">
@@ -185,21 +177,30 @@ export const FlashcardsPage = () => {
         </Button>
       </div>
 
-      {!flashcard ? (
+      {error || !flashcard ? (
         <div className="bg-muted text-primary-foreground ring-foreground mb-10 flex h-60 w-full flex-col items-center justify-center gap-1 rounded-xl p-6 text-center ring-2">
-          <p className="text-xl font-semibold whitespace-pre-line">
-            {t("flashcards.congratulations")}
-          </p>
+          {!error ? (
+            <>
+              <p className="text-xl font-semibold whitespace-pre-line">
+                {t("flashcards.congratulations")}
+              </p>
 
-          <p className="text-muted-foreground">
-            {t("flashcards.keepPracticing")}
-          </p>
+              <p className="text-muted-foreground">
+                {t("flashcards.keepPracticing")}
+              </p>
+            </>
+          ) : (
+            <p className="text-xl font-semibold whitespace-pre-line">
+              {t("flashcards.errorLoadingFlashcard")}
+            </p>
+          )}
         </div>
       ) : (
         flashcard.translation && (
           <FlashcardComp
             key={`${flashcardIndex}-${isReverse}`}
             ref={flashcardRef}
+            isLoading={isFetching}
             translation={flashcard.translation}
             disabled={areButtonsDisabled}
             isReverse={isReverse}
@@ -217,11 +218,12 @@ export const FlashcardsPage = () => {
 
       <div
         className={cn(
-          "mx-auto -mt-4 grid w-full grid-cols-2 gap-3 transition-opacity max-sm:p-2 sm:mt-4 sm:grid-cols-4 md:gap-2",
+          "mx-auto -mt-4 grid w-full grid-cols-2 gap-3 transition-opacity max-sm:p-2 sm:mt-1 sm:grid-cols-4 md:gap-2",
           !flashcard && "pointer-events-none opacity-0",
         )}
       >
         <div className="order-3 flex flex-col items-center gap-1 sm:order-none">
+          <Kbd className="mb-1 hidden sm:inline-flex">◀</Kbd>
           <Button
             className="flex w-full"
             variant="outline"
@@ -244,6 +246,7 @@ export const FlashcardsPage = () => {
         </div>
 
         <div className="order-1 flex flex-col items-center gap-1 sm:order-none">
+          <Kbd className="mb-1 hidden sm:inline-flex">▼</Kbd>
           <Button
             className="flex w-full"
             variant="outline"
@@ -266,6 +269,7 @@ export const FlashcardsPage = () => {
         </div>
 
         <div className="order-4 flex flex-col items-center gap-1 sm:order-none">
+          <Kbd className="mb-1 hidden sm:inline-flex">▶</Kbd>
           <Button
             className="flex w-full"
             variant="outline"
@@ -286,6 +290,7 @@ export const FlashcardsPage = () => {
         </div>
 
         <div className="order-2 flex flex-col items-center gap-1 sm:order-none">
+          <Kbd className="mb-1 hidden sm:inline-flex">▲</Kbd>
           <Button
             className="flex w-full"
             variant="outline"

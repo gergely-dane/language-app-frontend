@@ -22,6 +22,7 @@ type FlashcardCompProps = {
   translation: Translation;
   disabled?: boolean;
   isReverse?: boolean;
+  isLoading?: boolean;
   onAnimationStateChange?: (isAnimating: boolean) => void;
   onFlipStateChange?: (flipped: boolean) => void;
   onRespond?: (direction: Direction) => void;
@@ -40,6 +41,7 @@ export const FlashcardComp = React.forwardRef<
       translation,
       disabled = false,
       isReverse = false,
+      isLoading = false,
       onAnimationStateChange,
       onFlipStateChange,
       onRespond,
@@ -203,7 +205,7 @@ export const FlashcardComp = React.forwardRef<
             onAnimationComplete={() => handleAnimationComplete()}
           >
             <FlashcardSide
-              translation={currentDisplayTranslation}
+              translation={!isLoading ? currentDisplayTranslation : undefined}
               isFront={true}
               flipped={flipped}
               forceHideBackface={!!swipeAnimationDirection || isEntering}
@@ -211,7 +213,7 @@ export const FlashcardComp = React.forwardRef<
             />
 
             <FlashcardSide
-              translation={currentDisplayTranslation}
+              translation={!isLoading ? currentDisplayTranslation : undefined}
               isFront={false}
               flipped={flipped}
               forceHideBackface={!!swipeAnimationDirection || isEntering}
