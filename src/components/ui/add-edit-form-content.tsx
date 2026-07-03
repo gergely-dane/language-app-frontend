@@ -279,6 +279,7 @@ export const AddEditFormContent = ({
               id="name"
               autoFocus={true}
               enterKeyHint="done"
+              autoCapitalize="none"
               placeholder={t("vocabulary.enterTheWord")}
               value={word}
               onChange={(e) => setWord(e.target.value)}
@@ -296,6 +297,7 @@ export const AddEditFormContent = ({
               <InputWithKbd
                 placeholder={t("vocabulary.enterTheTranslation")}
                 enterKeyHint="done"
+                autoCapitalize="none"
                 kbd={
                   <>
                     {!isMobile && <p>Enter</p>} <IconCornerDownLeft />
