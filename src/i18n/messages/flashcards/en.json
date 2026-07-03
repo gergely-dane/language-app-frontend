@@ -20,5 +20,11 @@
   "reverseCards": "Reverse Cards",
   "wasntSure": "Wasn't sure",
   "tapToSeeTranslationsFront": "Tap on the card to see the translation(s) <hand></hand>",
-  "tapToSeeTranslationsBack": "Tap on the card to go to the original word <hand></hand>"
+  "tapToSeeTranslationsBack": "Tap on the card to go to the original word <hand></hand>",
+  "month": "month",
+  "months": "months",
+  "year": "year",
+  "years": "years",
+  "hour": "hour",
+  "hours": "hours"
 }
