@@ -1,8 +1,18 @@
-import { IconCornerDownLeft, IconHelp, IconTrash } from "@tabler/icons-react";
+import {
+  IconCornerDownLeft,
+  IconHelp,
+  IconLanguage,
+  IconTrash,
+} from "@tabler/icons-react";
 import { type KeyboardEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { InputWithKbd } from "@/components/ui/input-with-kbd";
 import { Label } from "@/components/ui/label";
 import { LanguageSelector } from "@/components/ui/language-selector";
@@ -21,6 +31,7 @@ import { type Language } from "@/features/languages/interfaces/language.interfac
 import { useCreateTranslation } from "@/features/vocabulary/api/create-translation";
 import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
 import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadsheet";
+import { useTranslateWord } from "@/features/vocabulary/api/translate-word";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
@@ -54,6 +65,7 @@ export const AddEditFormContent = ({
   });
   const deleteTranslation = useDeleteTranslation(currentTranslation?.id);
   const importSpreadsheet = useImportSpreadsheet();
+  const translateWord = useTranslateWord();
 
   const [sourceLanguageId, setSourceLanguageId] = useState<number | null>(
     currentTranslation?.sourceLanguageId ||
@@ -256,6 +268,41 @@ export const AddEditFormContent = ({
     setTranslationList(translationList.filter((t) => t !== item));
   };
 
+  const handleTranslate = async () => {
+    if (
+      !word.trim() ||
+      !effectiveSourceLanguageId ||
+      !effectiveTargetLanguageId
+    ) {
+      return;
+    }
+
+    try {
+      const result = await translateWord.mutateAsync({
+        word: word.trim(),
+        sourceLanguageId: effectiveSourceLanguageId,
+        targetLanguageId: effectiveTargetLanguageId,
+      });
+
+      const newTranslations = result.translations.filter(
+        (t) => !translationList.includes(t),
+      );
+
+      if (newTranslations.length) {
+        setTranslationList([...translationList, ...newTranslations]);
+      }
+      setTranslation("");
+    } catch {
+      showAlert({
+        title: t("vocabulary.errorTranslatingWord", {
+          word: word.trim(),
+          targetLanguage: targetLanguage?.englishName || "...",
+        }),
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Tabs className="mt-4" defaultValue="addWord">
       {!editMode && (
@@ -272,15 +319,50 @@ export const AddEditFormContent = ({
       >
         <div className="grid gap-3">
           <div className="flex items-center gap-2">
-            <Input
-              id="name"
-              autoFocus={true}
-              enterKeyHint="done"
-              autoCapitalize="none"
-              placeholder={t("vocabulary.enterTheWord")}
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-            />
+            <InputGroup>
+              <InputGroupInput
+                id="name"
+                autoFocus={true}
+                enterKeyHint="done"
+                autoCapitalize="none"
+                placeholder={t("vocabulary.enterTheWord")}
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+              />
+
+              <InputGroupAddon align="inline-end">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InputGroupButton
+                      className="w-18.5 gap-0.5 py-3.5"
+                      variant="outline"
+                      onClick={() => void handleTranslate()}
+                      isLoading={translateWord.isPending}
+                      disabled={
+                        !word.trim() ||
+                        !effectiveSourceLanguageId ||
+                        !effectiveTargetLanguageId
+                      }
+                    >
+                      <IconLanguage className="text-primary !h-3.5 !w-3.5" />
+                      <p className="text-xs">Translate</p>
+                    </InputGroupButton>
+                  </TooltipTrigger>
+
+                  <TooltipContent>
+                    <p>
+                      {t.rich("vocabulary.translateWordInto", {
+                        word: word || "...",
+                        targetLanguage: targetLanguage?.englishName || "...",
+                        bold: (chunks) => (
+                          <span className="font-semibold">{chunks}</span>
+                        ),
+                      })}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </InputGroupAddon>
+            </InputGroup>
 
             <LanguageSelector
               className="w-14 lg:w-32"
