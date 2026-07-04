@@ -41,7 +41,7 @@ export const useColumns = (
         id: "language",
         header: LanguageHeader,
         accessorFn: (tr) => {
-          return `${tr.sourceLanguageId}-${tr.translationLanguageId}`;
+          return `${tr.sourceLanguageId}-${tr.targetLanguageId}`;
         },
         cell: LanguageCell,
       },

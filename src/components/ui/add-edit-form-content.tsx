@@ -28,7 +28,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";
-const LAST_ADDED_TRANSLATION_LANGUAGE_KEY = "lastAddedTranslationLanguageId";
+const LAST_ADDED_TARGET_LANGUAGE_KEY = "lastAddedTargetLanguageId";
 
 type AddEditFormContentProps = {
   editMode?: boolean;
@@ -60,11 +60,9 @@ export const AddEditFormContent = ({
       Number(localStorage.getItem(LAST_ADDED_SOURCE_LANGUAGE_KEY)) ||
       null,
   );
-  const [translationLanguageId, setTranslationLanguageId] = useState<
-    number | null
-  >(
-    currentTranslation?.translationLanguageId ||
-      Number(localStorage.getItem(LAST_ADDED_TRANSLATION_LANGUAGE_KEY)) ||
+  const [targetLanguageId, setTargetLanguageId] = useState<number | null>(
+    currentTranslation?.targetLanguageId ||
+      Number(localStorage.getItem(LAST_ADDED_TARGET_LANGUAGE_KEY)) ||
       null,
   );
   const [word, setWord] = useState<string>(
@@ -89,14 +87,13 @@ export const AddEditFormContent = ({
 
   const effectiveSourceLanguageId =
     sourceLanguageId ?? languages?.[0]?.id ?? null;
-  const effectiveTranslationLanguageId =
-    translationLanguageId ?? languages?.[1]?.id ?? languages?.[0]?.id ?? null;
+  const effectiveTargetLanguageId =
+    targetLanguageId ?? languages?.[1]?.id ?? languages?.[0]?.id ?? null;
 
   const sourceLanguage =
     languages?.find((lang) => lang.id === effectiveSourceLanguageId) || null;
-  const translationLanguage =
-    languages?.find((lang) => lang.id === effectiveTranslationLanguageId) ||
-    null;
+  const targetLanguage =
+    languages?.find((lang) => lang.id === effectiveTargetLanguageId) || null;
 
   const resetForm = () => {
     setWord("");
@@ -114,12 +111,12 @@ export const AddEditFormContent = ({
 
     if (translation) {
       if (selectedId === effectiveSourceLanguageId) {
-        setSourceLanguageId(effectiveTranslationLanguageId);
+        setSourceLanguageId(effectiveTargetLanguageId);
       }
-      setTranslationLanguageId(selectedId);
+      setTargetLanguageId(selectedId);
     } else {
-      if (selectedId === effectiveTranslationLanguageId) {
-        setTranslationLanguageId(effectiveSourceLanguageId);
+      if (selectedId === effectiveTargetLanguageId) {
+        setTargetLanguageId(effectiveSourceLanguageId);
       }
       setSourceLanguageId(selectedId);
     }
@@ -167,7 +164,7 @@ export const AddEditFormContent = ({
       !word ||
       (!translation && !translationList.length) ||
       !effectiveSourceLanguageId ||
-      !effectiveTranslationLanguageId
+      !effectiveTargetLanguageId
     ) {
       return;
     }
@@ -176,7 +173,7 @@ export const AddEditFormContent = ({
       word,
       translations: [...translationList, ...(translation ? [translation] : [])],
       sourceLanguageId: effectiveSourceLanguageId,
-      translationLanguageId: effectiveTranslationLanguageId,
+      targetLanguageId: effectiveTargetLanguageId,
       definition,
     };
 
@@ -197,8 +194,8 @@ export const AddEditFormContent = ({
         String(effectiveSourceLanguageId),
       );
       window.localStorage.setItem(
-        LAST_ADDED_TRANSLATION_LANGUAGE_KEY,
-        String(effectiveTranslationLanguageId),
+        LAST_ADDED_TARGET_LANGUAGE_KEY,
+        String(effectiveTargetLanguageId),
       );
 
       onClose();
@@ -310,7 +307,7 @@ export const AddEditFormContent = ({
 
               <LanguageSelector
                 className="w-14 lg:w-32"
-                value={translationLanguage}
+                value={targetLanguage}
                 onChange={(value) => handleLanguageChange(value, true)}
               />
             </div>

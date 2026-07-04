@@ -24,9 +24,9 @@ export const LanguageCell = ({
   const isMobile = useIsMobileScreen();
   const { getLanguageString, getLanguageCode } = useLanguages();
 
-  const [sourceLanguageId, translationLanguageId] = (
-    getValue() as string
-  ).split("-");
+  const [sourceLanguageId, targetLanguageId] = (getValue() as string).split(
+    "-",
+  );
 
   return (
     <div className="flex gap-0.5">
@@ -40,8 +40,8 @@ export const LanguageCell = ({
 
       <p>
         {!isMobile
-          ? getLanguageString(Number(translationLanguageId))
-          : getLanguageCode(Number(translationLanguageId)).toUpperCase()}
+          ? getLanguageString(Number(targetLanguageId))
+          : getLanguageCode(Number(targetLanguageId)).toUpperCase()}
       </p>
     </div>
   );

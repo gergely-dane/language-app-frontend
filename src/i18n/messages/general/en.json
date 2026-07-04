@@ -9,6 +9,8 @@
   "language": "Language",
   "save": "Save",
   "search": "Search...",
+  "sourceLanguage": "Source language",
+  "targetLanguage": "Target language",
   "translate": "Translate",
   "translations": "Translation(s)",
   "vocabulary": "Vocabulary",

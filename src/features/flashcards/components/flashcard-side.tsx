@@ -68,14 +68,14 @@ export const FlashcardSide = ({
               <p className="my-auto text-sm">
                 {isFront
                   ? getLanguageString(translation.sourceLanguageId)
-                  : getLanguageString(translation.translationLanguageId)}
+                  : getLanguageString(translation.targetLanguageId)}
               </p>
 
               <IconArrowRight className="mx-2 mt-1.5" size={16} />
 
               <p className="my-auto text-sm">
                 {isFront
-                  ? getLanguageString(translation.translationLanguageId)
+                  ? getLanguageString(translation.targetLanguageId)
                   : getLanguageString(translation.sourceLanguageId)}
               </p>
             </div>

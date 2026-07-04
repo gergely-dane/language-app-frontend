@@ -12,7 +12,7 @@ export interface UpdateTranslationRequest {
   word: string;
   translations: string[];
   sourceLanguageId: number;
-  translationLanguageId: number;
+  targetLanguageId: number;
   definition?: string;
 }
 

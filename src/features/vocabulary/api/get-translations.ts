@@ -11,7 +11,7 @@ interface GetTranslationsQuery {
   sortBy?: string;
   sortAscending?: boolean;
   sourceLanguageId?: number | null;
-  translationLanguageId?: number | null;
+  targetLanguageId?: number | null;
 }
 
 export const useTranslations = (params: GetTranslationsQuery) =>

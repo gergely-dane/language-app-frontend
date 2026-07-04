@@ -25,7 +25,7 @@ import { cn } from "@/utils/cn";
 
 export type LanguageFilterValue = {
   sourceLanguageId: number | null;
-  translationLanguageId: number | null;
+  targetLanguageId: number | null;
 };
 
 type LanguagePairSelectorProps = {
@@ -50,28 +50,26 @@ export const LanguagePairSelector = ({
   const { data: languagePairs = [] } = useLanguagePairs();
 
   const currentSourceId = value?.sourceLanguageId || null;
-  const currentTranslationId = value?.translationLanguageId || null;
+  const currentTargetId = value?.targetLanguageId || null;
 
   const sourceLanguages = useMemo(() => {
-    const filtered = currentTranslationId
-      ? languagePairs.filter(
-          (p) => p.translationLanguageId === currentTranslationId,
-        )
+    const filtered = currentTargetId
+      ? languagePairs.filter((p) => p.targetLanguageId === currentTargetId)
       : languagePairs;
     return Array.from(new Set(filtered.map((p) => p.sourceLanguageId)));
-  }, [languagePairs, currentTranslationId]);
+  }, [languagePairs, currentTargetId]);
 
   const translationLanguages = useMemo(() => {
     const filtered = currentSourceId
       ? languagePairs.filter((p) => p.sourceLanguageId === currentSourceId)
       : languagePairs;
-    return Array.from(new Set(filtered.map((p) => p.translationLanguageId)));
+    return Array.from(new Set(filtered.map((p) => p.targetLanguageId)));
   }, [languagePairs, currentSourceId]);
 
   const handleSelect = (type: "source" | "translation", id: number | null) => {
     onChange({
       sourceLanguageId: type === "source" ? id : currentSourceId,
-      translationLanguageId: type === "translation" ? id : currentTranslationId,
+      targetLanguageId: type === "translation" ? id : currentTargetId,
     });
   };
 
@@ -97,10 +95,10 @@ export const LanguagePairSelector = ({
               <IconArrowNarrowRight className="mt-0.5 shrink-0" />
 
               <p className="truncate">
-                {currentTranslationId
+                {currentTargetId
                   ? !isMobile
-                    ? getLanguageString(currentTranslationId)
-                    : getLanguageCode(currentTranslationId).toUpperCase()
+                    ? getLanguageString(currentTargetId)
+                    : getLanguageCode(currentTargetId).toUpperCase()
                   : t("vocabulary.any")}
               </p>
             </div>
@@ -119,7 +117,7 @@ export const LanguagePairSelector = ({
               <CommandInput placeholder={t("general.search")} />
               <CommandList>
                 <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
-                <CommandGroup heading="Source Language">
+                <CommandGroup heading={t("general.sourceLanguage")}>
                   <CommandItem
                     value="any-source"
                     className={cn(
@@ -161,12 +159,12 @@ export const LanguagePairSelector = ({
               <CommandInput placeholder={t("general.search")} />
               <CommandList>
                 <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
-                <CommandGroup heading="Translation Language">
+                <CommandGroup heading={t("general.targetLanguage")}>
                   <CommandItem
                     value="any-translation"
                     className={cn(
                       "gap-1",
-                      !currentTranslationId
+                      !currentTargetId
                         ? "bg-primary! text-primary-foreground hover:text-primary-foreground!"
                         : "",
                     )}
@@ -177,7 +175,7 @@ export const LanguagePairSelector = ({
 
                   {translationLanguages.map((id) => {
                     const label = getLanguageString(id);
-                    const isSelected = currentTranslationId === id;
+                    const isSelected = currentTargetId === id;
 
                     return (
                       <CommandItem

@@ -6,12 +6,12 @@ interface UserStatisticsTotal {
   languagePairs: [
     {
       sourceLanguageId: number;
-      translationLanguageId: number;
+      targetLanguageId: number;
       translationsCount: number;
     },
     {
       sourceLanguageId: number;
-      translationLanguageId: number;
+      targetLanguageId: number;
       translationsCount: number;
     },
   ];

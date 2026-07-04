@@ -56,10 +56,10 @@ export const LanguagesPieChart = ({
         ? translationsCount / totalTranslations
         : 0;
       const source = getLanguageString(lp.sourceLanguageId);
-      const target = getLanguageString(lp.translationLanguageId);
+      const target = getLanguageString(lp.targetLanguageId);
 
       (share >= MIN_SLICE_SHARE ? visible : other).push({
-        key: `${lp.sourceLanguageId}-${lp.translationLanguageId}`,
+        key: `${lp.sourceLanguageId}-${lp.targetLanguageId}`,
         label: `${source} -> ${target}`,
         translationsCount,
         share,

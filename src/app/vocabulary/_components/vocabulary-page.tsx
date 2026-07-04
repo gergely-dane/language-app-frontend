@@ -39,7 +39,7 @@ export const VocabularyPage = () => {
     pageNumber,
     search: debouncedSearchFilter,
     sourceLanguageId: languageFilter?.sourceLanguageId,
-    translationLanguageId: languageFilter?.translationLanguageId,
+    targetLanguageId: languageFilter?.targetLanguageId,
     sortBy: sorting[0]?.id ?? "createdAt",
     sortAscending: sorting[0] ? !sorting[0].desc : false,
   });

@@ -60,7 +60,7 @@ export const FlashcardsPage = () => {
     if (storedFiltersState) {
       return {
         sourceLanguageId: storedFiltersState.sourceLanguageId ?? null,
-        translationLanguageId: storedFiltersState.translationLanguageId ?? null,
+        targetLanguageId: storedFiltersState.targetLanguageId ?? null,
       } satisfies LanguagePair;
     }
     return null;
@@ -80,7 +80,7 @@ export const FlashcardsPage = () => {
   const flashcardParams = useMemo<FlashcardParams>(() => {
     const params = {
       sourceLanguageId: languagePair?.sourceLanguageId,
-      translationLanguageId: languagePair?.translationLanguageId,
+      targetLanguageId: languagePair?.targetLanguageId,
       isReverse,
     };
 
