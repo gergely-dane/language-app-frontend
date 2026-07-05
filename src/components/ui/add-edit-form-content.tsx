@@ -284,14 +284,15 @@ export const AddEditFormContent = ({
         targetLanguageId: effectiveTargetLanguageId,
       });
 
-      const newTranslations = result.translations.filter(
-        (t) => !translationList.includes(t),
-      );
+      const newTranslationsStr = result.translations
+        .filter((t) => !translationList.includes(t))
+        .join(", ");
 
-      if (newTranslations.length) {
-        setTranslationList([...translationList, ...newTranslations]);
+      if (newTranslationsStr) {
+        setTranslation((prev) =>
+          prev ? `${prev}, ${newTranslationsStr}` : newTranslationsStr,
+        );
       }
-      setTranslation("");
     } catch {
       showAlert({
         title: t("vocabulary.errorTranslatingWord", {
