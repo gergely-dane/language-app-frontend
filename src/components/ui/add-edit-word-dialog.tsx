@@ -42,9 +42,11 @@ export const AddEditWordDialog = ({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange} repositionInputs={false}>
       <DrawerTitle className="sr-only">{t("vocabulary.addWord")}</DrawerTitle>
-      <DrawerContent className="px-4 pb-4">{form}</DrawerContent>
+      <DrawerContent>
+        <div className="overflow-y-auto px-4 pb-4">{form}</div>
+      </DrawerContent>
     </Drawer>
   );
 };
