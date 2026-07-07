@@ -41,6 +41,8 @@ import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";
 const LAST_ADDED_TARGET_LANGUAGE_KEY = "lastAddedTargetLanguageId";
 
+const translationCache = new Map<string, string[]>();
+
 type AddEditFormContentProps = {
   editMode?: boolean;
   onClose: () => void;
@@ -277,21 +279,36 @@ export const AddEditFormContent = ({
       return;
     }
 
-    try {
-      const result = await translateWord.mutateAsync({
-        word: word.trim(),
-        sourceLanguageId: effectiveSourceLanguageId,
-        targetLanguageId: effectiveTargetLanguageId,
-      });
+    const cacheKey = `${word.trim()}_${effectiveSourceLanguageId}_${effectiveTargetLanguageId}`;
 
-      const newTranslationsStr = result.translations
-        .filter((t) => !translationList.includes(t))
-        .join(", ");
+    try {
+      let translations: string[];
+      if (translationCache.has(cacheKey)) {
+        translations = translationCache.get(cacheKey)!;
+      } else {
+        const result = await translateWord.mutateAsync({
+          word: word.trim(),
+          sourceLanguageId: effectiveSourceLanguageId,
+          targetLanguageId: effectiveTargetLanguageId,
+        });
+        translations = result.translations;
+        translationCache.set(cacheKey, translations);
+      }
+
+      const overlapping = translations.filter((t) =>
+        translationList.includes(t),
+      );
+
+      if (overlapping.length > 0) {
+        setTranslationList((prev) =>
+          prev.filter((t) => !overlapping.includes(t)),
+        );
+      }
+
+      const newTranslationsStr = translations.join(", ");
 
       if (newTranslationsStr) {
-        setTranslation((prev) =>
-          prev ? `${prev}, ${newTranslationsStr}` : newTranslationsStr,
-        );
+        setTranslation(newTranslationsStr);
       }
     } catch {
       showAlert({

@@ -10,6 +10,7 @@ import {
   LanguageCell,
   SelectCell,
   TranslationsCell,
+  WordCell,
 } from "@/features/vocabulary/components/column-cells";
 import {
   AddedOnHeader,
@@ -31,6 +32,7 @@ export const useColumns = (
         accessorFn: (tr) => tr.word?.word,
         header: WordHeader,
         filterFn: "includesString",
+        cell: WordCell,
       },
       {
         accessorKey: "translations",

@@ -1,16 +1,67 @@
 "use client";
 
-import { IconArrowNarrowRight, IconPencil } from "@tabler/icons-react";
+import {
+  IconArrowNarrowRight,
+  IconPencil,
+  IconVolume,
+} from "@tabler/icons-react";
 import type { CellContext } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import { useSynthesizeSpeech } from "@/features/vocabulary/api/synthesize-speech";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
 
 import type { Word } from "../interfaces/word.interface";
+
+const audioCache = new Map<string, string>();
+
+export const WordCell = ({ row }: CellContext<Translation, unknown>) => {
+  const { word, sourceLanguageId } = row.original;
+  const { getLanguageCode } = useLanguages();
+  const synthesizeSpeech = useSynthesizeSpeech();
+
+  const handlePlayAudio = async () => {
+    const languageCode = getLanguageCode(sourceLanguageId);
+    const cacheKey = `${word.word}_${languageCode}`;
+
+    if (audioCache.has(cacheKey)) {
+      const url = audioCache.get(cacheKey)!;
+      void new Audio(url).play();
+      return;
+    }
+
+    try {
+      const blob = await synthesizeSpeech.mutateAsync({
+        text: word.word,
+        languageCode,
+      });
+      const url = URL.createObjectURL(blob);
+      audioCache.set(cacheKey, url);
+      void new Audio(url).play();
+    } catch (error) {
+      console.error("Failed to play audio", error);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="leading-none">{word.word}</span>
+
+      <button
+        onClick={() => void handlePlayAudio()}
+        disabled={synthesizeSpeech.isPending}
+        className="text-primary/50 hover:text-primary -mb-0.5 cursor-pointer transition-colors disabled:opacity-50"
+        aria-label="Play audio"
+      >
+        <IconVolume size={16} />
+      </button>
+    </div>
+  );
+};
 
 export const TranslationsCell = ({
   getValue,
