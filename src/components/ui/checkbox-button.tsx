@@ -11,6 +11,8 @@ type CheckboxButtonProps = React.ComponentProps<typeof Checkbox> & {
   size?: "default" | "sm" | "lg";
   id?: string;
   disabled?: boolean;
+  "data-state"?: string;
+  "data-disabled"?: string;
 };
 
 const CheckboxButton = React.forwardRef<HTMLLabelElement, CheckboxButtonProps>(
@@ -22,6 +24,14 @@ const CheckboxButton = React.forwardRef<HTMLLabelElement, CheckboxButtonProps>(
       size = "default",
       id,
       disabled,
+      onPointerDown,
+      onPointerEnter,
+      onPointerLeave,
+      onFocus,
+      onBlur,
+      onKeyDown,
+      "data-state": dataState,
+      "data-disabled": dataDisabled,
       ...props
     },
     ref,
@@ -33,6 +43,24 @@ const CheckboxButton = React.forwardRef<HTMLLabelElement, CheckboxButtonProps>(
       <label
         ref={ref}
         htmlFor={checkboxId}
+        onPointerDown={
+          onPointerDown as unknown as React.PointerEventHandler<HTMLLabelElement>
+        }
+        onPointerEnter={
+          onPointerEnter as unknown as React.PointerEventHandler<HTMLLabelElement>
+        }
+        onPointerLeave={
+          onPointerLeave as unknown as React.PointerEventHandler<HTMLLabelElement>
+        }
+        onFocus={
+          onFocus as unknown as React.FocusEventHandler<HTMLLabelElement>
+        }
+        onBlur={onBlur as unknown as React.FocusEventHandler<HTMLLabelElement>}
+        onKeyDown={
+          onKeyDown as unknown as React.KeyboardEventHandler<HTMLLabelElement>
+        }
+        data-state={dataState}
+        data-disabled={dataDisabled}
         className={cn(
           buttonVariants({ variant, size }),
           "flex cursor-pointer items-center justify-between gap-2 px-2 font-normal select-none",
