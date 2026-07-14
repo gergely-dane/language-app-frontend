@@ -13,32 +13,39 @@ type CheckboxButtonProps = React.ComponentProps<typeof Checkbox> & {
   disabled?: boolean;
 };
 
-const CheckboxButton = ({
-  className,
-  label,
-  variant = "outline",
-  size = "default",
-  id,
-  disabled,
-  ...props
-}: CheckboxButtonProps) => {
-  const generatedId = React.useId();
-  const checkboxId = id || generatedId;
+const CheckboxButton = React.forwardRef<HTMLLabelElement, CheckboxButtonProps>(
+  (
+    {
+      className,
+      label,
+      variant = "outline",
+      size = "default",
+      id,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
+    const generatedId = React.useId();
+    const checkboxId = id || generatedId;
 
-  return (
-    <label
-      htmlFor={checkboxId}
-      className={cn(
-        buttonVariants({ variant, size }),
-        "flex cursor-pointer items-center justify-between gap-2 px-2 font-normal select-none",
-        disabled && "cursor-not-allowed opacity-50",
-        className,
-      )}
-    >
-      <Checkbox id={checkboxId} disabled={disabled} {...props} />
-      {label && <span className="text-sm leading-none">{label}</span>}
-    </label>
-  );
-};
+    return (
+      <label
+        ref={ref}
+        htmlFor={checkboxId}
+        className={cn(
+          buttonVariants({ variant, size }),
+          "flex cursor-pointer items-center justify-between gap-2 px-2 font-normal select-none",
+          disabled && "cursor-not-allowed opacity-50",
+          className,
+        )}
+      >
+        <Checkbox id={checkboxId} disabled={disabled} {...props} />
+        {label && <span className="text-sm leading-none">{label}</span>}
+      </label>
+    );
+  },
+);
+CheckboxButton.displayName = "CheckboxButton";
 
 export { CheckboxButton };

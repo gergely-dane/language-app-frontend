@@ -16,6 +16,11 @@ import { CheckboxButton } from "@/components/ui/checkbox-button";
 import { Kbd } from "@/components/ui/kbd";
 import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   type FlashcardParams,
   useFlashcard,
 } from "@/features/flashcards/api/get-flashcard";
@@ -158,12 +163,19 @@ export const FlashcardsPage = () => {
             disabled={areButtonsDisabled}
           />
 
-          <CheckboxButton
-            label={t("flashcards.reverseCards")}
-            checked={isReverse}
-            onCheckedChange={(checked) => onReverseChange(!!checked)}
-            disabled={areButtonsDisabled}
-          />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CheckboxButton
+                label={t("flashcards.reverseCards")}
+                checked={isReverse}
+                onCheckedChange={(checked) => onReverseChange(!!checked)}
+                disabled={areButtonsDisabled}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("flashcards.reverseCardsTooltip")}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         <Button

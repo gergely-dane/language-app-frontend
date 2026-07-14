@@ -18,6 +18,7 @@
   "congratulations": "Congratulations!\nYou have reviewed all your flashcards for now.",
   "keepPracticing": "Want to keep practicing? Try changing the options or come back later when more flashcards become available for review.",
   "reverseCards": "Reverse Cards",
+  "reverseCardsTooltip": "Guess the word in the source language based on the translation(s)",
   "wasntSure": "Wasn't sure",
   "tapToSeeTranslationsFront": "Tap on the card to see the translation(s) <hand></hand>",
   "tapToSeeTranslationsBack": "Tap on the card to go to the original word <hand></hand>",
