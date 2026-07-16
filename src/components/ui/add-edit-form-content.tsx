@@ -1,22 +1,11 @@
-import {
-  IconCornerDownLeft,
-  IconHelp,
-  IconLanguage,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconHelp, IconLanguage, IconTrash } from "@tabler/icons-react";
 import { type KeyboardEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import { InputWithKbd } from "@/components/ui/input-with-kbd";
+import { InlineTagInput } from "@/components/ui/inline-tag-input";
+import { InputGroupButton } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { LanguageSelector } from "@/components/ui/language-selector";
-import { MultiSelectChipList } from "@/components/ui/multi-select-chip-list";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,7 +25,6 @@ import { useUpdateTranslation } from "@/features/vocabulary/api/update-translati
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";
 const LAST_ADDED_TARGET_LANGUAGE_KEY = "lastAddedTargetLanguageId";
@@ -57,7 +45,6 @@ export const AddEditFormContent = ({
   flashcardQueryKey,
 }: AddEditFormContentProps) => {
   const t = useI18n();
-  const isMobile = useIsMobileScreen();
   const { showAlert } = useAlert();
   const { data: languages } = useLanguages();
 
@@ -144,72 +131,12 @@ export const AddEditFormContent = ({
     }
   };
 
-  const wordInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") return;
-    e.stopPropagation();
-    e.preventDefault();
-
-    const trimmed = word.trim();
-    if (!trimmed) {
-      formOnKeyDown(e);
-      return;
-    }
-
-    if (trimmed.includes(",")) {
-      const newWords = trimmed
-        .split(",")
-        .map((part) => part.trim())
-        .filter((part) => part && !wordList.includes(part));
-
-      if (newWords.length) {
-        setWordList([...wordList, ...newWords]);
-      }
-      setWord("");
-      return;
-    }
-
-    if (!wordList.includes(trimmed)) {
-      setWordList([...wordList, trimmed]);
-      setWord("");
-    } else {
-      setWord("");
-    }
-  };
-
-  const translationInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter") return;
-    e.stopPropagation();
-    e.preventDefault();
-
-    const trimmed = translation.trim();
-    if (!trimmed) {
-      formOnKeyDown(e);
-      return;
-    }
-
-    if (trimmed.includes(",")) {
-      const newTranslations = trimmed
-        .split(",")
-        .map((part) => part.trim())
-        .filter((part) => part && !translationList.includes(part));
-
-      if (newTranslations.length) {
-        setTranslationList([...translationList, ...newTranslations]);
-      }
-      setTranslation("");
-      return;
-    }
-
-    if (!translationList.includes(trimmed)) {
-      setTranslationList([...translationList, trimmed]);
-      setTranslation("");
-    } else {
-      setTranslation("");
-    }
-  };
-
   const formOnKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "Enter") return;
+    void handleSave();
+  };
+
+  const handleEmptyEnter = () => {
     void handleSave();
   };
 
@@ -305,16 +232,6 @@ export const AddEditFormContent = ({
     }
   };
 
-  const handleWordClicked = (item: string) => {
-    setWord(item);
-    setWordList(wordList.filter((w) => w !== item));
-  };
-
-  const handleTranslationClicked = (item: string) => {
-    setTranslation(item);
-    setTranslationList(translationList.filter((t) => t !== item));
-  };
-
   const handleTranslate = async () => {
     const firstWordToTranslate =
       [...wordList, ...(word ? [word.trim()] : [])][0] || "";
@@ -384,96 +301,75 @@ export const AddEditFormContent = ({
         onKeyDown={formOnKeyDown}
       >
         <div className="grid gap-3">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <InputGroup>
-                <InputGroupInput
-                  id="name"
-                  autoFocus={true}
-                  enterKeyHint="done"
-                  autoCapitalize="none"
-                  placeholder={t("vocabulary.enterTheWord")}
-                  value={word}
-                  onChange={(e) => setWord(e.target.value)}
-                  onKeyDown={wordInputOnKeyDown}
-                />
+          <div className="flex items-center gap-2">
+            <InlineTagInput
+              id="name"
+              autoFocus={true}
+              enterKeyHint="done"
+              autoCapitalize="none"
+              placeholder={t("vocabulary.enterTheWord")}
+              tags={wordList}
+              onTagsChange={setWordList}
+              inputValue={word}
+              onInputValueChange={setWord}
+              onEmptyEnter={handleEmptyEnter}
+              addonEnd={
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InputGroupButton
+                      className="border-input size-9 shrink-0 rounded-md border p-0 shadow-xs"
+                      variant="outline"
+                      onClick={() => void handleTranslate()}
+                      isLoading={translateWord.isPending}
+                      disabled={
+                        (!word.trim() && !wordList.length) ||
+                        !effectiveSourceLanguageId ||
+                        !effectiveTargetLanguageId
+                      }
+                    >
+                      <IconLanguage className="text-primary size-4" />
+                    </InputGroupButton>
+                  </TooltipTrigger>
 
-                <InputGroupAddon align="inline-end">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <InputGroupButton
-                        className="w-18.5 gap-0.5 py-3.5"
-                        variant="outline"
-                        onClick={() => void handleTranslate()}
-                        isLoading={translateWord.isPending}
-                        disabled={
-                          (!word.trim() && !wordList.length) ||
-                          !effectiveSourceLanguageId ||
-                          !effectiveTargetLanguageId
-                        }
-                      >
-                        <IconLanguage className="text-primary !h-3.5 !w-3.5" />
-                        <p className="text-xs">Translate</p>
-                      </InputGroupButton>
-                    </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      {t.rich("vocabulary.translateWordInto", {
+                        word:
+                          [...wordList, ...(word ? [word] : [])][0] || "...",
+                        targetLanguage: targetLanguage?.englishName || "...",
+                        bold: (chunks) => (
+                          <span className="font-semibold">{chunks}</span>
+                        ),
+                      })}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              }
+            />
 
-                    <TooltipContent>
-                      <p>
-                        {t.rich("vocabulary.translateWordInto", {
-                          word:
-                            [...wordList, ...(word ? [word] : [])][0] || "...",
-                          targetLanguage: targetLanguage?.englishName || "...",
-                          bold: (chunks) => (
-                            <span className="font-semibold">{chunks}</span>
-                          ),
-                        })}
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </InputGroupAddon>
-              </InputGroup>
-
-              <LanguageSelector
-                className="w-14 lg:w-32"
-                value={sourceLanguage}
-                onChange={(value) => handleLanguageChange(value, false)}
-              />
-            </div>
-
-            <MultiSelectChipList
-              items={wordList}
-              onChange={(items) => setWordList(items)}
-              onItemClick={(item) => handleWordClicked(item)}
+            <LanguageSelector
+              className="w-14 lg:w-32"
+              value={sourceLanguage}
+              onChange={(value) => handleLanguageChange(value, false)}
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <InputWithKbd
-                placeholder={t("vocabulary.enterTheTranslation")}
-                enterKeyHint="done"
-                autoCapitalize="none"
-                kbd={
-                  <>
-                    {!isMobile && <p>Enter</p>} <IconCornerDownLeft />
-                  </>
-                }
-                value={translation}
-                onChange={(e) => setTranslation(e.target.value)}
-                onKeyDown={translationInputOnKeyDown}
-              />
+          <div className="flex items-center gap-2">
+            <InlineTagInput
+              placeholder={t("vocabulary.enterTheTranslation")}
+              enterKeyHint="done"
+              autoCapitalize="none"
+              tags={translationList}
+              onTagsChange={setTranslationList}
+              inputValue={translation}
+              onInputValueChange={setTranslation}
+              onEmptyEnter={handleEmptyEnter}
+            />
 
-              <LanguageSelector
-                className="w-14 lg:w-32"
-                value={targetLanguage}
-                onChange={(value) => handleLanguageChange(value, true)}
-              />
-            </div>
-
-            <MultiSelectChipList
-              items={translationList}
-              onChange={(items) => setTranslationList(items)}
-              onItemClick={(item) => handleTranslationClicked(item)}
+            <LanguageSelector
+              className="w-14 lg:w-32"
+              value={targetLanguage}
+              onChange={(value) => handleLanguageChange(value, true)}
             />
           </div>
 

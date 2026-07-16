@@ -45,5 +45,6 @@
   "translations": "translations",
   "translationsDeletedSuccessfully": "Translations deleted successfully",
   "translateWordInto": "Translate <bold>{word}</bold> into <bold>{targetLanguage}</bold>",
-  "errorTranslatingWord": "Could not translate {word} to {targetLanguage}"
+  "errorTranslatingWord": "Could not translate {word} to {targetLanguage}",
+  "pressEnterToAccept": "Enter ↵"
 }
