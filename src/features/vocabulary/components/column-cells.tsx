@@ -20,13 +20,14 @@ import type { Word } from "../interfaces/word.interface";
 const audioCache = new Map<string, string>();
 
 export const WordCell = ({ row }: CellContext<Translation, unknown>) => {
-  const { word, sourceLanguageId } = row.original;
+  const { words, sourceLanguageId } = row.original;
+  const firstWord = words[0]?.word ?? "";
   const { getLanguageCode } = useLanguages();
   const synthesizeSpeech = useSynthesizeSpeech();
 
   const handlePlayAudio = async () => {
     const languageCode = getLanguageCode(sourceLanguageId);
-    const cacheKey = `${word.word}_${languageCode}`;
+    const cacheKey = `${firstWord}_${languageCode}`;
 
     if (audioCache.has(cacheKey)) {
       const url = audioCache.get(cacheKey)!;
@@ -36,7 +37,7 @@ export const WordCell = ({ row }: CellContext<Translation, unknown>) => {
 
     try {
       const blob = await synthesizeSpeech.mutateAsync({
-        text: word.word,
+        text: firstWord,
         languageCode,
       });
       const url = URL.createObjectURL(blob);
@@ -49,7 +50,9 @@ export const WordCell = ({ row }: CellContext<Translation, unknown>) => {
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="leading-none">{word.word}</span>
+      <span className="leading-none">
+        {words.map((w) => w.word).join(", ")}
+      </span>
 
       <button
         onClick={() => void handlePlayAudio()}

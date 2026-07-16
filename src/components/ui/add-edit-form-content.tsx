@@ -80,7 +80,14 @@ export const AddEditFormContent = ({
       null,
   );
   const [word, setWord] = useState<string>(
-    currentTranslation?.word?.word || "",
+    currentTranslation?.words?.length === 1
+      ? currentTranslation?.words?.[0]?.word
+      : "",
+  );
+  const [wordList, setWordList] = useState<string[]>(
+    currentTranslation?.words && currentTranslation.words.length > 1
+      ? currentTranslation?.words?.map((w) => w.word)
+      : [],
   );
   const [translation, setTranslation] = useState<string>(
     currentTranslation?.translations.length === 1
@@ -111,6 +118,7 @@ export const AddEditFormContent = ({
 
   const resetForm = () => {
     setWord("");
+    setWordList([]);
     setTranslation("");
     setTranslationList([]);
     setDefinition("");
@@ -133,6 +141,38 @@ export const AddEditFormContent = ({
         setTargetLanguageId(effectiveSourceLanguageId);
       }
       setSourceLanguageId(selectedId);
+    }
+  };
+
+  const wordInputOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+    e.stopPropagation();
+    e.preventDefault();
+
+    const trimmed = word.trim();
+    if (!trimmed) {
+      formOnKeyDown(e);
+      return;
+    }
+
+    if (trimmed.includes(",")) {
+      const newWords = trimmed
+        .split(",")
+        .map((part) => part.trim())
+        .filter((part) => part && !wordList.includes(part));
+
+      if (newWords.length) {
+        setWordList([...wordList, ...newWords]);
+      }
+      setWord("");
+      return;
+    }
+
+    if (!wordList.includes(trimmed)) {
+      setWordList([...wordList, trimmed]);
+      setWord("");
+    } else {
+      setWord("");
     }
   };
 
@@ -175,7 +215,7 @@ export const AddEditFormContent = ({
 
   const handleSave = async () => {
     if (
-      !word ||
+      (!word && !wordList.length) ||
       (!translation && !translationList.length) ||
       !effectiveSourceLanguageId ||
       !effectiveTargetLanguageId
@@ -184,7 +224,7 @@ export const AddEditFormContent = ({
     }
 
     const payload = {
-      word,
+      words: [...wordList, ...(word ? [word] : [])],
       translations: [...translationList, ...(translation ? [translation] : [])],
       sourceLanguageId: effectiveSourceLanguageId,
       targetLanguageId: effectiveTargetLanguageId,
@@ -265,21 +305,29 @@ export const AddEditFormContent = ({
     }
   };
 
+  const handleWordClicked = (item: string) => {
+    setWord(item);
+    setWordList(wordList.filter((w) => w !== item));
+  };
+
   const handleTranslationClicked = (item: string) => {
     setTranslation(item);
     setTranslationList(translationList.filter((t) => t !== item));
   };
 
   const handleTranslate = async () => {
+    const firstWordToTranslate =
+      [...wordList, ...(word ? [word.trim()] : [])][0] || "";
+
     if (
-      !word.trim() ||
+      !firstWordToTranslate ||
       !effectiveSourceLanguageId ||
       !effectiveTargetLanguageId
     ) {
       return;
     }
 
-    const cacheKey = `${word.trim()}_${effectiveSourceLanguageId}_${effectiveTargetLanguageId}`;
+    const cacheKey = `${firstWordToTranslate}_${effectiveSourceLanguageId}_${effectiveTargetLanguageId}`;
 
     try {
       let translations: string[];
@@ -287,7 +335,7 @@ export const AddEditFormContent = ({
         translations = translationCache.get(cacheKey)!;
       } else {
         const result = await translateWord.mutateAsync({
-          word: word.trim(),
+          word: firstWordToTranslate,
           sourceLanguageId: effectiveSourceLanguageId,
           targetLanguageId: effectiveTargetLanguageId,
         });
@@ -313,7 +361,7 @@ export const AddEditFormContent = ({
     } catch {
       showAlert({
         title: t("vocabulary.errorTranslatingWord", {
-          word: word.trim(),
+          word: firstWordToTranslate,
           targetLanguage: targetLanguage?.englishName || "...",
         }),
         variant: "destructive",
@@ -336,56 +384,66 @@ export const AddEditFormContent = ({
         onKeyDown={formOnKeyDown}
       >
         <div className="grid gap-3">
-          <div className="flex items-center gap-2">
-            <InputGroup>
-              <InputGroupInput
-                id="name"
-                autoFocus={true}
-                enterKeyHint="done"
-                autoCapitalize="none"
-                placeholder={t("vocabulary.enterTheWord")}
-                value={word}
-                onChange={(e) => setWord(e.target.value)}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <InputGroup>
+                <InputGroupInput
+                  id="name"
+                  autoFocus={true}
+                  enterKeyHint="done"
+                  autoCapitalize="none"
+                  placeholder={t("vocabulary.enterTheWord")}
+                  value={word}
+                  onChange={(e) => setWord(e.target.value)}
+                  onKeyDown={wordInputOnKeyDown}
+                />
+
+                <InputGroupAddon align="inline-end">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <InputGroupButton
+                        className="w-18.5 gap-0.5 py-3.5"
+                        variant="outline"
+                        onClick={() => void handleTranslate()}
+                        isLoading={translateWord.isPending}
+                        disabled={
+                          (!word.trim() && !wordList.length) ||
+                          !effectiveSourceLanguageId ||
+                          !effectiveTargetLanguageId
+                        }
+                      >
+                        <IconLanguage className="text-primary !h-3.5 !w-3.5" />
+                        <p className="text-xs">Translate</p>
+                      </InputGroupButton>
+                    </TooltipTrigger>
+
+                    <TooltipContent>
+                      <p>
+                        {t.rich("vocabulary.translateWordInto", {
+                          word:
+                            [...wordList, ...(word ? [word] : [])][0] || "...",
+                          targetLanguage: targetLanguage?.englishName || "...",
+                          bold: (chunks) => (
+                            <span className="font-semibold">{chunks}</span>
+                          ),
+                        })}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </InputGroupAddon>
+              </InputGroup>
+
+              <LanguageSelector
+                className="w-14 lg:w-32"
+                value={sourceLanguage}
+                onChange={(value) => handleLanguageChange(value, false)}
               />
+            </div>
 
-              <InputGroupAddon align="inline-end">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <InputGroupButton
-                      className="w-18.5 gap-0.5 py-3.5"
-                      variant="outline"
-                      onClick={() => void handleTranslate()}
-                      isLoading={translateWord.isPending}
-                      disabled={
-                        !word.trim() ||
-                        !effectiveSourceLanguageId ||
-                        !effectiveTargetLanguageId
-                      }
-                    >
-                      <IconLanguage className="text-primary !h-3.5 !w-3.5" />
-                      <p className="text-xs">Translate</p>
-                    </InputGroupButton>
-                  </TooltipTrigger>
-
-                  <TooltipContent>
-                    <p>
-                      {t.rich("vocabulary.translateWordInto", {
-                        word: word || "...",
-                        targetLanguage: targetLanguage?.englishName || "...",
-                        bold: (chunks) => (
-                          <span className="font-semibold">{chunks}</span>
-                        ),
-                      })}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </InputGroupAddon>
-            </InputGroup>
-
-            <LanguageSelector
-              className="w-14 lg:w-32"
-              value={sourceLanguage}
-              onChange={(value) => handleLanguageChange(value, false)}
+            <MultiSelectChipList
+              items={wordList}
+              onChange={(items) => setWordList(items)}
+              onItemClick={(item) => handleWordClicked(item)}
             />
           </div>
 
@@ -474,7 +532,7 @@ export const AddEditFormContent = ({
             disabled={
               createTranslation.isPending ||
               updateTranslation.isPending ||
-              !word ||
+              (!word && !wordList.length) ||
               (!translationList.length && !translation)
             }
           >

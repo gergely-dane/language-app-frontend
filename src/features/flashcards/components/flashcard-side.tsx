@@ -82,7 +82,7 @@ export const FlashcardSide = ({
 
             <p className="line-clamp-3 text-xl" ref={textRef}>
               {isFront
-                ? translation.word.word
+                ? translation.words.map((w) => w.word).join(", ")
                 : translation.translations
                     .map((translation) => translation.word)
                     .join(", ")}

@@ -29,7 +29,7 @@ export const useColumns = (
     () => [
       {
         id: "word",
-        accessorFn: (tr) => tr.word?.word,
+        accessorFn: (tr) => tr.words?.[0]?.word,
         header: WordHeader,
         filterFn: "includesString",
         cell: WordCell,

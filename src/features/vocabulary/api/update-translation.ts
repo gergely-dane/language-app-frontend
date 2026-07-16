@@ -9,7 +9,7 @@ import { type Translation } from "@/features/vocabulary/interfaces/translation.i
 import { apiClient } from "@/lib/api-client";
 
 export interface UpdateTranslationRequest {
-  word: string;
+  words: string[];
   translations: string[];
   sourceLanguageId: number;
   targetLanguageId: number;
