@@ -6,8 +6,8 @@ import { type KeyboardEvent, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/utils/cn";
 
-const MAX_TAGS = 5;
-const MAX_TAG_LENGTH = 100;
+export const MAX_TAGS = 5;
+export const MAX_TAG_LENGTH = 100;
 
 type InlineTagInputProps = {
   tags: string[];

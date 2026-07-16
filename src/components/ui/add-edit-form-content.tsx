@@ -2,7 +2,11 @@ import { IconHelp, IconLanguage, IconTrash } from "@tabler/icons-react";
 import { type KeyboardEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { InlineTagInput } from "@/components/ui/inline-tag-input";
+import {
+  InlineTagInput,
+  MAX_TAG_LENGTH,
+  MAX_TAGS,
+} from "@/components/ui/inline-tag-input";
 import { InputGroupButton } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { LanguageSelector } from "@/components/ui/language-selector";
@@ -150,9 +154,25 @@ export const AddEditFormContent = ({
       return;
     }
 
+    const parseInputToTags = (inputValue: string, currentTags: string[]) => {
+      const trimmed = inputValue.trim();
+      if (!trimmed) return currentTags;
+
+      const newTags = trimmed
+        .split(",")
+        .map((part) => part.trim())
+        .filter((part) => part && !currentTags.includes(part))
+        .map((part) => part.slice(0, MAX_TAG_LENGTH));
+
+      return [...currentTags, ...newTags].slice(0, MAX_TAGS);
+    };
+
+    const finalWords = parseInputToTags(word, wordList);
+    const finalTranslations = parseInputToTags(translation, translationList);
+
     const payload = {
-      words: [...wordList, ...(word ? [word] : [])],
-      translations: [...translationList, ...(translation ? [translation] : [])],
+      words: finalWords,
+      translations: finalTranslations,
       sourceLanguageId: effectiveSourceLanguageId,
       targetLanguageId: effectiveTargetLanguageId,
       definition,
