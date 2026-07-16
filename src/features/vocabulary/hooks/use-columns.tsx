@@ -6,7 +6,6 @@ import { useMemo } from "react";
 import {
   AddedOnCell,
   EditCell,
-  KnowledgeLevelCell,
   LanguageCell,
   SelectCell,
   TranslationsCell,
@@ -14,7 +13,6 @@ import {
 } from "@/features/vocabulary/components/column-cells";
 import {
   AddedOnHeader,
-  KnowledgeLevelHeader,
   LanguageHeader,
   SelectHeader,
   TranslationsHeader,
@@ -51,11 +49,6 @@ export const useColumns = (
         accessorKey: "createdAt",
         header: AddedOnHeader,
         cell: AddedOnCell,
-      },
-      {
-        accessorKey: "score",
-        header: KnowledgeLevelHeader,
-        cell: KnowledgeLevelCell,
       },
       {
         id: "edit",

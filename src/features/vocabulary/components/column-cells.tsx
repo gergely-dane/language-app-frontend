@@ -13,7 +13,6 @@ import { useLanguages } from "@/features/languages/api/get-languages";
 import { useSynthesizeSpeech } from "@/features/vocabulary/api/synthesize-speech";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { cn } from "@/utils/cn";
 
 import type { Word } from "../interfaces/word.interface";
 
@@ -106,21 +105,6 @@ export const AddedOnCell = ({
 }: CellContext<Translation, unknown>) => {
   const date = new Date(getValue() as string);
   return date.toLocaleDateString();
-};
-
-export const KnowledgeLevelCell = ({
-  getValue,
-}: CellContext<Translation, unknown>) => {
-  const level = Math.ceil((getValue() as number) / 25);
-  const colors = [
-    "bg-orange-500",
-    "bg-yellow-500",
-    "bg-lime-500",
-    "bg-green-500",
-    "bg-green-500",
-  ] as const;
-
-  return <div className={cn("h-4 w-4 rounded-full", colors[level])} />;
 };
 
 export type EditCellProps = CellContext<Translation, unknown> & {
