@@ -3,18 +3,10 @@ interface UserStatisticsTotal {
   failedFlashcards: number;
   totalTranslations: number;
   translationsMastered: number;
-  languagePairs: [
-    {
-      sourceLanguageId: number;
-      targetLanguageId: number;
-      translationsCount: number;
-    },
-    {
-      sourceLanguageId: number;
-      targetLanguageId: number;
-      translationsCount: number;
-    },
-  ];
+  languages: {
+    languageId: number;
+    translationsCount: number;
+  }[];
   activityStreak: number;
 }
 

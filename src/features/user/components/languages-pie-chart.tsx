@@ -35,39 +35,37 @@ export const LanguagesPieChart = ({
   const t = useI18n();
   const { getLanguageString } = useLanguages();
 
-  const languagePairs = useMemo(
-    () => stats?.total?.languagePairs ?? [],
-    [stats?.total?.languagePairs],
+  const languages = useMemo(
+    () => stats?.total?.languages ?? [],
+    [stats?.total?.languages],
   );
 
   const totalTranslations = useMemo(
-    () =>
-      languagePairs.reduce((sum, lp) => sum + (lp.translationsCount ?? 0), 0),
-    [languagePairs],
+    () => languages.reduce((sum, l) => sum + (l.translationsCount ?? 0), 0),
+    [languages],
   );
 
   const { visible, other } = useMemo(() => {
     const visible: LanguageSlice[] = [];
     const other: LanguageSlice[] = [];
 
-    for (const lp of languagePairs) {
-      const translationsCount = lp.translationsCount ?? 0;
+    for (const l of languages) {
+      const translationsCount = l.translationsCount ?? 0;
       const share = totalTranslations
         ? translationsCount / totalTranslations
         : 0;
-      const source = getLanguageString(lp.sourceLanguageId);
-      const target = getLanguageString(lp.targetLanguageId);
+      const language = getLanguageString(l.languageId);
 
       (share >= MIN_SLICE_SHARE ? visible : other).push({
-        key: `${lp.sourceLanguageId}-${lp.targetLanguageId}`,
-        label: `${source} -> ${target}`,
+        key: `${l.languageId}`,
+        label: `${language}`,
         translationsCount,
         share,
       });
     }
 
     return { visible, other };
-  }, [getLanguageString, languagePairs, totalTranslations]);
+  }, [getLanguageString, languages, totalTranslations]);
 
   const finalItems = useMemo(
     () => (other.length === 1 ? [...visible, other[0]] : visible),
