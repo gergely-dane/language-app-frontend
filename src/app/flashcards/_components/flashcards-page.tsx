@@ -35,6 +35,7 @@ import type {
   Direction,
   FlashcardCompHandle,
 } from "@/features/flashcards/types";
+import { flashcardParamsSchema } from "@/features/flashcards/types";
 import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
@@ -54,7 +55,9 @@ export const FlashcardsPage = () => {
     if (!storedState) return null;
 
     try {
-      return JSON.parse(storedState) as FlashcardParams;
+      const parsed = JSON.parse(storedState) as unknown;
+      const result = flashcardParamsSchema.safeParse(parsed);
+      return result.success ? (result.data as FlashcardParams) : null;
     } catch (error) {
       console.error("Error parsing stored flashcard filters state:", error);
       return null;
@@ -172,6 +175,7 @@ export const FlashcardsPage = () => {
                 disabled={areButtonsDisabled}
               />
             </TooltipTrigger>
+
             <TooltipContent>
               <p>{t("flashcards.reverseCardsTooltip")}</p>
             </TooltipContent>
