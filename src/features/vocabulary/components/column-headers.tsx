@@ -20,11 +20,6 @@ export const TranslationsHeader = () => {
   return <p>{t("general.translations")}</p>;
 };
 
-export const LanguageHeader = () => {
-  const t = useI18n();
-  return <p>{t("general.language")}</p>;
-};
-
 export const AddedOnHeader = ({
   column,
 }: HeaderContext<Translation, unknown>) => {

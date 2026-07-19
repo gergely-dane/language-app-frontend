@@ -58,13 +58,22 @@ export const VocabularyTable = <TValue,>({
   return (
     <div className="flex flex-1 flex-col justify-between">
       <div>
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className={
+                        (
+                          header.column.columnDef.meta as unknown as {
+                            className: string;
+                          }
+                        )?.className
+                      }
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -86,7 +95,16 @@ export const VocabularyTable = <TValue,>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={
+                        (
+                          cell.column.columnDef.meta as unknown as {
+                            className: string;
+                          }
+                        )?.className
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

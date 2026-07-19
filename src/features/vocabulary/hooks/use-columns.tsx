@@ -6,14 +6,12 @@ import { useMemo } from "react";
 import {
   AddedOnCell,
   EditCell,
-  LanguageCell,
   SelectCell,
   TranslationsCell,
   WordCell,
 } from "@/features/vocabulary/components/column-cells";
 import {
   AddedOnHeader,
-  LanguageHeader,
   SelectHeader,
   TranslationsHeader,
   WordHeader,
@@ -31,33 +29,40 @@ export const useColumns = (
         header: WordHeader,
         filterFn: "includesString",
         cell: WordCell,
+        meta: {
+          className: "w-1/2 md:w-1/3",
+        },
       },
       {
         accessorKey: "translations",
         header: TranslationsHeader,
         cell: TranslationsCell,
-      },
-      {
-        id: "language",
-        header: LanguageHeader,
-        accessorFn: (tr) => {
-          return `${tr.sourceLanguageId}-${tr.targetLanguageId}`;
+        meta: {
+          className: "w-1/2 md:w-1/3",
         },
-        cell: LanguageCell,
       },
       {
         accessorKey: "createdAt",
         header: AddedOnHeader,
         cell: AddedOnCell,
+        meta: {
+          className: "w-1/3",
+        },
       },
       {
         id: "edit",
         cell: (context) => <EditCell {...context} onEdit={onEdit} />,
+        meta: {
+          className: "w-14",
+        },
       },
       {
         id: "select",
         header: SelectHeader,
         cell: SelectCell,
+        meta: {
+          className: "w-14",
+        },
       },
     ],
     [onEdit],
