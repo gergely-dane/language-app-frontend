@@ -9,32 +9,52 @@ import { useLanguages } from "@/features/languages/api/get-languages";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
-import type { Word } from "../interfaces/word.interface";
 import { PlayAudioButton } from "./play-audio-button";
 
 export const WordCell = ({ row }: CellContext<Translation, unknown>) => {
   const { words, sourceLanguageId } = row.original;
-  const firstWord = words[0]?.word ?? "";
   const { getLanguageCode } = useLanguages();
 
   return (
-    <div className="flex items-center gap-1.5">
-      <span className="leading-none">
-        {words.map((w) => w.word).join(", ")}
-      </span>
+    <div className="flex min-w-0 flex-col gap-1.5">
+      {words.map((w) => (
+        <div key={w.id} className="flex min-w-0 items-center gap-1">
+          <span className="min-w-0 truncate leading-none" title={w.word}>
+            {w.word}
+          </span>
 
-      <PlayAudioButton
-        text={firstWord}
-        languageCode={getLanguageCode(sourceLanguageId)}
-      />
+          <PlayAudioButton
+            text={w.word}
+            languageCode={getLanguageCode(sourceLanguageId)}
+          />
+        </div>
+      ))}
     </div>
   );
 };
 
 export const TranslationsCell = ({
-  getValue,
+  row,
 }: CellContext<Translation, unknown>) => {
-  return (getValue() as Word[])?.map((w: Word) => w.word)?.join(", ");
+  const { translations, targetLanguageId } = row.original;
+  const { getLanguageCode } = useLanguages();
+
+  return (
+    <div className="flex min-w-0 flex-col gap-1.5">
+      {translations.map((w) => (
+        <div key={w.id} className="flex min-w-0 items-center gap-1">
+          <span className="min-w-0 truncate leading-none" title={w.word}>
+            {w.word}
+          </span>
+
+          <PlayAudioButton
+            text={w.word}
+            languageCode={getLanguageCode(targetLanguageId)}
+          />
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export const LanguageCell = ({
