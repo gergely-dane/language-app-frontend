@@ -112,7 +112,10 @@ export const LanguagesPieChart = ({
       ({
         translations: { label: t("general.translations") },
         ...Object.fromEntries(
-          chartData.map((item) => [item.key, { color: item.fill }]),
+          chartData.map((item) => [
+            item.key,
+            { color: item.fill, label: item.label },
+          ]),
         ),
       }) satisfies ChartConfig,
     [chartData, t],
@@ -133,7 +136,7 @@ export const LanguagesPieChart = ({
           <Pie
             data={chartData}
             dataKey="translationsCount"
-            nameKey="label"
+            nameKey="key"
             // label={({ x, y, textAnchor, dominantBaseline, name, fill }) => (
             //   <text
             //     x={x}
