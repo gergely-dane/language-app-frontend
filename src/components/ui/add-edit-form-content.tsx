@@ -188,16 +188,16 @@ export const AddEditFormContent = ({
         });
 
         resetForm();
-      }
 
-      window.localStorage.setItem(
-        LAST_ADDED_SOURCE_LANGUAGE_KEY,
-        String(effectiveSourceLanguageId),
-      );
-      window.localStorage.setItem(
-        LAST_ADDED_TARGET_LANGUAGE_KEY,
-        String(effectiveTargetLanguageId),
-      );
+        window.localStorage.setItem(
+          LAST_ADDED_SOURCE_LANGUAGE_KEY,
+          String(effectiveSourceLanguageId),
+        );
+        window.localStorage.setItem(
+          LAST_ADDED_TARGET_LANGUAGE_KEY,
+          String(effectiveTargetLanguageId),
+        );
+      }
 
       onClose();
       showAlert({
