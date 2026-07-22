@@ -5,6 +5,7 @@ import { apiClient } from "@/lib/api-client";
 
 export interface GetUserStatisticsParams {
   previousDays: number;
+  languageId?: number;
 }
 
 export const getUserStatisticsQueryOptions = (

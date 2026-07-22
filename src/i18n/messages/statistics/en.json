@@ -12,5 +12,58 @@
     "title": "You're on a"
   },
   "translationsAdded": "Translations Added",
-  "yourLanguages": "Your Languages"
+  "yourLanguages": "Your Languages",
+  "weekOf": "Week of {date}",
+  "timePeriod": {
+    "30d": "30 days",
+    "90d": "90 days",
+    "180d": "180 days (weekly)",
+    "1y": "1 year (weekly)",
+    "all": "All time"
+  },
+  "languageFilter": {
+    "all": "All Languages"
+  },
+  "summaryCards": {
+    "currentStreak": "Current Streak",
+    "retentionRate": "Retention Rate",
+    "totalReviews": "Total Reviews",
+    "daysStudied": "Total Days Studied",
+    "longestStreak": "Longest Streak",
+    "outOfDays": "{studied} of {total} days",
+    "days": "{count, plural, one {day} other {days}}"
+  },
+  "heatmap": {
+    "title": "Activity Heatmap (1 year)",
+    "activities": "{count, plural, one {# activity} other {# activities}}",
+    "flashcards": "Cards Reviewed",
+    "translations": "Translations Added",
+    "noActivity": "No activity"
+  },
+  "cardBreakdown": {
+    "title": "Card States",
+    "new": "New",
+    "learning": "Learning",
+    "review": "Review",
+    "relearning": "Relearning",
+    "totalCards": "Total Cards"
+  },
+  "answerBreakdown": {
+    "again": "Didn't know",
+    "hard": "Wasn't sure",
+    "good": "Knew it",
+    "easy": "Easy"
+  },
+  "emptyState": {
+    "title": "Start Your Learning Journey",
+    "description": "Add some translations and start reviewing to see your progress here.",
+    "addTranslations": "Add Translations",
+    "startReviewing": "Start Reviewing"
+  },
+  "today": {
+    "title": "Today",
+    "flashcardsDone": "Reviews Done",
+    "translationsAdded": "Words Added",
+    "dueFlashcards": "Due Reviews"
+  }
 }

@@ -1,11 +1,18 @@
 "use client";
 
+import { useState } from "react";
+
 import { useUserStatistics } from "@/features/user/api/get-user-statistics";
+import { ActivityHeatmap } from "@/features/user/components/activity-heatmap";
+import { CardStatePieChart } from "@/features/user/components/card-state-pie-chart";
 import { FlashcardsAddedBarChart } from "@/features/user/components/flashcards-added-bar-chart";
 import { LanguagesPieChart } from "@/features/user/components/languages-pie-chart";
-import { StreakCard } from "@/features/user/components/streak-card";
+import { StatisticsEmptyState } from "@/features/user/components/statistics-empty-state";
+import { StatisticsSkeleton } from "@/features/user/components/statistics-skeleton";
+import { SummaryCards } from "@/features/user/components/summary-cards";
+import { TimePeriodSelector } from "@/features/user/components/time-period-selector";
+import { TodaySummary } from "@/features/user/components/today-summary";
 import { TranslationsAddedBarChart } from "@/features/user/components/translations-added-bar-chart";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/utils/cn";
 
 type StatisticsDisplayProps = {
@@ -13,33 +20,62 @@ type StatisticsDisplayProps = {
 };
 
 export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
-  const isMobile = useIsMobileScreen();
-  const { data: stats } = useUserStatistics({ previousDays: 30 });
+  const [timePeriod, setTimePeriod] = useState("30");
 
-  if (!stats) return;
+  const previousDays = timePeriod === "0" ? 0 : Number(timePeriod);
 
-  if (!isMobile) {
-    return (
-      <div className={cn("flex flex-col gap-5", className)}>
-        <div className="flex h-70 gap-5">
-          <StreakCard className="w-2/7" stats={stats} />
-          <TranslationsAddedBarChart className="w-5/7" stats={stats} />
-        </div>
+  const { data: stats, isLoading } = useUserStatistics({
+    previousDays: previousDays || 30,
+  });
 
-        <div className="flex h-70 w-full gap-5">
-          <LanguagesPieChart className="w-2/7" stats={stats} />
-          <FlashcardsAddedBarChart className="w-5/7" stats={stats} />
-        </div>
-      </div>
-    );
+  if (isLoading) {
+    return <StatisticsSkeleton className={className} />;
   }
+
+  if (!stats) return null;
+
+  const isEmpty =
+    stats.total.totalFlashcardReviews === 0 &&
+    stats.total.totalTranslations === 0;
 
   return (
     <div className={cn("flex flex-col gap-5", className)}>
-      <StreakCard stats={stats} />
-      <TranslationsAddedBarChart stats={stats} />
-      <LanguagesPieChart stats={stats} />
-      <FlashcardsAddedBarChart stats={stats} />
+      {!isEmpty && (
+        <div className="flex flex-wrap items-center gap-3">
+          <TimePeriodSelector value={timePeriod} onChange={setTimePeriod} />
+        </div>
+      )}
+
+      {isEmpty ? (
+        <StatisticsEmptyState />
+      ) : (
+        <>
+          <TodaySummary stats={stats} />
+
+          <SummaryCards stats={stats} />
+
+          <ActivityHeatmap stats={stats} className="lg:min-h-70" />
+
+          {previousDays > 0 && stats.daily && stats.daily.length > 0 && (
+            <div
+              className={cn(
+                "grid grid-cols-1 gap-5",
+                previousDays < 90 ? "lg:grid-cols-2" : "",
+              )}
+            >
+              <TranslationsAddedBarChart stats={stats} className="lg:h-70" />
+
+              <FlashcardsAddedBarChart stats={stats} className="lg:h-70" />
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <LanguagesPieChart className="h-[400px] lg:h-70" stats={stats} />
+
+            <CardStatePieChart className="h-[400px] lg:h-70" stats={stats} />
+          </div>
+        </>
+      )}
     </div>
   );
 };
