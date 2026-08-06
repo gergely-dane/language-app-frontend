@@ -26,6 +26,7 @@ export const AppProvider = ({ i18nConfig, children }: AppProviderProps) => {
         <NextIntlClientProvider
           locale={i18nConfig.locale}
           messages={i18nConfig.messages}
+          timeZone={i18nConfig.timeZone}
         >
           <ThemeProvider attribute="class" enableSystem>
             <AlertProvider>{children}</AlertProvider>

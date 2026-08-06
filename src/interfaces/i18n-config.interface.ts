@@ -5,4 +5,5 @@ export interface I18nMessages {
 export interface I18nConfig {
   locale: "en";
   messages: I18nMessages;
+  timeZone: string;
 }

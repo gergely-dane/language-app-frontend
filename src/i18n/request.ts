@@ -32,6 +32,7 @@ const buildI18nConfig = async (): Promise<I18nConfig> => {
     return {
       locale,
       messages,
+      timeZone: "UTC",
     };
   } catch (error) {
     console.error("Error loading messages:", error);
