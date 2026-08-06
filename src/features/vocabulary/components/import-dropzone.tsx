@@ -4,9 +4,9 @@ import { IconFileSpreadsheet } from "@tabler/icons-react";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
+import { ALLOWED_IMPORT_EXTENSIONS } from "@/features/vocabulary/constants";
 import { useI18n } from "@/hooks/use-i18n";
-import { ALLOWED_IMPORT_EXTENSIONS } from "@/lib/constants";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 type ImportDropzoneProps = {
   className?: string;

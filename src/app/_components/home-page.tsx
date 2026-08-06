@@ -1,6 +1,6 @@
 "use client";
 
-import { StatisticsDisplay } from "@/features/user/components/statistics-display";
+import { StatisticsDisplay } from "@/features/statistics/components/statistics-display";
 import { useI18n } from "@/hooks/use-i18n";
 
 export const HomePage = () => {

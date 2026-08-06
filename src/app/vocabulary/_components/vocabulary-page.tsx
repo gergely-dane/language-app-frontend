@@ -4,14 +4,14 @@ import { IconPlus } from "@tabler/icons-react";
 import { type SortingState } from "@tanstack/react-table";
 import { useCallback, useState } from "react";
 
-import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
+import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 import { Button } from "@/components/ui/button";
-import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
-import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
+import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
+import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
-import { VocabularyTable } from "@/features/vocabulary/components/vocabulary-table";
+import { VocabularyTable } from "@/features/vocabulary/components/table/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
 import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useDebounce } from "@/hooks/use-debounce";

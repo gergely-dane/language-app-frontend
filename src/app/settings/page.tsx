@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import { SettingsPage } from "@/app/settings/_components/settings-page";
-import { getFsrsOptimizationStatusQueryOptions } from "@/features/user/api/get-fsrs-optimization-status";
+import { getFsrsOptimizationStatusQueryOptions } from "@/features/settings/api/get-fsrs-optimization-status";
 import { getUserQueryOptions } from "@/features/user/api/get-user";
 
 export default async function Page() {

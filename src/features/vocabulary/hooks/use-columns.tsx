@@ -9,13 +9,13 @@ import {
   SelectCell,
   TranslationsCell,
   WordCell,
-} from "@/features/vocabulary/components/column-cells";
+} from "@/features/vocabulary/components/table/column-cells";
 import {
   AddedOnHeader,
   SelectHeader,
   TranslationsHeader,
   WordHeader,
-} from "@/features/vocabulary/components/column-headers";
+} from "@/features/vocabulary/components/table/column-headers";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 
 export const useColumns = (

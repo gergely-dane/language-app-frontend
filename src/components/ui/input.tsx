@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useId } from "react";
 
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 type InputProps = React.ComponentProps<"input"> & {
   label?: string;

@@ -2,7 +2,7 @@ import { IconX } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 interface SearchInputProps {
   className?: string;

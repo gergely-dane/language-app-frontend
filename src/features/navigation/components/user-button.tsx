@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/auth-context";
 import { useGetUser } from "@/features/user/api/get-user";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 type UserButtonProps = {
   className?: string;

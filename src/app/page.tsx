@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import { HomePage } from "@/app/_components/home-page";
-import { getUserStatisticsQueryOptions } from "@/features/user/api/get-user-statistics";
+import { getUserStatisticsQueryOptions } from "@/features/statistics/api/get-user-statistics";
 
 export default async function Page() {
   const queryClient = new QueryClient();

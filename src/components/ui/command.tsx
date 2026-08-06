@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 const Command = ({
   className,

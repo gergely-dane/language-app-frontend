@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { LANGUAGES } from "@/features/languages/constants";
 import { type Language } from "@/features/languages/interfaces/language.interface";
 import { apiClient } from "@/lib/api-client";
-import { LANGUAGES } from "@/lib/constants";
 
 export const useLanguages = () => {
   const queryResult = useQuery({

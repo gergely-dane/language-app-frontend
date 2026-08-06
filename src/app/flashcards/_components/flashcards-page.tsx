@@ -10,11 +10,9 @@ import {
 } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { AddEditWordDialog } from "@/components/ui/add-edit-word-dialog";
+import { CheckboxButton } from "@/components/common/checkbox-button";
 import { Button } from "@/components/ui/button";
-import { CheckboxButton } from "@/components/ui/checkbox-button";
 import { Kbd } from "@/components/ui/kbd";
-import { LanguagePairSelector } from "@/components/ui/language-pair-selector";
 import {
   Tooltip,
   TooltipContent,
@@ -36,10 +34,12 @@ import type {
   FlashcardCompHandle,
 } from "@/features/flashcards/types";
 import { flashcardParamsSchema } from "@/features/flashcards/types";
+import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
+import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 export const FlashcardsPage = () => {
   const t = useI18n();

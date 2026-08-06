@@ -10,7 +10,7 @@ import React, {
 
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 import { FLIP_TRANSITION, SWIPE_TRANSITION } from "../constants";
 import type { Direction, FlashcardCompHandle } from "../types";

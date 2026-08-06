@@ -14,7 +14,7 @@ import { useLanguages } from "@/features/languages/api/get-languages";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 type FlashcardSideProps = {
   translation?: Translation;

@@ -1,6 +1,6 @@
 import { type Icon, IconLoader2 } from "@tabler/icons-react";
 
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 function Spinner({ className, ...props }: React.ComponentProps<Icon>) {
   return (

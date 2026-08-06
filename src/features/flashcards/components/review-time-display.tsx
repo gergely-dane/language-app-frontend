@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 import { MINUTES_IN_DAY } from "../constants";
 

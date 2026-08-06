@@ -6,11 +6,11 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCallback } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   ThemeToggleButton,
   useThemeTransition,
-} from "@/components/ui/theme-toggle-button";
+} from "@/components/common/theme-toggle-button";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";

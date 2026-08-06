@@ -14,9 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAlert } from "@/context/alert-context";
+import { FlashcardSettingsCard } from "@/features/settings/components/flashcard-settings-card";
 import { useGetUser } from "@/features/user/api/get-user";
 import { useUpdateUser } from "@/features/user/api/update-user";
-import { FlashcardSettingsCard } from "@/features/user/components/flashcard-settings-card";
 import { useI18n } from "@/hooks/use-i18n";
 
 export const SettingsPage = () => {
