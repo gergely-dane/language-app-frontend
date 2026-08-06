@@ -26,9 +26,10 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        default:
+          "h-9 px-4 py-2 has-[>svg]:px-3 has-[[data-slot=button-content]>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 has-[[data-slot=button-content]>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4 has-[[data-slot=button-content]>svg]:px-4",
         icon: "size-9",
       },
     },
@@ -132,7 +133,28 @@ const Button = ({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading ? <DotsBounceIcon /> : children}
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {/* Children stay mounted (invisible) while loading so the width never changes. */}
+          <span
+            data-slot="button-content"
+            className={cn(
+              "flex items-center gap-[inherit]",
+              isLoading && "invisible",
+            )}
+          >
+            {children}
+          </span>
+
+          {isLoading && (
+            <span className="absolute inset-0 flex items-center justify-center">
+              <DotsBounceIcon />
+            </span>
+          )}
+        </>
+      )}
 
       {ripple &&
         ripples.map((r) => (
