@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useAlert } from "@/context/alert-context";
 import { useGetUser } from "@/features/user/api/get-user";
 import { useUpdateUser } from "@/features/user/api/update-user";
+import { FlashcardSettingsCard } from "@/features/user/components/flashcard-settings-card";
 import { useI18n } from "@/hooks/use-i18n";
 
 export const SettingsPage = () => {
@@ -35,7 +36,7 @@ export const SettingsPage = () => {
     }
   }, [user?.id]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await updateUser.mutateAsync({ firstName, lastName });
@@ -60,50 +61,56 @@ export const SettingsPage = () => {
     <div className="mx-auto w-full max-w-2xl p-4">
       <h1 className="mb-6 text-3xl font-bold">{t("settings.title")}</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("settings.profile")}</CardTitle>
-          <CardDescription>{t("settings.profileDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form
-            onSubmit={(e) => {
-              void handleSubmit(e);
-            }}
-            className="flex flex-col gap-4"
-          >
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="firstName">{t("settings.firstName")}</Label>
-              <Input
-                id="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                disabled={updateUser.isPending}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="lastName">{t("settings.lastName")}</Label>
-              <Input
-                id="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                disabled={updateUser.isPending}
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="mt-2 w-20"
-              disabled={updateUser.isPending}
-              isLoading={updateUser.isPending}
+      <div className="flex flex-col gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("settings.profile")}</CardTitle>
+            <CardDescription>
+              {t("settings.profileDescription")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form
+              onSubmit={(e) => {
+                void handleProfileSubmit(e);
+              }}
+              className="flex flex-col gap-4"
             >
-              <IconCheck className="mt-0.5 h-4 w-4" />
-              {t("settings.save")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="firstName">{t("settings.firstName")}</Label>
+                <Input
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  disabled={updateUser.isPending}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="lastName">{t("settings.lastName")}</Label>
+                <Input
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  disabled={updateUser.isPending}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="mt-2 w-20"
+                disabled={updateUser.isPending}
+                isLoading={updateUser.isPending}
+              >
+                <IconCheck className="mt-0.5 h-4 w-4" />
+                {t("settings.save")}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <FlashcardSettingsCard />
+      </div>
     </div>
   );
 };

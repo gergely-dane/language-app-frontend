@@ -1,7 +1,15 @@
+import { FSRS_OPTIMIZATION_STATE } from "@/features/user/constants";
+import { type FsrsOptimizationStatus } from "@/features/user/interfaces/fsrs-optimization.interface";
 import {
   type UserStatisticsDaily,
   type UserStatisticsWeekly,
 } from "@/features/user/interfaces/user-statistics.interface";
+
+export const isFsrsOptimizationInProgress = (
+  status: FsrsOptimizationStatus | undefined,
+) =>
+  status?.state === FSRS_OPTIMIZATION_STATE.Pending ||
+  status?.state === FSRS_OPTIMIZATION_STATE.Running;
 
 export function groupStatsByWeek(
   daily: UserStatisticsDaily[],
