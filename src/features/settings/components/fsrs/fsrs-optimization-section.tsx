@@ -5,6 +5,7 @@ import {
   IconCalendarCheck,
   IconCards,
   IconCircleCheck,
+  IconClock,
   IconSparkles,
 } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -51,6 +52,9 @@ export const FsrsOptimizationSection = () => {
 
   const [isOptimizeDialogOpen, setIsOptimizeDialogOpen] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [resetCooldownHours, setResetCooldownHours] = useState<number | null>(
+    null,
+  );
 
   const previousState = useRef<FsrsOptimizationState | undefined>(
     status?.state,
@@ -155,6 +159,33 @@ export const FsrsOptimizationSection = () => {
         100,
     ),
   );
+  const hasEnoughReviews =
+    status.reviewsSinceLastOptimization >= status.minimumReviewsRequired;
+  const cooldownEndsAt =
+    status.nextOptimizationAvailableAt != null && hasEnoughReviews
+      ? new Date(status.nextOptimizationAvailableAt)
+      : null;
+  const isOnCooldown = cooldownEndsAt != null && !isInProgress;
+  const openResetDialog = () => {
+    setResetCooldownHours(
+      status.nextOptimizationAvailableAt
+        ? Math.max(
+            1,
+            Math.ceil(
+              (new Date(status.nextOptimizationAvailableAt).getTime() -
+                Date.now()) /
+                3_600_000,
+            ),
+          )
+        : null,
+    );
+    setIsResetDialogOpen(true);
+  };
+  const cooldownHelper = isOnCooldown
+    ? t("settings.cooldownHelper", {
+        time: format.relativeTime(cooldownEndsAt),
+      })
+    : null;
 
   const statusBadge = isInProgress ? (
     <Badge variant="secondary">
@@ -246,7 +277,14 @@ export const FsrsOptimizationSection = () => {
           </div>
         )}
 
-        {!status.canOptimize && (
+        {isOnCooldown && cooldownHelper && (
+          <div className="flex items-center gap-3 rounded-lg border p-3">
+            <IconClock className="text-muted-foreground size-5 shrink-0" />
+            <p className="text-muted-foreground text-sm">{cooldownHelper}</p>
+          </div>
+        )}
+
+        {!status.canOptimize && !isOnCooldown && (
           <div className="flex flex-col gap-2 rounded-lg border p-3">
             <div className="flex items-baseline justify-between gap-2 text-sm">
               <p className="text-muted-foreground">{progressHelper}</p>
@@ -310,14 +348,16 @@ export const FsrsOptimizationSection = () => {
                   <Button disabled>{optimizeLabel}</Button>
                 </span>
               </TooltipTrigger>
-              <TooltipContent>{progressHelper}</TooltipContent>
+              <TooltipContent>
+                {cooldownHelper ?? progressHelper}
+              </TooltipContent>
             </Tooltip>
           )}
 
           {status.isOptimized && (
             <Button
               variant="outline"
-              onClick={() => setIsResetDialogOpen(true)}
+              onClick={openResetDialog}
               disabled={isInProgress}
             >
               {t("settings.resetWeights")}
@@ -343,6 +383,7 @@ export const FsrsOptimizationSection = () => {
           void handleReset();
         }}
         isLoading={resetFsrsWeights.isPending}
+        cooldownHours={resetCooldownHours}
       />
     </>
   );

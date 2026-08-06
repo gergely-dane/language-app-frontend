@@ -8,6 +8,7 @@ export interface FsrsOptimizationStatus {
   state: FsrsOptimizationState;
   isOptimized: boolean;
   lastOptimizedAt: string | null;
+  nextOptimizationAvailableAt: string | null;
   reviewsUsedForOptimization: number | null;
   queuedAt: string | null;
   failureReason: string | null;

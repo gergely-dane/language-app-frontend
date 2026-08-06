@@ -41,9 +41,11 @@
   "reviewProgressHelper": "You need at least {required} reviews before optimization is available.",
   "reviewProgressSinceHelper": "You need at least {required} new reviews since your last optimization.",
   "optimizationAvailable": "You have enough reviews to optimize your algorithm!",
+  "cooldownHelper": "Optimization is available once every 24 hours. You can optimize again {time}.",
   "resetWeights": "Reset to Defaults",
-  "resetConfirmTitle": "Reset FSRS Weights",
+  "resetConfirmTitle": "Reset Algorithm to Defaults",
   "resetConfirmDescription": "This will reset the spaced repetition algorithm to its default settings. Your review history will not be affected.",
+  "resetConfirmCooldownNote": "You will not be able to optimize again for {hours, plural, one {# hour} other {# hours}}.",
   "resetConfirmButton": "Reset",
   "resetSuccess": "Algorithm reset to defaults.",
   "resetError": "Failed to reset. Please try again."

@@ -16,6 +16,7 @@ type ResetConfirmationDialogProps = {
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
   isLoading: boolean;
+  cooldownHours: number | null;
 };
 
 export const ResetConfirmationDialog = ({
@@ -23,6 +24,7 @@ export const ResetConfirmationDialog = ({
   onOpenChange,
   onConfirm,
   isLoading,
+  cooldownHours,
 }: ResetConfirmationDialogProps) => {
   const t = useI18n();
 
@@ -38,6 +40,8 @@ export const ResetConfirmationDialog = ({
           <DialogTitle>{t("settings.resetConfirmTitle")}</DialogTitle>
           <DialogDescription>
             {t("settings.resetConfirmDescription")}
+            {cooldownHours != null &&
+              ` ${t("settings.resetConfirmCooldownNote", { hours: cooldownHours })}`}
           </DialogDescription>
         </DialogHeader>
 
