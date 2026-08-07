@@ -23,14 +23,14 @@ export const BottomNavbarButton = ({
       <Button
         variant="ghost"
         className={cn(
-          "bg-accent flex h-full w-full flex-col gap-0.5 transition-colors duration-500",
+          "bg-accent flex h-full w-full flex-col gap-1.5 transition-colors duration-500",
           {
             "bg-primary text-white": isActive,
           },
         )}
       >
         <Icon className="scale-130" />
-        <p className="text-xs">{label}</p>
+        <p className={isActive ? "font-semibold" : "font-medium"}>{label}</p>
       </Button>
     </Link>
   );
