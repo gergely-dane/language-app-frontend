@@ -28,6 +28,8 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
       console.error("Failed to respond to flashcard:", error);
     },
     onSuccess: (nextFlashcard, variables) => {
+      void queryClient.invalidateQueries({ queryKey: ["statistics"] });
+
       if (flashcardIndex === undefined) {
         return;
       }

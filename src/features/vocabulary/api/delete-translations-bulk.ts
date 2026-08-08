@@ -18,6 +18,7 @@ export const useDeleteTranslationsBulk = () => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });
       void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
       void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
+      void queryClient.invalidateQueries({ queryKey: ["statistics"] });
     },
     onError: (error) => {
       console.error("Failed to delete translation:", error);

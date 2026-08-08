@@ -38,6 +38,7 @@ export const useUpdateTranslation = (
     onSuccess: (updatedTranslation) => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });
       void queryClient.invalidateQueries({ queryKey: ["language-pairs"] });
+      void queryClient.invalidateQueries({ queryKey: ["statistics"] });
 
       if (flashcardQueryKey) {
         queryClient.setQueryData<Flashcard>(flashcardQueryKey, (oldData) => {
