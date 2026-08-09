@@ -196,7 +196,7 @@ export const FlashcardsPage = () => {
       </div>
 
       {error || !flashcard ? (
-        <div className="bg-muted text-primary-foreground ring-foreground mb-10 flex h-60 w-full flex-col items-center justify-center gap-1 rounded-xl p-6 text-center ring-2">
+        <div className="bg-muted ring-foreground mb-10 flex h-60 w-full flex-col items-center justify-center gap-1 rounded-xl p-6 text-center ring-2">
           {!error ? (
             <>
               <p className="text-xl font-semibold whitespace-pre-line">
