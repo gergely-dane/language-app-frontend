@@ -19,14 +19,10 @@ import {
 } from "@/components/ui/popover";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import { type LanguageFilterValue } from "@/features/languages/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";
-
-export type LanguageFilterValue = {
-  sourceLanguageId: number | null;
-  targetLanguageId: number | null;
-};
 
 type LanguagePairSelectorProps = {
   className?: string;

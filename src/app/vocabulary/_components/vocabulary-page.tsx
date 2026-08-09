@@ -7,7 +7,7 @@ import { useCallback, useState } from "react";
 import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 import { Button } from "@/components/ui/button";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
-import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
+import { type LanguageFilterValue } from "@/features/languages/types";
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
@@ -26,9 +26,8 @@ export const VocabularyPage = () => {
   >(undefined);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchFilter, setSearchFilter] = useState("");
-  const [languageFilter, setLanguageFilter] = useState<LanguagePair | null>(
-    null,
-  );
+  const [languageFilter, setLanguageFilter] =
+    useState<LanguageFilterValue | null>(null);
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
   ]);

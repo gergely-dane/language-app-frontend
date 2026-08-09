@@ -35,7 +35,7 @@ import type {
 } from "@/features/flashcards/types";
 import { flashcardParamsSchema } from "@/features/flashcards/types";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
-import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
+import { type LanguageFilterValue } from "@/features/languages/types";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
@@ -64,15 +64,17 @@ export const FlashcardsPage = () => {
     }
   }, []);
 
-  const [languagePair, setLanguagePair] = useState<LanguagePair | null>(() => {
-    if (storedFiltersState) {
-      return {
-        sourceLanguageId: storedFiltersState.sourceLanguageId ?? null,
-        targetLanguageId: storedFiltersState.targetLanguageId ?? null,
-      } satisfies LanguagePair;
-    }
-    return null;
-  });
+  const [languagePair, setLanguagePair] = useState<LanguageFilterValue | null>(
+    () => {
+      if (storedFiltersState) {
+        return {
+          sourceLanguageId: storedFiltersState.sourceLanguageId ?? null,
+          targetLanguageId: storedFiltersState.targetLanguageId ?? null,
+        } satisfies LanguageFilterValue;
+      }
+      return null;
+    },
+  );
   const [isReverse, setIsReverse] = useState(() => {
     if (storedFiltersState) {
       return storedFiltersState.isReverse ?? false;
@@ -142,7 +144,7 @@ export const FlashcardsPage = () => {
     setIsSwipeAnimating(false);
   };
 
-  const onLanguagePairChange = (newPair: LanguagePair | null) => {
+  const onLanguagePairChange = (newPair: LanguageFilterValue | null) => {
     setLanguagePair(newPair);
     setFlashcardIndex(0);
     flashcardRef.current?.reset();

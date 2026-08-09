@@ -369,6 +369,7 @@ export const AddEditFormContent = ({
 
             <LanguageSelector
               className="w-14 lg:w-32"
+              role="source"
               value={sourceLanguage}
               onChange={(value) => handleLanguageChange(value, false)}
             />
@@ -388,6 +389,7 @@ export const AddEditFormContent = ({
 
             <LanguageSelector
               className="w-14 lg:w-32"
+              role="target"
               value={targetLanguage}
               onChange={(value) => handleLanguageChange(value, true)}
             />
