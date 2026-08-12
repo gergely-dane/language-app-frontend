@@ -11,6 +11,8 @@ import { useLanguages } from "@/features/languages/api/get-languages";
 import { StatisticsContainer } from "@/features/statistics/components/statistics-container";
 import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { cn } from "@/lib/utils";
 
 type LanguagesPieChartProps = {
   stats: UserStatistics;
@@ -35,6 +37,7 @@ export const LanguagesPieChart = ({
 }: LanguagesPieChartProps) => {
   const t = useI18n();
   const { getLanguageString } = useLanguages();
+  const isMobile = useIsMobileScreen();
 
   const languages = useMemo(
     () => stats?.total?.languages ?? [],
@@ -105,7 +108,10 @@ export const LanguagesPieChart = ({
       title={t("statistics.yourLanguages")}
     >
       <div className="flex items-center gap-5">
-        <ChartContainer className="aspect-square size-56" config={chartConfig}>
+        <ChartContainer
+          className={cn("aspect-square", isMobile ? "size-37" : "size-56")}
+          config={chartConfig}
+        >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
@@ -113,8 +119,8 @@ export const LanguagesPieChart = ({
               data={chartData}
               dataKey="value"
               nameKey="key"
-              innerRadius={66}
-              outerRadius={105}
+              innerRadius={isMobile ? 44 : 66}
+              outerRadius={isMobile ? 70 : 105}
               paddingAngle={2}
               strokeWidth={0}
             >

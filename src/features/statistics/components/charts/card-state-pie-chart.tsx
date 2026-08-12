@@ -12,6 +12,8 @@ import {
 import { StatisticsContainer } from "@/features/statistics/components/statistics-container";
 import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { cn } from "@/lib/utils";
 
 type CardStatePieChartProps = {
   stats: UserStatistics;
@@ -30,6 +32,7 @@ export const CardStatePieChart = ({
   className,
 }: CardStatePieChartProps) => {
   const t = useI18n();
+  const isMobile = useIsMobileScreen();
   const breakdown = stats.cardBreakdown;
 
   const chartData = useMemo(() => {
@@ -87,7 +90,10 @@ export const CardStatePieChart = ({
       title={t("statistics.cardBreakdown.title")}
     >
       <div className="flex items-center gap-5">
-        <ChartContainer className="aspect-square size-56" config={chartConfig}>
+        <ChartContainer
+          className={cn("aspect-square", isMobile ? "size-37" : "size-56")}
+          config={chartConfig}
+        >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
@@ -95,8 +101,8 @@ export const CardStatePieChart = ({
               data={chartData}
               dataKey="value"
               nameKey="name"
-              innerRadius={66}
-              outerRadius={105}
+              innerRadius={isMobile ? 44 : 66}
+              outerRadius={isMobile ? 70 : 105}
               paddingAngle={2}
               strokeWidth={0}
             >
@@ -117,14 +123,17 @@ export const CardStatePieChart = ({
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-2xl font-bold"
+                          className={cn(
+                            "fill-foreground font-bold",
+                            isMobile ? "text-lg" : "text-2xl",
+                          )}
                         >
                           {totalCards.toLocaleString()}
                         </tspan>
 
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 22}
+                          y={(viewBox.cy || 0) + (isMobile ? 17 : 22)}
                           className="fill-muted-foreground text-xs"
                         >
                           {t("statistics.cardBreakdown.totalCards")}
