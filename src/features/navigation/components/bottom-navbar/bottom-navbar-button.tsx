@@ -10,6 +10,8 @@ type BottomNavbarButtonProps = {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   isActive: boolean;
+  className?: string;
+  iconClassName?: string;
 };
 
 export const BottomNavbarButton = ({
@@ -17,6 +19,8 @@ export const BottomNavbarButton = ({
   icon: Icon,
   label,
   isActive,
+  className,
+  iconClassName,
 }: BottomNavbarButtonProps) => {
   return (
     <Link href={href} className="flex-1">
@@ -27,9 +31,10 @@ export const BottomNavbarButton = ({
           {
             "bg-primary text-white": isActive,
           },
+          className,
         )}
       >
-        <Icon className="scale-130" />
+        <Icon className={cn("scale-120", iconClassName)} />
         <p className={isActive ? "font-semibold" : "font-medium"}>{label}</p>
       </Button>
     </Link>

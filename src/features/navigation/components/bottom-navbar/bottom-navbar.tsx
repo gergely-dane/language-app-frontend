@@ -33,6 +33,7 @@ export const BottomNavbar = () => {
         icon={IconList}
         label={t("general.vocabulary")}
         isActive={pathname === "/vocabulary"}
+        iconClassName="-mb-0.5"
       />
 
       <BottomNavbarButton
@@ -40,6 +41,7 @@ export const BottomNavbar = () => {
         icon={IconCards}
         label={t("general.flashcards")}
         isActive={pathname === "/flashcards"}
+        iconClassName="-mb-0.5"
       />
     </nav>
   );
