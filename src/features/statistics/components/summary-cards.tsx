@@ -1,10 +1,12 @@
 "use client";
 
 import {
-  IconCalendarCheck,
+  IconAward,
+  IconBook2,
   IconCards,
   IconFlame,
   IconTargetArrow,
+  type TablerIcon,
 } from "@tabler/icons-react";
 
 import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
@@ -13,48 +15,96 @@ import { cn } from "@/lib/utils";
 
 type SummaryCardsProps = {
   stats: UserStatistics;
+  /** "overview" for the homepage set, "detailed" for the statistics page. */
+  variant?: "overview" | "detailed";
   className?: string;
 };
 
-export const SummaryCards = ({ stats, className }: SummaryCardsProps) => {
+type SummaryCard = {
+  icon: TablerIcon;
+  label: string;
+  value: string | number;
+  suffix?: string;
+  subtitle?: string;
+  color: string;
+};
+
+export const SummaryCards = ({
+  stats,
+  variant = "overview",
+  className,
+}: SummaryCardsProps) => {
   const t = useI18n();
 
-  const cards = [
-    {
-      icon: IconFlame,
-      label: t("statistics.summaryCards.currentStreak"),
-      value: stats.total.activityStreak,
-      suffix: t("statistics.summaryCards.days", {
-        count: stats.total.activityStreak,
-      }),
-      color: "text-orange-500",
-    },
-    {
-      icon: IconTargetArrow,
-      label: t("statistics.summaryCards.retentionRate"),
-      value: `${Math.round(stats.total.retentionRate)}%`,
-      color:
-        stats.total.retentionRate >= 80
-          ? "text-emerald-500"
-          : stats.total.retentionRate >= 60
-            ? "text-amber-500"
-            : "text-red-500",
-    },
-    {
-      icon: IconCards,
-      label: t("statistics.summaryCards.totalReviews"),
-      value: stats.total.totalFlashcardReviews.toLocaleString(),
-      color: "text-primary",
-    },
-    {
-      icon: IconCalendarCheck,
-      label: t("statistics.summaryCards.daysStudied"),
-      value: stats.total.daysStudied,
-      subtitle: t("statistics.summaryCards.longestStreak"),
-      subtitleValue: `${stats.total.longestStreak}`,
-      color: "text-sky-500",
-    },
-  ];
+  const retentionColor =
+    stats.total.retentionRate >= 80
+      ? "text-emerald-500"
+      : stats.total.retentionRate >= 60
+        ? "text-amber-500"
+        : "text-red-500";
+
+  const streakCard: SummaryCard = {
+    icon: IconFlame,
+    label: t("statistics.summaryCards.currentStreak"),
+    value: stats.total.activityStreak,
+    suffix: t("statistics.summaryCards.days", {
+      count: stats.total.activityStreak,
+    }),
+    subtitle: `${t("statistics.summaryCards.longestStreak")}: ${stats.total.longestStreak}`,
+    color: "text-orange-500",
+  };
+
+  const cards: SummaryCard[] =
+    variant === "overview"
+      ? [
+          streakCard,
+          {
+            icon: IconTargetArrow,
+            label: t("statistics.summaryCards.retentionRate"),
+            value: `${Math.round(stats.total.retentionRate)}%`,
+            color: retentionColor,
+          },
+          {
+            icon: IconBook2,
+            label: t("statistics.summaryCards.words"),
+            value: stats.total.totalTranslations.toLocaleString(),
+            subtitle: `${t("statistics.summaryCards.mastered")}: ${stats.total.translationsMastered.toLocaleString()}`,
+            color: "text-violet-500",
+          },
+          {
+            icon: IconCards,
+            label: t("statistics.summaryCards.totalReviews"),
+            value: stats.total.totalFlashcardReviews.toLocaleString(),
+            subtitle: `${t("statistics.summaryCards.daysStudied")}: ${stats.total.daysStudied}`,
+            color: "text-primary",
+          },
+        ]
+      : [
+          streakCard,
+          {
+            icon: IconTargetArrow,
+            label: t("statistics.summaryCards.retentionRate"),
+            value: `${Math.round(stats.total.retentionRate)}%`,
+            subtitle: t("statistics.summaryCards.ofReviewsRecalled"),
+            color: retentionColor,
+          },
+          {
+            icon: IconCards,
+            label: t("statistics.summaryCards.reviewsPerDay"),
+            value: stats.total.averageReviewsPerDay.toFixed(1),
+            subtitle: `${t("statistics.summaryCards.daysStudied")}: ${stats.total.daysStudied}`,
+            color: "text-primary",
+          },
+          {
+            icon: IconAward,
+            label: t("statistics.summaryCards.mastered"),
+            value: stats.total.translationsMastered.toLocaleString(),
+            subtitle: t("statistics.summaryCards.ofNWords", {
+              total: stats.total.totalTranslations.toLocaleString(),
+            }),
+            color: "text-violet-500",
+          },
+        ];
 
   return (
     <div
@@ -71,7 +121,7 @@ export const SummaryCards = ({ stats, className }: SummaryCardsProps) => {
           <div className="flex items-center gap-2">
             <card.icon className={cn("size-4", card.color)} />
 
-            <p className="text-muted-foreground text-sm font-medium">
+            <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               {card.label}
             </p>
           </div>
@@ -86,9 +136,7 @@ export const SummaryCards = ({ stats, className }: SummaryCardsProps) => {
           </p>
 
           {card.subtitle && (
-            <p className="text-muted-foreground text-xs">
-              {card.subtitle}: {card.subtitleValue}
-            </p>
+            <p className="text-muted-foreground text-xs">{card.subtitle}</p>
           )}
         </div>
       ))}

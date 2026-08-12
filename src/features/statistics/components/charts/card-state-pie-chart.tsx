@@ -12,12 +12,18 @@ import {
 import { StatisticsContainer } from "@/features/statistics/components/statistics-container";
 import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/lib/utils";
 
 type CardStatePieChartProps = {
   stats: UserStatistics;
   className?: string;
 };
+
+const STATE_COLORS = {
+  new: "var(--primary)",
+  learning: "var(--color-amber-500)",
+  review: "var(--success)",
+  relearning: "var(--color-violet-500)",
+} as const;
 
 export const CardStatePieChart = ({
   stats,
@@ -32,22 +38,22 @@ export const CardStatePieChart = ({
       {
         name: t("statistics.cardBreakdown.new"),
         value: breakdown.newCards,
-        fill: "var(--color-new)",
+        fill: STATE_COLORS.new,
       },
       {
         name: t("statistics.cardBreakdown.learning"),
         value: breakdown.learningCards,
-        fill: "var(--color-learning)",
+        fill: STATE_COLORS.learning,
       },
       {
         name: t("statistics.cardBreakdown.review"),
         value: breakdown.reviewCards,
-        fill: "var(--color-review)",
+        fill: STATE_COLORS.review,
       },
       {
         name: t("statistics.cardBreakdown.relearning"),
         value: breakdown.relearningCards,
-        fill: "var(--color-relearning)",
+        fill: STATE_COLORS.relearning,
       },
     ].filter((d) => d.value > 0);
   }, [breakdown, t]);
@@ -58,18 +64,18 @@ export const CardStatePieChart = ({
   );
 
   const chartConfig = {
-    new: { label: t("statistics.cardBreakdown.new"), color: "var(--primary)" },
+    new: { label: t("statistics.cardBreakdown.new"), color: STATE_COLORS.new },
     learning: {
       label: t("statistics.cardBreakdown.learning"),
-      color: "oklch(from var(--primary) calc(l + 0.08) c h)",
+      color: STATE_COLORS.learning,
     },
     review: {
       label: t("statistics.cardBreakdown.review"),
-      color: "oklch(from var(--primary) calc(l + 0.16) c h)",
+      color: STATE_COLORS.review,
     },
     relearning: {
       label: t("statistics.cardBreakdown.relearning"),
-      color: "oklch(from var(--primary) calc(l + 0.24) c h)",
+      color: STATE_COLORS.relearning,
     },
   } satisfies ChartConfig;
 
@@ -77,60 +83,78 @@ export const CardStatePieChart = ({
 
   return (
     <StatisticsContainer
-      className={cn("relative h-[400px] lg:h-auto lg:flex-col", className)}
+      className={className}
       title={t("statistics.cardBreakdown.title")}
     >
-      <ChartContainer
-        className="absolute inset-0 aspect-square size-full min-w-0 lg:mt-4"
-        config={chartConfig}
-      >
-        <PieChart>
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+      <div className="flex items-center gap-5">
+        <ChartContainer className="aspect-square size-56" config={chartConfig}>
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
-          <Pie
-            data={chartData}
-            dataKey="value"
-            nameKey="name"
-            innerRadius="60%"
-            strokeWidth={2}
-          >
-            {chartData.map((entry) => (
-              <Cell key={entry.name} fill={entry.fill} />
-            ))}
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={66}
+              outerRadius={105}
+              paddingAngle={2}
+              strokeWidth={0}
+            >
+              {chartData.map((entry) => (
+                <Cell key={entry.name} fill={entry.fill} />
+              ))}
 
-            <Label
-              content={({ viewBox }) => {
-                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                  return (
-                    <text
-                      x={viewBox.cx}
-                      y={viewBox.cy}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      <tspan
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-2xl font-bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
                       >
-                        {totalCards}
-                      </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-2xl font-bold"
+                        >
+                          {totalCards.toLocaleString()}
+                        </tspan>
 
-                      <tspan
-                        x={viewBox.cx}
-                        y={(viewBox.cy || 0) + 20}
-                        className="fill-muted-foreground text-xs"
-                      >
-                        {t("statistics.cardBreakdown.totalCards")}
-                      </tspan>
-                    </text>
-                  );
-                }
-              }}
-            />
-          </Pie>
-        </PieChart>
-      </ChartContainer>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 22}
+                          className="fill-muted-foreground text-xs"
+                        >
+                          {t("statistics.cardBreakdown.totalCards")}
+                        </tspan>
+                      </text>
+                    );
+                  }
+                }}
+              />
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+
+        <ul className="flex-1 space-y-1.5 text-sm">
+          {chartData.map((slice) => (
+            <li key={slice.name} className="flex items-center gap-2">
+              <span
+                className="size-2.5 shrink-0 rounded-full"
+                style={{ background: slice.fill }}
+              />
+
+              <span className="truncate">{slice.name}</span>
+
+              <span className="text-muted-foreground ml-auto text-xs">
+                {slice.value.toLocaleString()}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </StatisticsContainer>
   );
 };

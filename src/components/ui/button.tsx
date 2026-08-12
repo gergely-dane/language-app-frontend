@@ -128,7 +128,7 @@ const Button = ({
       ref={setButtonRef}
       data-slot="button"
       onClick={handleClick}
-      whileTap={{ scale: 0.97 }}
+      {...(asChild ? {} : { whileTap: { scale: 0.97 } })}
       className={cn(buttonVariants({ variant, size, className }))}
       disabled={disabled || isLoading}
       {...props}
@@ -137,7 +137,6 @@ const Button = ({
         children
       ) : (
         <>
-          {/* Children stay mounted (invisible) while loading so the width never changes. */}
           <span
             data-slot="button-content"
             className={cn(
@@ -153,23 +152,23 @@ const Button = ({
               <DotsBounceIcon />
             </span>
           )}
+
+          {ripple &&
+            ripples.map((r) => (
+              <motion.span
+                key={r.id}
+                initial={{ scale: 0, opacity: 0.5 }}
+                animate={{ scale, opacity: 0 }}
+                transition={transition}
+                className={cn(rippleVariants({ variant }), rippleClassName)}
+                style={{
+                  top: r.y - 10,
+                  left: r.x - 10,
+                }}
+              />
+            ))}
         </>
       )}
-
-      {ripple &&
-        ripples.map((r) => (
-          <motion.span
-            key={r.id}
-            initial={{ scale: 0, opacity: 0.5 }}
-            animate={{ scale, opacity: 0 }}
-            transition={transition}
-            className={cn(rippleVariants({ variant }), rippleClassName)}
-            style={{
-              top: r.y - 10,
-              left: r.x - 10,
-            }}
-          />
-        ))}
     </Comp>
   );
 };

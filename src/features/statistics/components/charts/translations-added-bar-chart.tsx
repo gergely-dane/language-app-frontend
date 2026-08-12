@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 import {
   type ChartConfig,
@@ -45,28 +45,40 @@ export const TranslationsAddedBarChart = ({
     <StatisticsContainer
       className={className}
       title={t("statistics.newWords")}
-      total={totalWords}
-      days={stats.daily.length}
+      subtitle={t("statistics.totalInLastDays", {
+        total: totalWords.toLocaleString(),
+        days: stats.daily.length,
+      })}
     >
       <ChartContainer
-        className="aspect-auto h-[200px] w-full lg:h-full"
+        className="aspect-auto h-[220px] w-full"
         config={chartConfig}
       >
-        <BarChart accessibilityLayer data={chartData}>
-          <CartesianGrid vertical={false} horizontal={false} />
-
+        <BarChart
+          accessibilityLayer
+          data={chartData}
+          margin={{ top: 4, right: 0, left: -18, bottom: 0 }}
+        >
           <XAxis
             dataKey="date"
             tickLine={false}
-            axisLine={false}
+            axisLine={{ stroke: "var(--border)" }}
             tickMargin={8}
             minTickGap={28}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
             tickFormatter={(value: Date) =>
               new Date(value).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
               })
             }
+          />
+
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            allowDecimals={false}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
           />
 
           <ChartTooltip
@@ -111,7 +123,8 @@ export const TranslationsAddedBarChart = ({
           <Bar
             dataKey="newTranslationsAdded"
             fill="var(--primary)"
-            radius={[4, 4, 4, 4]}
+            maxBarSize={26}
+            radius={[3, 3, 0, 0]}
           />
         </BarChart>
       </ChartContainer>

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { useUserStatistics } from "@/features/statistics/api/get-user-statistics";
 import { ActivityHeatmap } from "@/features/statistics/components/charts/activity-heatmap";
 import { CardStatePieChart } from "@/features/statistics/components/charts/card-state-pie-chart";
@@ -11,19 +9,17 @@ import { TranslationsAddedBarChart } from "@/features/statistics/components/char
 import { StatisticsEmptyState } from "@/features/statistics/components/statistics-empty-state";
 import { StatisticsSkeleton } from "@/features/statistics/components/statistics-skeleton";
 import { SummaryCards } from "@/features/statistics/components/summary-cards";
-import { TimePeriodSelector } from "@/features/statistics/components/time-period-selector";
-import { TodaySummary } from "@/features/statistics/components/today-summary";
 import { cn } from "@/lib/utils";
 
 type StatisticsDisplayProps = {
+  previousDays: number;
   className?: string;
 };
 
-export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
-  const [timePeriod, setTimePeriod] = useState("30");
-
-  const previousDays = timePeriod === "0" ? 0 : Number(timePeriod);
-
+export const StatisticsDisplay = ({
+  previousDays,
+  className,
+}: StatisticsDisplayProps) => {
   const { data: stats, isLoading } = useUserStatistics({
     previousDays: previousDays || 30,
   });
@@ -38,44 +34,34 @@ export const StatisticsDisplay = ({ className }: StatisticsDisplayProps) => {
     stats.total.totalFlashcardReviews === 0 &&
     stats.total.totalTranslations === 0;
 
+  if (isEmpty) {
+    return <StatisticsEmptyState className={className} />;
+  }
+
   return (
     <div className={cn("flex flex-col gap-5", className)}>
-      {!isEmpty && (
-        <div className="flex flex-wrap items-center gap-3">
-          <TimePeriodSelector value={timePeriod} onChange={setTimePeriod} />
+      <SummaryCards stats={stats} variant="detailed" />
+
+      <ActivityHeatmap stats={stats} className="lg:min-h-70" />
+
+      {previousDays > 0 && stats.daily && stats.daily.length > 0 && (
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-5",
+            previousDays < 90 ? "lg:grid-cols-2" : "",
+          )}
+        >
+          <TranslationsAddedBarChart stats={stats} />
+
+          <FlashcardsAddedBarChart stats={stats} />
         </div>
       )}
 
-      {isEmpty ? (
-        <StatisticsEmptyState />
-      ) : (
-        <>
-          <TodaySummary stats={stats} />
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <LanguagesPieChart stats={stats} />
 
-          <SummaryCards stats={stats} />
-
-          <ActivityHeatmap stats={stats} className="lg:min-h-70" />
-
-          {previousDays > 0 && stats.daily && stats.daily.length > 0 && (
-            <div
-              className={cn(
-                "grid grid-cols-1 gap-5",
-                previousDays < 90 ? "lg:grid-cols-2" : "",
-              )}
-            >
-              <TranslationsAddedBarChart stats={stats} className="lg:h-70" />
-
-              <FlashcardsAddedBarChart stats={stats} className="lg:h-70" />
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            <LanguagesPieChart className="h-[400px] lg:h-70" stats={stats} />
-
-            <CardStatePieChart className="h-[400px] lg:h-70" stats={stats} />
-          </div>
-        </>
-      )}
+        <CardStatePieChart stats={stats} />
+      </div>
     </div>
   );
 };

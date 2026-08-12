@@ -2,6 +2,7 @@
   "didntKnow": "Didn't know",
   "flashcardsCompleted": "Flashcards Completed",
   "inTheLastXDays": "In the last {days} days",
+  "totalInLastDays": "{total} in the last {days} days",
   "knew": "Knew",
   "newWords": "New Words",
   "other": "Other",
@@ -15,11 +16,10 @@
   "yourLanguages": "Your Languages",
   "weekOf": "Week of {date}",
   "timePeriod": {
-    "30d": "30 days",
-    "90d": "90 days",
-    "180d": "180 days (weekly)",
-    "1y": "1 year (weekly)",
-    "all": "All time"
+    "30d": "30d",
+    "90d": "90d",
+    "180d": "180d",
+    "1y": "1y"
   },
   "languageFilter": {
     "all": "All Languages"
@@ -28,9 +28,13 @@
     "currentStreak": "Current Streak",
     "retentionRate": "Retention Rate",
     "totalReviews": "Total Reviews",
-    "daysStudied": "Total Days Studied",
+    "words": "Words",
+    "mastered": "Mastered",
+    "daysStudied": "Days studied",
     "longestStreak": "Longest Streak",
-    "outOfDays": "{studied} of {total} days",
+    "reviewsPerDay": "Reviews / Day",
+    "ofReviewsRecalled": "Of reviews recalled",
+    "ofNWords": "Of {total} words",
     "days": "{count, plural, one {day} other {days}}"
   },
   "heatmap": {
@@ -60,10 +64,15 @@
     "addTranslations": "Add Translations",
     "startReviewing": "Start Reviewing"
   },
-  "today": {
-    "title": "Today",
-    "flashcardsDone": "Reviews Done",
-    "translationsAdded": "Words Added",
-    "dueFlashcards": "Due Reviews"
+  "pageSubtitle": "A closer look at your learning history.",
+  "overview": {
+    "viewFullStatistics": "View Full Statistics",
+    "browseVocabulary": "Browse Vocabulary"
+  },
+  "dueCard": {
+    "cardsDue": "{count, plural, one {card is due for review} other {cards are due for review}}",
+    "allClearTitle": "All caught up!",
+    "allClearDescription": "No cards are due right now. Add new words or come back later.",
+    "startReviewing": "Start Reviewing"
   }
 }

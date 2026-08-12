@@ -8,15 +8,9 @@ type StatisticsSkeletonProps = {
 export const StatisticsSkeleton = ({ className }: StatisticsSkeletonProps) => {
   return (
     <div className={cn("flex flex-col gap-5", className)}>
-      <div className="flex gap-3">
-        <Skeleton className="h-9 w-64 md:w-80" />
-      </div>
-
-      <Skeleton className="h-[88px] w-full rounded-lg" />
-
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-32 rounded-lg" />
+          <Skeleton key={i} className="h-28 rounded-lg" />
         ))}
       </div>
 

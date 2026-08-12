@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from "react";
-import { Pie, PieChart } from "recharts";
+import { useMemo } from "react";
+import { Cell, Pie, PieChart } from "recharts";
 
 import {
   type ChartConfig,
@@ -11,22 +11,23 @@ import { useLanguages } from "@/features/languages/api/get-languages";
 import { StatisticsContainer } from "@/features/statistics/components/statistics-container";
 import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/lib/utils";
 
 type LanguagesPieChartProps = {
   stats: UserStatistics;
   className?: string;
 };
 
-interface LanguageSlice {
-  key: string;
-  label: string;
-  translationsCount: number;
-  share: number;
-  fill?: string;
-}
-
 const MIN_SLICE_SHARE = 0.05;
+
+const SLICE_COLORS = [
+  "var(--primary)",
+  "var(--color-blue-500)",
+  "var(--color-amber-500)",
+  "var(--color-violet-500)",
+  "var(--color-rose-500)",
+];
+
+const OTHER_COLOR = "var(--muted-foreground)";
 
 export const LanguagesPieChart = ({
   stats,
@@ -45,72 +46,47 @@ export const LanguagesPieChart = ({
     [languages],
   );
 
-  const { visible, other } = useMemo(() => {
-    const visible: LanguageSlice[] = [];
-    const other: LanguageSlice[] = [];
+  const chartData = useMemo(() => {
+    if (totalTranslations === 0) return [];
 
-    for (const l of languages) {
-      const translationsCount = l.translationsCount ?? 0;
-      const share = totalTranslations
-        ? translationsCount / totalTranslations
-        : 0;
-      const language = getLanguageString(l.languageId);
+    const sorted = [...languages].sort(
+      (a, b) => (b.translationsCount ?? 0) - (a.translationsCount ?? 0),
+    );
 
-      (share >= MIN_SLICE_SHARE ? visible : other).push({
-        key: `${l.languageId}`,
-        label: `${language}`,
-        translationsCount,
-        share,
+    const major = sorted.filter(
+      (l) =>
+        (l.translationsCount ?? 0) / totalTranslations >= MIN_SLICE_SHARE ||
+        sorted.length === 1,
+    );
+    const rest = sorted.filter((l) => !major.includes(l));
+
+    const slices = major.slice(0, SLICE_COLORS.length).map((l, index) => ({
+      key: `${l.languageId}`,
+      label: getLanguageString(l.languageId) ?? "",
+      value: l.translationsCount ?? 0,
+      fill: SLICE_COLORS[index],
+    }));
+
+    const otherTotal = [...major.slice(SLICE_COLORS.length), ...rest].reduce(
+      (sum, l) => sum + (l.translationsCount ?? 0),
+      0,
+    );
+
+    if (otherTotal > 0) {
+      slices.push({
+        key: "other",
+        label: t("statistics.other"),
+        value: otherTotal,
+        fill: OTHER_COLOR,
       });
     }
 
-    return { visible, other };
-  }, [getLanguageString, languages, totalTranslations]);
-
-  const finalItems = useMemo(
-    () => (other.length === 1 ? [...visible, other[0]] : visible),
-    [other, visible],
-  );
-
-  const slicesCount = finalItems.length + (other.length > 1 ? 1 : 0);
-
-  const getSliceColor = useCallback(
-    (index: number) => {
-      if (slicesCount <= 1) return "var(--primary)";
-      const t = index / (slicesCount - 1);
-      return `oklch(from var(--primary) calc(l + ${t} * 0.12) c h)`;
-    },
-    [slicesCount],
-  );
-
-  const chartData = useMemo(
-    () => [
-      ...finalItems.map((item, index) => ({
-        ...item,
-        fill: getSliceColor(index),
-      })),
-      ...(other.length > 1
-        ? [
-            {
-              key: "other",
-              label: t("statistics.other"),
-              translationsCount: other.reduce(
-                (s, i) => s + i.translationsCount,
-                0,
-              ),
-              share: other.reduce((s, i) => s + i.share, 0),
-              fill: getSliceColor(slicesCount - 1),
-            },
-          ]
-        : []),
-    ],
-    [finalItems, getSliceColor, other, slicesCount, t],
-  );
+    return slices;
+  }, [getLanguageString, languages, t, totalTranslations]);
 
   const chartConfig = useMemo(
     () =>
       ({
-        translations: { label: t("general.translations") },
         ...Object.fromEntries(
           chartData.map((item) => [
             item.key,
@@ -118,40 +94,55 @@ export const LanguagesPieChart = ({
           ]),
         ),
       }) satisfies ChartConfig,
-    [chartData, t],
+    [chartData],
   );
+
+  if (chartData.length === 0) return null;
 
   return (
     <StatisticsContainer
-      className={cn("relative h-[400px] lg:h-auto lg:flex-col", className)}
+      className={className}
       title={t("statistics.yourLanguages")}
     >
-      <ChartContainer
-        className="absolute inset-0 aspect-square size-full min-w-0 lg:mt-4"
-        config={chartConfig}
-      >
-        <PieChart>
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+      <div className="flex items-center gap-5">
+        <ChartContainer className="aspect-square size-56" config={chartConfig}>
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
-          <Pie
-            data={chartData}
-            dataKey="translationsCount"
-            nameKey="key"
-            // label={({ x, y, textAnchor, dominantBaseline, name, fill }) => (
-            //   <text
-            //     x={x}
-            //     y={y}
-            //     textAnchor={textAnchor}
-            //     dominantBaseline={dominantBaseline}
-            //     style={{ fontWeight: 600 }}
-            //     fill={fill}
-            //   >
-            //     {name}
-            //   </text>
-            // )}
-          />
-        </PieChart>
-      </ChartContainer>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="key"
+              innerRadius={66}
+              outerRadius={105}
+              paddingAngle={2}
+              strokeWidth={0}
+            >
+              {chartData.map((entry) => (
+                <Cell key={entry.key} fill={entry.fill} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+
+        <ul className="flex-1 space-y-1.5 text-sm">
+          {chartData.map((slice) => (
+            <li key={slice.key} className="flex items-center gap-2">
+              <span
+                className="size-2.5 shrink-0 rounded-full"
+                style={{ background: slice.fill }}
+              />
+
+              <span className="truncate">{slice.label}</span>
+
+              <span className="text-muted-foreground ml-auto text-xs">
+                {slice.value.toLocaleString()} ·{" "}
+                {Math.round((slice.value / totalTranslations) * 100)}%
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </StatisticsContainer>
   );
 };

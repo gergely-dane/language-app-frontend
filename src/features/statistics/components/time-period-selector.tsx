@@ -19,11 +19,7 @@ export const TimePeriodSelector = ({
     <Tabs value={value} onValueChange={onChange}>
       <TabsList>
         {TIME_PERIODS.map((period) => (
-          <TabsTrigger
-            key={period.value}
-            value={period.value}
-            className={"className" in period ? period.className : undefined}
-          >
+          <TabsTrigger key={period.value} value={period.value}>
             {t(`statistics.${period.label}`)}
           </TabsTrigger>
         ))}
