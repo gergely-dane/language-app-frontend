@@ -1,16 +1,21 @@
 "use client";
 
-import { IconCards, IconHome, IconList } from "@tabler/icons-react";
+import {
+  IconCards,
+  IconChartBar,
+  IconHome,
+  IconVocabulary,
+} from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 
 import { useAuth } from "@/context/auth-context";
+import { useUserStatistics } from "@/features/statistics/api/get-user-statistics";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 import { BottomNavbarButton } from "./bottom-navbar-button";
 
 export const BottomNavbar = () => {
-  const t = useI18n();
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
   const isMobile = useIsMobileScreen();
@@ -19,8 +24,20 @@ export const BottomNavbar = () => {
     return null;
   }
 
+  return <BottomNavbarContent pathname={pathname} />;
+};
+
+const BottomNavbarContent = ({ pathname }: { pathname: string }) => {
+  const t = useI18n();
+
+  const { data: stats } = useUserStatistics({ previousDays: 30 });
+  const dueCount = stats?.today?.dueFlashcards ?? 0;
+
   return (
-    <nav className="flex-cols bg-accent text-muted-foreground fixed bottom-0 z-10 flex h-16 w-full gap-4 border-t px-2 py-1.5 shadow-sm">
+    <nav
+      className="bg-background/95 fixed bottom-0 z-10 flex h-16 w-full items-stretch gap-2 border-t px-2 py-1.5 shadow-sm backdrop-blur-sm"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.375rem)" }}
+    >
       <BottomNavbarButton
         href="/"
         icon={IconHome}
@@ -30,10 +47,9 @@ export const BottomNavbar = () => {
 
       <BottomNavbarButton
         href="/vocabulary"
-        icon={IconList}
+        icon={IconVocabulary}
         label={t("general.vocabulary")}
         isActive={pathname === "/vocabulary"}
-        iconClassName="-mb-0.5"
       />
 
       <BottomNavbarButton
@@ -41,7 +57,14 @@ export const BottomNavbar = () => {
         icon={IconCards}
         label={t("general.flashcards")}
         isActive={pathname === "/flashcards"}
-        iconClassName="-mb-0.5"
+        badge={dueCount}
+      />
+
+      <BottomNavbarButton
+        href="/statistics"
+        icon={IconChartBar}
+        label={t("general.statistics")}
+        isActive={pathname === "/statistics"}
       />
     </nav>
   );

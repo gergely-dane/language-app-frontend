@@ -1,5 +1,8 @@
+"use client";
+
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +24,7 @@ export const UserButton = ({ className }: UserButtonProps) => {
   const t = useI18n();
   const { logout } = useAuth();
   const { data: userProfile } = useGetUser();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -39,44 +43,52 @@ export const UserButton = ({ className }: UserButtonProps) => {
       : "";
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className={cn("rounded-full shadow-sm", className)}
+          className={className}
+          aria-label={t("settings.account")}
         >
-          <IconUser className="text-primary" />
+          <IconUser className="size-4.5" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent
-        className="flex w-fit flex-col gap-2 px-1 pt-2 pb-1"
-        align="end"
-      >
-        <div className="flex flex-col gap-0.5 px-2.5">
-          {displayName && <p className="text-sm font-medium">{displayName}</p>}
-          <p className="text-muted-foreground text-xs">{userProfile?.email}</p>
+      <PopoverContent className="w-60 p-0" align="end">
+        <div className="px-3.5 py-3">
+          {displayName && (
+            <p className="truncate text-sm font-semibold">{displayName}</p>
+          )}
+
+          <p className="text-muted-foreground truncate text-xs">
+            {userProfile?.email}
+          </p>
         </div>
 
         <Separator />
 
-        <div className="gap-1">
-          <Button variant="ghost" className="w-full justify-start px-2.5">
-            <Link href="/settings" className="flex w-full items-center gap-2">
-              <IconSettings />
-              <span className="mb-0.5">{t("settings.title")}</span>
-            </Link>
-          </Button>
+        <div className="p-1.5">
+          <Link
+            className="hover:bg-accent flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors"
+            href="/settings"
+            onClick={() => setOpen(false)}
+          >
+            <IconSettings className="text-muted-foreground size-4" />
 
-          <Button
-            variant="ghost"
-            className="text-destructive w-full items-center justify-start"
+            {t("settings.title")}
+          </Link>
+
+          <button
+            className={cn(
+              "text-destructive hover:bg-destructive/10 flex w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors",
+            )}
             onClick={handleLogout}
           >
-            <IconLogout />
-            <span className="mb-0.5">{t("auth.logOut")}</span>
-          </Button>
+            <IconLogout className="size-4" />
+
+            {t("auth.logOut")}
+          </button>
         </div>
       </PopoverContent>
     </Popover>

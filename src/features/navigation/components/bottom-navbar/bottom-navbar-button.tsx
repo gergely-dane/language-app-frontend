@@ -1,5 +1,6 @@
 "use client";
 
+import { type TablerIcon } from "@tabler/icons-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -7,11 +8,11 @@ import { cn } from "@/lib/utils";
 
 type BottomNavbarButtonProps = {
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: TablerIcon;
   label: string;
   isActive: boolean;
+  badge?: number;
   className?: string;
-  iconClassName?: string;
 };
 
 export const BottomNavbarButton = ({
@@ -19,23 +20,40 @@ export const BottomNavbarButton = ({
   icon: Icon,
   label,
   isActive,
+  badge = 0,
   className,
-  iconClassName,
 }: BottomNavbarButtonProps) => {
   return (
     <Link href={href} className="flex-1">
       <Button
         variant="ghost"
+        rippleClassName={cn(isActive && "bg-primary-foreground/40")}
         className={cn(
-          "bg-accent flex h-full w-full flex-col gap-1.5 transition-colors duration-500",
-          {
-            "bg-primary text-white": isActive,
-          },
+          "flex h-full w-full rounded-md px-1 transition-colors duration-500",
+          isActive
+            ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+            : "text-muted-foreground",
           className,
         )}
       >
-        <Icon className={cn("scale-120", iconClassName)} />
-        <p className={isActive ? "font-semibold" : "font-medium"}>{label}</p>
+        <span className="flex flex-col items-center gap-0.5 text-[11px] font-medium">
+          <Icon className="size-5" strokeWidth={isActive ? 2.25 : 2} />
+
+          {label}
+
+          {badge > 0 && (
+            <span
+              className={cn(
+                "absolute top-0.5 right-0.5 rounded-full px-1.5 py-px text-[10px] leading-4",
+                isActive
+                  ? "bg-primary-foreground text-primary"
+                  : "bg-primary text-primary-foreground",
+              )}
+            >
+              {badge > 99 ? "99+" : badge}
+            </span>
+          )}
+        </span>
       </Button>
     </Link>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCards, IconHome, IconList } from "@tabler/icons-react";
+import { IconSettings } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -15,6 +15,7 @@ import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
+import { Brand } from "./brand";
 import { UserButton } from "./user-button";
 
 export const Navbar = () => {
@@ -31,52 +32,36 @@ export const Navbar = () => {
     });
   }, [startTransition, theme, setTheme]);
 
+  if (!isMobile && isAuthenticated && pathname !== "/login") return null;
+
   return (
     <nav className="bg-background/80 sticky top-0 z-10 flex h-[var(--navbar-height)] w-full items-center justify-center gap-6 border-b shadow-sm">
       <div className="flex w-full items-center gap-6 px-2.5 xl:max-w-9/10 2xl:max-w-5/7">
-        <Link className="text-primary text-xl font-semibold" href="/">
-          LanguageApp
-        </Link>
+        <Brand />
 
-        {!isMobile && isAuthenticated && pathname !== "/login" && (
-          <>
-            <div className="flex gap-2">
-              <Link href="/">
-                <Button variant={pathname === "/" ? "default" : "ghost"}>
-                  <IconHome className="scale-120" />
-                  <p>{t("general.home")}</p>
-                </Button>
-              </Link>
-
-              <Link href="/vocabulary">
-                <Button
-                  variant={pathname === "/vocabulary" ? "default" : "ghost"}
-                >
-                  <IconList className="scale-120" />
-                  <p>{t("general.vocabulary")}</p>
-                </Button>
-              </Link>
-
-              <Link href="/flashcards">
-                <Button
-                  variant={pathname === "/flashcards" ? "default" : "ghost"}
-                >
-                  <IconCards className="scale-120" />
-                  <p>{t("general.flashcards")}</p>
-                </Button>
-              </Link>
-            </div>
-          </>
-        )}
-
-        <div className="ml-auto flex gap-2.5">
+        <div className="ml-auto flex gap-1">
           <ThemeToggleButton
             theme={theme as "light" | "dark"}
             onClick={handleThemeToggle}
             variant="circle-blur"
             start="center"
           />
-          {isAuthenticated && <UserButton />}
+
+          {isAuthenticated && (
+            <>
+              <Link href="/settings">
+                <Button
+                  aria-label={t("settings.title")}
+                  size="icon"
+                  variant="ghost"
+                >
+                  <IconSettings className="scale-130" />
+                </Button>
+              </Link>
+
+              <UserButton />
+            </>
+          )}
         </div>
       </div>
     </nav>
