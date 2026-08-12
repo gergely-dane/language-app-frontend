@@ -1,5 +1,13 @@
 {
   "clickOrPressSpaceFront": "Click on the card or press <space>Space</space> to see the translation(s)",
+  "title": "Flashcards",
+  "practiceYourWords": "Practice your words",
+  "deck": "Deck",
+  "editTranslation": "Edit translation",
+  "session": "Session",
+  "reviewed": "reviewed",
+  "shortcuts": "Shortcuts",
+  "flipCard": "Flip card",
   "clickOrPressSpaceBack": "Click on the card or press <space>Space</space> to go to the original word",
   "errorLoadingFlashcard": "Error loading flashcard",
   "day": "day",

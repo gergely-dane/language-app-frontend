@@ -74,7 +74,7 @@ export const LanguagePairSelector = ({
       <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger asChild disabled={disabled}>
           <Button
-            className="w-full justify-between gap-1"
+            className="w-full justify-between gap-1 [&>[data-slot=button-content]]:w-full [&>[data-slot=button-content]]:justify-between"
             variant="outline"
             role="combobox"
             aria-expanded={open}

@@ -1,6 +1,7 @@
+import { IconCheck, IconHelp, IconStar, IconX } from "@tabler/icons-react";
 import type { Transition } from "motion/react";
 
-import type { Direction } from "./types";
+import type { Direction, FlashcardTimeKey } from "./types";
 
 export const FLIP_TRANSITION = {
   duration: 0.6,
@@ -22,3 +23,61 @@ export const FLASHCARD_DIRECTION_RATINGS: Record<Direction, 1 | 2 | 3 | 4> = {
   right: 3,
   up: 4,
 } as const;
+
+export const FLASHCARD_DIRECTIONS: readonly Direction[] = [
+  "left",
+  "down",
+  "right",
+  "up",
+];
+
+export const FLASHCARD_RATING_META: Record<
+  Direction,
+  {
+    icon: typeof IconX;
+    iconClass: string;
+    dotClass: string;
+    hoverClass: string;
+    /* Mobile 2x2 grid: swipe-direction-matching order (up/down top, left/right bottom) */
+    mobileOrderClass: string;
+    timeKey: FlashcardTimeKey;
+    kbd: string;
+  }
+> = {
+  left: {
+    icon: IconX,
+    iconClass: "text-destructive",
+    dotClass: "bg-destructive",
+    hoverClass: "hover:bg-destructive/10",
+    mobileOrderClass: "max-sm:order-3",
+    timeKey: "dontKnowNextReviewMinutes",
+    kbd: "◀",
+  },
+  down: {
+    icon: IconHelp,
+    iconClass: "text-muted-foreground",
+    dotClass: "bg-muted-foreground",
+    hoverClass: "hover:bg-muted",
+    mobileOrderClass: "max-sm:order-1",
+    timeKey: "notSureNextReviewMinutes",
+    kbd: "▼",
+  },
+  right: {
+    icon: IconCheck,
+    iconClass: "text-success",
+    dotClass: "bg-success",
+    hoverClass: "hover:bg-success/10",
+    mobileOrderClass: "max-sm:order-4",
+    timeKey: "knowItNextReviewMinutes",
+    kbd: "▶",
+  },
+  up: {
+    icon: IconStar,
+    iconClass: "text-amber-500",
+    dotClass: "bg-amber-500",
+    hoverClass: "hover:bg-amber-500/10",
+    mobileOrderClass: "max-sm:order-2",
+    timeKey: "easyNextReviewMinutes",
+    kbd: "▲",
+  },
+};

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  IconCheck,
-  IconHandMove,
-  IconHelp,
-  IconPencil,
-  IconStar,
-  IconX,
-} from "@tabler/icons-react";
+import { IconHandMove, IconPencil } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
@@ -25,9 +18,12 @@ import {
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
+import { SectionLabel } from "@/features/flashcards/components/section-label";
 import {
   FLASHCARD_DIRECTION_RATINGS,
+  FLASHCARD_DIRECTIONS,
   FLASHCARD_FILTERS_STATE_STORAGE_KEY,
+  FLASHCARD_RATING_META,
 } from "@/features/flashcards/constants";
 import type {
   Direction,
@@ -86,6 +82,7 @@ export const FlashcardsPage = () => {
   const [isCardAnimating, setIsCardAnimating] = useState(false);
   const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [sessionHistory, setSessionHistory] = useState<(1 | 2 | 3 | 4)[]>([]);
 
   const flashcardParams = useMemo<FlashcardParams>(() => {
     const params = {
@@ -119,6 +116,8 @@ export const FlashcardsPage = () => {
       if (isCardAnimating || respondToFlashcard.isPending || !flashcard) {
         return;
       }
+
+      setSessionHistory((prev) => [...prev, response]);
 
       await respondToFlashcard.mutateAsync({
         flashcardId: flashcard.id,
@@ -157,212 +156,244 @@ export const FlashcardsPage = () => {
     setWasFlipped(false);
   };
 
-  return (
-    <div className="mx-auto flex w-full flex-col gap-4 md:w-120">
-      <div className="flex">
-        <div className="flex gap-2">
-          <LanguagePairSelector
-            className="w-fit"
-            value={languagePair}
-            onChange={(newPair) => onLanguagePairChange(newPair)}
-            disabled={areButtonsDisabled}
-          />
+  const tally = useMemo(() => {
+    const counts: Record<Direction, number> = {
+      left: 0,
+      down: 0,
+      right: 0,
+      up: 0,
+    };
+    for (const rating of sessionHistory) {
+      for (const direction of FLASHCARD_DIRECTIONS) {
+        if (FLASHCARD_DIRECTION_RATINGS[direction] === rating) {
+          counts[direction] += 1;
+        }
+      }
+    }
+    return counts;
+  }, [sessionHistory]);
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <CheckboxButton
-                label={t("flashcards.reverseCards")}
-                checked={isReverse}
-                onCheckedChange={(checked) => onReverseChange(!!checked)}
+  const ratingLabels: Record<Direction, string> = {
+    left: !wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow"),
+    down: !wasFlipped ? t("flashcards.notSure") : t("flashcards.wasntSure"),
+    right: !wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt"),
+    up: t("flashcards.easy"),
+  };
+
+  return (
+    <div className="flex w-full flex-col self-stretch">
+      <p className="text-3xl font-bold">{t("flashcards.title")}</p>
+
+      <p className="text-muted-foreground short:hidden font-semibold">
+        {t("flashcards.practiceYourWords")}
+      </p>
+
+      <div className="max-lg:short:gap-2 mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-4 max-lg:flex-col max-lg:gap-3 lg:mx-0">
+        <aside className="max-lg:short:gap-2 flex w-full flex-col gap-4 max-lg:mx-auto max-lg:max-w-120 max-lg:gap-3 lg:w-60 lg:shrink-0">
+          <section className="bg-card flex flex-col gap-3 rounded-xl border p-4 max-lg:gap-2 max-lg:py-3">
+            <SectionLabel>{t("flashcards.deck")}</SectionLabel>
+
+            <div className="flex flex-col gap-3 max-lg:flex-row max-lg:flex-wrap max-lg:items-center max-lg:gap-2">
+              <LanguagePairSelector
+                className="flex-1 lg:w-full"
+                value={languagePair}
+                onChange={(newPair) => onLanguagePairChange(newPair)}
                 disabled={areButtonsDisabled}
               />
-            </TooltipTrigger>
 
-            <TooltipContent>
-              <p>{t("flashcards.reverseCardsTooltip")}</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <CheckboxButton
+                    className="justify-start"
+                    label={t("flashcards.reverseCards")}
+                    checked={isReverse}
+                    onCheckedChange={(checked) => onReverseChange(!!checked)}
+                    disabled={areButtonsDisabled}
+                  />
+                </TooltipTrigger>
 
-        <Button
-          className="ml-auto"
-          variant="outline"
-          onClick={() => setEditDialogOpen(true)}
-          disabled={areButtonsDisabled || !flashcard}
-        >
-          <IconPencil />
-          {t("general.edit")}
-        </Button>
-      </div>
+                <TooltipContent>
+                  <p>{t("flashcards.reverseCardsTooltip")}</p>
+                </TooltipContent>
+              </Tooltip>
 
-      {error || !flashcard ? (
-        <div className="bg-muted ring-foreground mb-10 flex h-60 w-full flex-col items-center justify-center gap-1 rounded-xl p-6 text-center ring-2">
-          {!error ? (
-            <>
-              <p className="text-xl font-semibold whitespace-pre-line">
-                {t("flashcards.congratulations")}
+              <Button
+                variant="outline"
+                onClick={() => setEditDialogOpen(true)}
+                disabled={areButtonsDisabled || !flashcard}
+              >
+                <IconPencil />
+                <span className="max-lg:hidden">
+                  {t("flashcards.editTranslation")}
+                </span>
+              </Button>
+            </div>
+          </section>
+
+          <section className="bg-card hidden flex-col gap-2 rounded-xl border p-4 lg:flex lg:flex-1 lg:justify-between">
+            <SectionLabel>{t("flashcards.shortcuts")}</SectionLabel>
+
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                {t("flashcards.flipCard")}
+              </span>
+              <Kbd>Space</Kbd>
+            </div>
+
+            {FLASHCARD_DIRECTIONS.map((direction) => (
+              <div
+                key={direction}
+                className="flex items-center justify-between text-sm"
+              >
+                <span className="text-muted-foreground">
+                  {ratingLabels[direction]}
+                </span>
+                <Kbd>{FLASHCARD_RATING_META[direction].kbd}</Kbd>
+              </div>
+            ))}
+          </section>
+        </aside>
+
+        <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
+          <section className="bg-card max-lg:short:hidden flex flex-col gap-3 rounded-xl border p-4 max-lg:gap-2 max-lg:py-3">
+            <SectionLabel>{t("flashcards.session")}</SectionLabel>
+
+            <div className="flex flex-col gap-3 max-lg:gap-2">
+              <div className="flex items-baseline gap-1.5">
+                <p className="text-3xl font-semibold tabular-nums max-lg:text-base">
+                  {sessionHistory.length}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {t("flashcards.reviewed")}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-1.5 max-lg:grid max-lg:grid-cols-2 max-lg:gap-x-6">
+                {FLASHCARD_DIRECTIONS.map((direction) => (
+                  <div
+                    key={direction}
+                    className="flex items-center justify-between gap-2 text-sm"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          "size-2 rounded-full",
+                          FLASHCARD_RATING_META[direction].dotClass,
+                        )}
+                      />
+                      <span className="text-muted-foreground">
+                        {ratingLabels[direction]}
+                      </span>
+                    </span>
+                    <span className="tabular-nums">{tally[direction]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </aside>
+
+        <main className="flex min-w-0 flex-1 flex-col">
+          <div className="max-lg:short:gap-2 mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
+            {error || !flashcard ? (
+              <div className="bg-card flex h-64 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-76 lg:h-86">
+                {!error ? (
+                  <>
+                    <p className="text-xl font-semibold whitespace-pre-line">
+                      {t("flashcards.congratulations")}
+                    </p>
+
+                    <p className="text-muted-foreground max-w-md">
+                      {t("flashcards.keepPracticing")}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-xl font-semibold whitespace-pre-line">
+                    {t("flashcards.errorLoadingFlashcard")}
+                  </p>
+                )}
+              </div>
+            ) : (
+              flashcard.translation && (
+                <FlashcardComp
+                  key={`${flashcardIndex}-${isReverse}`}
+                  ref={flashcardRef}
+                  isLoading={isFetching}
+                  translation={flashcard.translation}
+                  disabled={areButtonsDisabled}
+                  isReverse={isReverse}
+                  onAnimationStateChange={setIsCardAnimating}
+                  onFlipStateChange={setWasFlipped}
+                  onRespond={(direction) => {
+                    void handleRespond(direction);
+                  }}
+                  onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
+                  onSwipeAnimationComplete={onSwipeAnimationComplete}
+                  setEditDialogOpen={setEditDialogOpen}
+                />
+              )
+            )}
+
+            {isMobile && (
+              <p
+                className={cn(
+                  "text-muted-foreground/70 short:hidden mx-auto -mt-6 -mb-1 flex gap-1.5 text-center text-sm transition-opacity",
+                  !flashcard && "pointer-events-none opacity-0",
+                )}
+              >
+                {t.rich("flashcards.hintTrySwiping", {
+                  hand: () => <IconHandMove />,
+                })}
               </p>
+            )}
 
-              <p className="text-muted-foreground">
-                {t("flashcards.keepPracticing")}
-              </p>
-            </>
-          ) : (
-            <p className="text-xl font-semibold whitespace-pre-line">
-              {t("flashcards.errorLoadingFlashcard")}
-            </p>
-          )}
-        </div>
-      ) : (
-        flashcard.translation && (
-          <FlashcardComp
-            key={`${flashcardIndex}-${isReverse}`}
-            ref={flashcardRef}
-            isLoading={isFetching}
-            translation={flashcard.translation}
-            disabled={areButtonsDisabled}
-            isReverse={isReverse}
-            onAnimationStateChange={setIsCardAnimating}
-            onFlipStateChange={setWasFlipped}
-            onRespond={(direction) => {
-              void handleRespond(direction);
-            }}
-            onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
-            onSwipeAnimationComplete={onSwipeAnimationComplete}
-            setEditDialogOpen={setEditDialogOpen}
+            <div
+              className={cn(
+                "bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border transition-opacity sm:grid-cols-4",
+                !flashcard && "pointer-events-none opacity-0",
+              )}
+            >
+              {FLASHCARD_DIRECTIONS.map((direction) => {
+                const meta = FLASHCARD_RATING_META[direction];
+                const Icon = meta.icon;
+
+                return (
+                  <button
+                    key={direction}
+                    className={cn(
+                      "bg-card max-lg:short:py-2 flex cursor-pointer flex-col items-center gap-1 px-2 py-3 transition-colors disabled:pointer-events-none disabled:opacity-50",
+                      meta.hoverClass,
+                      meta.mobileOrderClass,
+                    )}
+                    onClick={() => flashcardRef.current?.respond(direction)}
+                    disabled={areButtonsDisabled}
+                  >
+                    <span className="flex items-center gap-1.5 text-sm font-medium">
+                      <Icon size={18} className={meta.iconClass} />
+                      {ratingLabels[direction]}
+                    </span>
+
+                    <ReviewTimeDisplay
+                      minutes={flashcard?.[meta.timeKey] ?? 0}
+                      className={cn("text-xs", isSwipeAnimating && "opacity-0")}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </main>
+
+        {!!flashcard && (
+          <AddEditWordDialog
+            open={editDialogOpen}
+            onOpenChange={(open) => setEditDialogOpen(open)}
+            editMode={true}
+            currentTranslation={flashcard.translation}
+            flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
           />
-        )
-      )}
-
-      <div
-        className={cn(
-          "mx-auto -mt-4 grid w-full grid-cols-2 gap-3 transition-opacity max-sm:p-2 sm:mt-1 sm:grid-cols-4 md:gap-2",
-          !flashcard && "pointer-events-none opacity-0",
         )}
-      >
-        <div className="order-3 flex flex-col items-center gap-1 sm:order-none">
-          <Kbd className="mb-1 hidden sm:inline-flex">◀</Kbd>
-          <Button
-            className="flex w-full"
-            variant="outline"
-            onClick={() => flashcardRef.current?.respond("left")}
-            disabled={areButtonsDisabled}
-          >
-            <IconX className="text-destructive mt-0.5" />
-
-            <p>
-              {!wasFlipped
-                ? t("flashcards.dontKnow")
-                : t("flashcards.didntKnow")}
-            </p>
-          </Button>
-
-          <ReviewTimeDisplay
-            minutes={flashcard?.dontKnowNextReviewMinutes ?? 0}
-            className={cn(isSwipeAnimating && "opacity-0")}
-          />
-        </div>
-
-        <div className="order-1 flex flex-col items-center gap-1 sm:order-none">
-          <Kbd className="mb-1 hidden sm:inline-flex">▼</Kbd>
-          <Button
-            className="flex w-full"
-            variant="outline"
-            onClick={() => flashcardRef.current?.respond("down")}
-            disabled={areButtonsDisabled}
-          >
-            <IconHelp className="text-muted-foreground mt-0.5" />
-
-            <p>
-              {!wasFlipped
-                ? t("flashcards.notSure")
-                : t("flashcards.wasntSure")}
-            </p>
-          </Button>
-
-          <ReviewTimeDisplay
-            minutes={flashcard?.notSureNextReviewMinutes ?? 0}
-            className={cn(isSwipeAnimating && "opacity-0")}
-          />
-        </div>
-
-        <div className="order-4 flex flex-col items-center gap-1 sm:order-none">
-          <Kbd className="mb-1 hidden sm:inline-flex">▶</Kbd>
-          <Button
-            className="flex w-full"
-            variant="outline"
-            onClick={() => flashcardRef.current?.respond("right")}
-            disabled={areButtonsDisabled}
-          >
-            <IconCheck className="text-success mt-0.5" />
-
-            <p>
-              {!wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt")}
-            </p>
-          </Button>
-
-          <ReviewTimeDisplay
-            minutes={flashcard?.knowItNextReviewMinutes ?? 0}
-            className={cn(isSwipeAnimating && "opacity-0")}
-          />
-        </div>
-
-        <div className="order-2 flex flex-col items-center gap-1 sm:order-none">
-          <Kbd className="mb-1 hidden sm:inline-flex">▲</Kbd>
-          <Button
-            className="flex w-full"
-            variant="outline"
-            onClick={() => flashcardRef.current?.respond("up")}
-            disabled={areButtonsDisabled}
-          >
-            <IconStar className="mt-0.5 text-amber-500" />
-
-            <p>{t("flashcards.easy")}</p>
-          </Button>
-
-          <ReviewTimeDisplay
-            minutes={flashcard?.easyNextReviewMinutes ?? 0}
-            className={cn(isSwipeAnimating && "opacity-0")}
-          />
-        </div>
       </div>
-
-      {!isMobile ? (
-        <p
-          className={cn(
-            "text-muted-foreground/70 mx-auto text-center text-sm transition-opacity",
-            !flashcard && "pointer-events-none opacity-0",
-          )}
-        >
-          {t.rich("flashcards.hintUseArrowKeysOrSwipe", {
-            left: (chunks) => <Kbd>{chunks}</Kbd>,
-            up: (chunks) => <Kbd>{chunks}</Kbd>,
-            down: (chunks) => <Kbd>{chunks}</Kbd>,
-            right: (chunks) => <Kbd>{chunks}</Kbd>,
-          })}
-        </p>
-      ) : (
-        <p
-          className={cn(
-            "text-muted-foreground/70 mx-auto flex gap-1.5 text-center text-sm transition-opacity",
-            !flashcard && "pointer-events-none opacity-0",
-          )}
-        >
-          {t.rich("flashcards.hintTrySwiping", {
-            hand: () => <IconHandMove />,
-          })}
-        </p>
-      )}
-
-      {!!flashcard && (
-        <AddEditWordDialog
-          open={editDialogOpen}
-          onOpenChange={(open) => setEditDialogOpen(open)}
-          editMode={true}
-          currentTranslation={flashcard.translation}
-          flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
-        />
-      )}
     </div>
   );
 };

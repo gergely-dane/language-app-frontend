@@ -4,12 +4,10 @@ import {
   IconArrowRight,
   IconChevronDown,
   IconHandClick,
-  IconLanguage,
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Kbd } from "@/components/ui/kbd";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
@@ -33,7 +31,7 @@ export const FlashcardSide = ({
 }: FlashcardSideProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
-  const { getLanguageString } = useLanguages();
+  const { getLanguageCode, getLanguageString } = useLanguages();
 
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const [isClamped, setIsClamped] = useState(false);
@@ -53,34 +51,44 @@ export const FlashcardSide = ({
   return (
     <div
       className={cn(
-        "bg-primary text-primary-foreground ring-foreground absolute inset-0 rounded-xl p-2 ring-2",
+        "text-primary-foreground ring-foreground absolute inset-0 rounded-xl bg-gradient-to-br from-[oklch(from_var(--color-primary)_calc(l+0.05)_c_h)] to-[oklch(from_var(--color-primary)_calc(l-0.09)_c_h)] p-2 ring-2",
         !forceHideBackface && "backface-hidden",
         forceHideBackface && isFront === flipped && "hidden",
       )}
-      style={{ transform: isFront ? undefined : "rotateY(180deg)" }}
+      style={{
+        // slight z-separation prevents z-fighting between the coplanar faces.
+        transform: isFront
+          ? "translateZ(0.1px)"
+          : "rotateY(180deg) translateZ(0.1px)",
+      }}
     >
       {translation && (
         <div className="relative flex h-full flex-col items-center justify-center">
-          <div className="relative text-center">
-            <div className="mx-auto flex w-fit">
-              <IconLanguage className="my-auto mr-1" />
+          <div className="text-primary-foreground/75 absolute top-1 left-2 flex items-center gap-1 text-xs font-semibold uppercase">
+            {getLanguageCode(
+              isFront
+                ? translation.sourceLanguageId
+                : translation.targetLanguageId,
+            )}
+            <IconArrowRight size={12} />
+            {getLanguageCode(
+              isFront
+                ? translation.targetLanguageId
+                : translation.sourceLanguageId,
+            )}
+          </div>
 
-              <p className="my-auto text-sm">
-                {isFront
-                  ? getLanguageString(translation.sourceLanguageId)
-                  : getLanguageString(translation.targetLanguageId)}
-              </p>
+          <div className="relative w-full px-6 text-center">
+            <p className="text-primary-foreground/85 text-xs font-medium tracking-widest uppercase md:text-sm">
+              {isFront
+                ? getLanguageString(translation.sourceLanguageId)
+                : getLanguageString(translation.targetLanguageId)}
+            </p>
 
-              <IconArrowRight className="mx-2 mt-1.5" size={16} />
-
-              <p className="my-auto text-sm">
-                {isFront
-                  ? getLanguageString(translation.targetLanguageId)
-                  : getLanguageString(translation.sourceLanguageId)}
-              </p>
-            </div>
-
-            <p className="line-clamp-3 text-xl" ref={textRef}>
+            <p
+              className="line-clamp-3 text-2xl leading-snug font-semibold text-balance md:text-4xl"
+              ref={textRef}
+            >
               {isFront
                 ? translation.words.map((w) => w.word).join(", ")
                 : translation.translations
@@ -90,7 +98,7 @@ export const FlashcardSide = ({
 
             {!isFront && (isClamped || !!translation.definition) && (
               <Button
-                className="hover:bg-primary! absolute top-full left-1/2 -translate-x-1/2"
+                className="hover:bg-primary-foreground/10! absolute top-full left-1/2 -translate-x-1/2"
                 variant="ghost"
                 size="icon"
                 onClick={handleEditButtonClicked}
@@ -100,21 +108,8 @@ export const FlashcardSide = ({
             )}
           </div>
 
-          <div className="text-primary-muted-foreground absolute bottom-0 w-full text-center text-sm">
-            {!isMobile ? (
-              <div>
-                {t.rich(
-                  isFront
-                    ? "flashcards.clickOrPressSpaceFront"
-                    : "flashcards.clickOrPressSpaceBack",
-                  {
-                    space: (chunks) => (
-                      <Kbd className="bg-muted/50">{chunks}</Kbd>
-                    ),
-                  },
-                )}
-              </div>
-            ) : (
+          {isMobile && (
+            <div className="text-primary-muted-foreground absolute bottom-0 w-full text-center text-xs">
               <div className="flex items-center justify-center gap-1.5">
                 {t.rich(
                   isFront
@@ -125,8 +120,8 @@ export const FlashcardSide = ({
                   },
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>

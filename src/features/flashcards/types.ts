@@ -2,6 +2,12 @@ import { z } from "zod";
 
 export type Direction = "left" | "down" | "right" | "up";
 
+export type FlashcardTimeKey =
+  | "dontKnowNextReviewMinutes"
+  | "notSureNextReviewMinutes"
+  | "knowItNextReviewMinutes"
+  | "easyNextReviewMinutes";
+
 export type FlashcardCompHandle = {
   flip: () => void;
   respond: (direction: Direction) => void;

@@ -170,19 +170,22 @@ export const FlashcardComp = React.forwardRef<
         className={cn("cursor-pointer touch-none p-1 select-none", className)}
         ref={swipeRef}
       >
-        <div className="relative h-68" style={{ perspective: 1600 }}>
+        <div
+          className="relative h-62 md:h-74 lg:h-84"
+          style={{ perspective: 1600 }}
+        >
           <div
             aria-hidden="true"
-            className="ring-foreground absolute inset-x-0 top-4 mx-auto h-60 w-[98%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.3)_c_h)] ring-2"
+            className="ring-foreground absolute inset-x-0 top-4 mx-auto h-54 w-[98%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.3)_c_h)] ring-2 md:h-66 lg:h-76"
           />
           <div
             aria-hidden="true"
-            className="ring-foreground absolute inset-x-0 top-2 mx-auto h-60 w-[99%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.15)_c_h)] ring-2"
+            className="ring-foreground absolute inset-x-0 top-2 mx-auto h-54 w-[99%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.15)_c_h)] ring-2 md:h-66 lg:h-76"
           />
 
           <motion.div
             className={cn(
-              "relative h-60 flex-1 cursor-pointer rounded-xl will-change-transform [transform-style:preserve-3d]",
+              "relative h-54 flex-1 cursor-pointer rounded-xl will-change-transform [transform-style:preserve-3d] md:h-66 lg:h-76",
               swipeAnimationDirection && "pointer-events-none",
             )}
             initial={{
@@ -195,12 +198,8 @@ export const FlashcardComp = React.forwardRef<
             transition={
               swipeAnimationDirection ? SWIPE_TRANSITION : FLIP_TRANSITION
             }
-            whileHover={
-              swipeAnimationDirection ? undefined : { scale: 1.02, y: -2 }
-            }
-            whileTap={
-              swipeAnimationDirection ? undefined : { scale: 1.005, y: 0 }
-            }
+            whileHover={swipeAnimationDirection ? undefined : { y: -4 }}
+            whileTap={swipeAnimationDirection ? undefined : { y: -4 }}
             onClick={() => startFlip()}
             onAnimationComplete={() => handleAnimationComplete()}
           >
