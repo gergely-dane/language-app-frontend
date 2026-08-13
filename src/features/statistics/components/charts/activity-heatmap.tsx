@@ -114,9 +114,7 @@ export const ActivityHeatmap = ({ stats, className }: ActivityHeatmapProps) => {
         className,
       )}
     >
-      <p className="shrink-0 text-sm font-semibold">
-        {t("statistics.heatmap.title")}
-      </p>
+      <h2 className="shrink-0 text-sm">{t("statistics.heatmap.title")}</h2>
 
       <div className="flex min-h-0 w-full flex-1 items-center justify-center pt-4">
         <svg

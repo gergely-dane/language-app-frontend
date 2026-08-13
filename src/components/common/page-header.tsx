@@ -21,7 +21,7 @@ export const PageHeader = ({
       )}
     >
       <div>
-        <p className="text-3xl font-bold">{title}</p>
+        <h1 className="text-3xl">{title}</h1>
 
         {subtitle && (
           <p className="text-muted-foreground font-semibold">{subtitle}</p>

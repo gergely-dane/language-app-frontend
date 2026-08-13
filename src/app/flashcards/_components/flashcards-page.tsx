@@ -182,7 +182,7 @@ export const FlashcardsPage = () => {
 
   return (
     <div className="flex w-full flex-col self-stretch">
-      <p className="text-3xl font-bold">{t("flashcards.title")}</p>
+      <h1 className="text-3xl">{t("flashcards.title")}</h1>
 
       <p className="text-muted-foreground short:hidden font-semibold">
         {t("flashcards.practiceYourWords")}
@@ -299,18 +299,18 @@ export const FlashcardsPage = () => {
               <div className="bg-card flex h-64 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-76 lg:h-86">
                 {!error ? (
                   <>
-                    <p className="text-xl font-semibold whitespace-pre-line">
+                    <h2 className="text-xl whitespace-pre-line">
                       {t("flashcards.congratulations")}
-                    </p>
+                    </h2>
 
                     <p className="text-muted-foreground max-w-md">
                       {t("flashcards.keepPracticing")}
                     </p>
                   </>
                 ) : (
-                  <p className="text-xl font-semibold whitespace-pre-line">
+                  <h2 className="text-xl whitespace-pre-line">
                     {t("flashcards.errorLoadingFlashcard")}
-                  </p>
+                  </h2>
                 )}
               </div>
             ) : (

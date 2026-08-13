@@ -7,12 +7,12 @@ export const SectionLabel = ({
   className?: string;
   children: React.ReactNode;
 }) => (
-  <p
+  <h3
     className={cn(
-      "text-muted-foreground text-xs font-medium tracking-widest uppercase",
+      "text-muted-foreground font-sans text-xs font-medium tracking-widest uppercase",
       className,
     )}
   >
     {children}
-  </p>
+  </h3>
 );

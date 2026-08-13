@@ -30,7 +30,7 @@ export const DueReviewsCard = ({ stats, className }: DueReviewsCardProps) => {
       <div className="flex-1">
         {due > 0 ? (
           <>
-            <p className="text-primary text-4xl font-bold">
+            <p className="text-primary font-mono text-4xl font-medium">
               {due.toLocaleString()}
             </p>
 
@@ -40,9 +40,7 @@ export const DueReviewsCard = ({ stats, className }: DueReviewsCardProps) => {
           </>
         ) : (
           <>
-            <p className="text-xl font-bold">
-              {t("statistics.dueCard.allClearTitle")}
-            </p>
+            <h2 className="text-xl">{t("statistics.dueCard.allClearTitle")}</h2>
 
             <p className="text-muted-foreground mt-1 text-sm">
               {t("statistics.dueCard.allClearDescription")}

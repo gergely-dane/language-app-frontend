@@ -126,7 +126,7 @@ export const SummaryCards = ({
             </p>
           </div>
 
-          <p className={cn("text-2xl font-bold", card.color)}>
+          <p className={cn("font-mono text-2xl font-medium", card.color)}>
             {card.value}
             {card.suffix && (
               <span className="text-muted-foreground ml-1 text-sm font-normal">

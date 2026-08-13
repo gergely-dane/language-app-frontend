@@ -124,7 +124,7 @@ export const CardStatePieChart = ({
                           x={viewBox.cx}
                           y={viewBox.cy}
                           className={cn(
-                            "fill-foreground font-bold",
+                            "fill-foreground font-mono font-medium",
                             isMobile ? "text-lg" : "text-2xl",
                           )}
                         >

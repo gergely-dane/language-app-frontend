@@ -59,7 +59,7 @@ export const SettingsPage = () => {
 
   return (
     <div className="mx-auto w-full max-w-2xl p-4">
-      <h1 className="mb-6 text-3xl font-bold">{t("settings.title")}</h1>
+      <h1 className="mb-6 text-3xl">{t("settings.title")}</h1>
 
       <div className="flex flex-col gap-6">
         <Card>

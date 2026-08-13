@@ -1,7 +1,7 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Instrument_Sans, Spline_Sans_Mono } from "next/font/google";
 
 import { AppProvider } from "@/app/provider";
 import { BaseContentLayout } from "@/components/layouts/base-content-layout";
@@ -10,13 +10,13 @@ import { Navbar } from "@/features/navigation/components/navbar";
 import { Sidebar } from "@/features/navigation/components/sidebar";
 import { getI18nConfig } from "@/i18n/request";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const splineSansMono = Spline_Sans_Mono({
+  variable: "--font-spline-mono",
   subsets: ["latin"],
 });
 
@@ -40,7 +40,7 @@ const RootLayout = async ({
   return (
     <html suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+        className={`${instrumentSans.variable} ${splineSansMono.variable} ${fraunces.variable} antialiased`}
       >
         <AppProvider i18nConfig={i18nConfig}>
           <Navbar />

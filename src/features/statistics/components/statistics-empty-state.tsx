@@ -28,9 +28,7 @@ export const StatisticsEmptyState = ({
       </div>
 
       <div className="text-center">
-        <h2 className="text-xl font-bold">
-          {t("statistics.emptyState.title")}
-        </h2>
+        <h2 className="text-xl">{t("statistics.emptyState.title")}</h2>
 
         <p className="text-muted-foreground mt-2 max-w-md text-sm">
           {t("statistics.emptyState.description")}

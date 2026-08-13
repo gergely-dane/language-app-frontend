@@ -55,7 +55,7 @@ export const VocabularyPage = () => {
 
   return (
     <div className="flex min-h-[calc(100vh-var(--navbar-height))] w-full flex-col">
-      <p className="text-3xl font-bold">{t("vocabulary.title")}</p>
+      <h1 className="text-3xl">{t("vocabulary.title")}</h1>
 
       <p className="text-muted-foreground font-semibold">
         {t("vocabulary.anOverviewOfAllYourWords")}

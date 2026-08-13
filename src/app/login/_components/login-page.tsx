@@ -44,7 +44,7 @@ export const LoginPage = () => {
 
   return (
     <div className="-mt-[var(--navbar-height)] flex w-full flex-col gap-2 p-4 lg:w-90 lg:p-0">
-      <p className="mx-auto text-2xl font-semibold">{t("auth.login")}</p>
+      <h1 className="mx-auto text-2xl">{t("auth.login")}</h1>
 
       <Separator className="my-2" />
 
