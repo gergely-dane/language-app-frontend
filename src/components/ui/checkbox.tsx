@@ -23,7 +23,7 @@ const Checkbox = ({
         className="flex items-center justify-center text-current transition-none"
         data-slot="checkbox-indicator"
       >
-        <IconCheck className="size-3.5" />
+        <IconCheck className="-mb-[1px] size-3.5" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

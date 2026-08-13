@@ -1,8 +1,4 @@
-import {
-  IconArrowNarrowDown,
-  IconArrowNarrowUp,
-  IconArrowsSort,
-} from "@tabler/icons-react";
+import { IconArrowNarrowDown, IconArrowNarrowUp } from "@tabler/icons-react";
 import { type Column } from "@tanstack/table-core";
 import React from "react";
 
@@ -19,20 +15,13 @@ export const SortableTableHeaderText = ({
 }: SortableTableHeaderTextProps) => {
   return (
     <div
-      className="flex cursor-pointer gap-1 hover:underline"
+      className="flex cursor-pointer items-center gap-1 text-xs font-medium tracking-wide uppercase hover:underline"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       <p>{headerName}</p>
       {icon}
-      <span className="mt-0.5">
-        {column.getIsSorted() === "asc" ? (
-          <IconArrowNarrowUp size={16} />
-        ) : column.getIsSorted() === "desc" ? (
-          <IconArrowNarrowDown size={16} />
-        ) : (
-          <IconArrowsSort size={16} />
-        )}
-      </span>
+      {column.getIsSorted() === "asc" && <IconArrowNarrowUp size={14} />}
+      {column.getIsSorted() === "desc" && <IconArrowNarrowDown size={14} />}
     </div>
   );
 };

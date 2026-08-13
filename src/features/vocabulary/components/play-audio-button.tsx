@@ -87,12 +87,13 @@ export const PlayAudioButton = ({
     synthesizeSpeech.isPending || (isAnyAudioPlaying && !isThisPlaying);
 
   const className = [
-    "-mb-0.5 shrink-0 transition-colors",
+    "-mb-0.5 shrink-0 transition-[color,opacity]",
+    "opacity-0 group-hover:opacity-100 max-lg:opacity-100",
     isThisPlaying
-      ? "text-primary cursor-default"
+      ? "text-primary cursor-default opacity-100"
       : isDisabled
-        ? "text-primary/50 cursor-default"
-        : "text-primary/50 cursor-pointer hover:text-primary",
+        ? "text-muted-foreground/50 cursor-default"
+        : "text-muted-foreground hover:text-foreground cursor-pointer",
   ].join(" ");
 
   return (

@@ -34,6 +34,10 @@
   "noResults": "No results.",
   "previous": "Previous",
   "searchForAWord": "Search for a word...",
+  "selection": {
+    "selected": "{count} selected",
+    "clear": "Clear"
+  },
   "searchLanguages": "Search languages...",
   "selectLanguage": "Select language",
   "successfullyImported": "Successfully imported",

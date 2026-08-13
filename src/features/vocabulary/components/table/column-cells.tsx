@@ -68,7 +68,15 @@ export const AddedOnCell = ({
   getValue,
 }: CellContext<Translation, unknown>) => {
   const date = new Date(getValue() as string);
-  return <p className="text-[0.8rem]">{date.toLocaleDateString()}</p>;
+  return (
+    <p className="text-muted-foreground font-mono text-xs">
+      {date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })}
+    </p>
+  );
 };
 
 export type EditCellProps = CellContext<Translation, unknown> & {
@@ -87,7 +95,6 @@ export const EditCell = ({ row, onEdit }: EditCellProps) => {
 
 export const SelectCell = ({ row }: CellContext<Translation, unknown>) => (
   <Checkbox
-    className="mr-4 pt-4"
     onCheckedChange={(value) => row.toggleSelected(!!value)}
     checked={row.getIsSelected()}
     aria-label="Select row"

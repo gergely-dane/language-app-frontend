@@ -24,6 +24,14 @@ export const useColumns = (
   return useMemo(
     () => [
       {
+        id: "select",
+        header: SelectHeader,
+        cell: SelectCell,
+        meta: {
+          className: "w-10",
+        },
+      },
+      {
         id: "word",
         accessorFn: (tr) => tr.words?.[0]?.word,
         header: WordHeader,
@@ -52,14 +60,6 @@ export const useColumns = (
       {
         id: "edit",
         cell: (context) => <EditCell {...context} onEdit={onEdit} />,
-        meta: {
-          className: "w-14",
-        },
-      },
-      {
-        id: "select",
-        header: SelectHeader,
-        cell: SelectCell,
         meta: {
           className: "w-14",
         },

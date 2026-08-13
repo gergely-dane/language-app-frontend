@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getFacetedUniqueValues,
   type OnChangeFn,
+  type RowSelectionState,
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -29,6 +30,8 @@ type VocabularyTableProps<TValue> = {
   words: PaginatedResponse<Translation> | undefined;
   sorting: SortingState;
   onSortingChange: OnChangeFn<SortingState>;
+  rowSelection: RowSelectionState;
+  onRowSelectionChange: OnChangeFn<RowSelectionState>;
   onPageChange?: (page: number) => void;
 };
 
@@ -37,6 +40,8 @@ export const VocabularyTable = <TValue,>({
   words,
   sorting,
   onSortingChange,
+  rowSelection,
+  onRowSelectionChange,
   onPageChange,
 }: VocabularyTableProps<TValue>) => {
   const t = useI18n();
@@ -47,10 +52,12 @@ export const VocabularyTable = <TValue,>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange,
+    onRowSelectionChange,
     getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
-      columnVisibility: { createdAt: !isMobile, select: false },
+      rowSelection,
+      columnVisibility: { createdAt: !isMobile },
     },
     getRowId: (row: Translation) => row.id.toString(),
   });
@@ -92,6 +99,7 @@ export const VocabularyTable = <TValue,>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="group"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

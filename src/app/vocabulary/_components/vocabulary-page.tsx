@@ -1,15 +1,21 @@
 "use client";
 
-import { IconPlus } from "@tabler/icons-react";
-import { type SortingState } from "@tanstack/react-table";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  type RowSelectionState,
+  type SortingState,
+} from "@tanstack/react-table";
 import { useCallback, useState } from "react";
 
 import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 import { Button } from "@/components/ui/button";
+import { useAlert } from "@/context/alert-context";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import { type LanguageFilterValue } from "@/features/languages/types";
+import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-translations-bulk";
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
+import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-dialog";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/table/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
@@ -31,8 +37,34 @@ export const VocabularyPage = () => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
   ]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const debouncedSearchFilter = useDebounce(searchFilter);
+  const deleteTranslationsBulk = useDeleteTranslationsBulk();
+  const { showAlert } = useAlert();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const selectedCount = Object.keys(rowSelection).length;
+
+  const deleteSelected = () => {
+    deleteTranslationsBulk.mutate(
+      { ids: Object.keys(rowSelection).map(Number) },
+      {
+        onSuccess: () => {
+          setRowSelection({});
+          showAlert({
+            title: t("vocabulary.translationsDeletedSuccessfully"),
+          });
+        },
+        onError: () => {
+          showAlert({
+            title: t("vocabulary.errorDeletingTranslation"),
+            variant: "destructive",
+          });
+        },
+      },
+    );
+  };
 
   const { data: words, isFetching } = useTranslations({
     pageNumber,
@@ -89,6 +121,44 @@ export const VocabularyPage = () => {
         </Button>
       </div>
 
+      {selectedCount > 0 && (
+        <div className="border-primary/30 bg-primary/10 mb-1.5 flex items-center justify-between rounded-lg border px-4 py-2">
+          <p className="text-primary text-sm font-medium">
+            {t("vocabulary.selection.selected", { count: selectedCount })}
+          </p>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setRowSelection({})}
+            >
+              {t("vocabulary.selection.clear")}
+            </Button>
+
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={deleteTranslationsBulk.isPending}
+              onClick={() => {
+                if (selectedCount > 1) setDeleteDialogOpen(true);
+                else deleteSelected();
+              }}
+            >
+              <IconTrash className="size-3.5" />
+              {t("vocabulary.deleteWords.delete")}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <DeleteWordDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        wordCount={selectedCount}
+        onDelete={deleteSelected}
+      />
+
       <AddEditWordDialog
         open={isEditDialogOpen}
         onOpenChange={onWordDialogOpenChange}
@@ -101,6 +171,8 @@ export const VocabularyPage = () => {
         words={words}
         sorting={sorting}
         onSortingChange={setSorting}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
         onPageChange={(page) => setPageNumber(page)}
       />
 

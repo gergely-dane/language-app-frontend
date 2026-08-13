@@ -17,7 +17,11 @@ export const WordHeader = ({ column }: HeaderContext<Translation, unknown>) => {
 
 export const TranslationsHeader = () => {
   const t = useI18n();
-  return <p>{t("general.translations")}</p>;
+  return (
+    <p className="text-xs font-medium tracking-wide uppercase">
+      {t("general.translations")}
+    </p>
+  );
 };
 
 export const AddedOnHeader = ({
@@ -36,7 +40,6 @@ export const SelectHeader = ({
   table,
 }: HeaderContext<Translation, unknown>) => (
   <Checkbox
-    className="mr-4 pt-4"
     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
     checked={
       table.getIsAllPageRowsSelected() ||
