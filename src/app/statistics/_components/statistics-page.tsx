@@ -12,7 +12,7 @@ export const StatisticsPage = () => {
   const [timePeriod, setTimePeriod] = useState("30");
 
   return (
-    <div className="min-h-[calc(100vh-var(--navbar-height))] w-full">
+    <div className="w-full self-start">
       <PageHeader
         title={t("general.statistics")}
         subtitle={t("statistics.pageSubtitle")}

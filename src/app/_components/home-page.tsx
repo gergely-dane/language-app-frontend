@@ -20,7 +20,7 @@ export const HomePage = () => {
           : t("general.goodEvening");
 
   return (
-    <div className="min-h-[calc(100vh-var(--navbar-height))] w-full">
+    <div className="w-full self-start">
       <PageHeader
         title={
           <>
