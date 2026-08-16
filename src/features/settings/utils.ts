@@ -1,5 +1,5 @@
 import { FSRS_OPTIMIZATION_STATE } from "@/features/settings/constants";
-import { type FsrsOptimizationStatus } from "@/features/settings/interfaces/fsrs-optimization.interface";
+import { type FsrsOptimizationStatus } from "@/features/settings/types";
 
 export const isFsrsOptimizationInProgress = (
   status: FsrsOptimizationStatus | undefined,

@@ -10,7 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FlashcardPlayButton } from "@/features/flashcards/components/flashcard-play-button";
 import { useLanguages } from "@/features/languages/api/get-languages";
-import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import type { Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";

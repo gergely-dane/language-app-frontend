@@ -19,7 +19,7 @@ import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-d
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/table/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
-import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import { type Translation } from "@/features/vocabulary/types";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useI18n } from "@/hooks/use-i18n";
 

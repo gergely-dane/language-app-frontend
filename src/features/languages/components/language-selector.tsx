@@ -21,7 +21,7 @@ import {
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { LANGUAGES } from "@/features/languages/constants";
-import { type Language } from "@/features/languages/interfaces/language.interface";
+import { type Language } from "@/features/languages/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";

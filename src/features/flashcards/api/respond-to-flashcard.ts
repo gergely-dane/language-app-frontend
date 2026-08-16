@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/lib/api-client";
 
-import type { Flashcard } from "../interfaces/flashcard.interface";
+import { parseFlashcardResponse } from "../utils";
 import type { FlashcardParams } from "./get-flashcard";
 
 interface RespondToFlashcardRequest {
@@ -18,12 +18,14 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
 
   return useMutation({
     mutationFn: async ({ flashcardId, response }: RespondToFlashcardRequest) =>
-      (
-        await apiClient.post<Flashcard>(
-          `/flashcards/${flashcardId}/review`,
-          response,
-        )
-      ).data,
+      parseFlashcardResponse(
+        (
+          await apiClient.post<unknown>(
+            `/flashcards/${flashcardId}/review`,
+            response,
+          )
+        ).data,
+      ),
     onError: (error) => {
       console.error("Failed to respond to flashcard:", error);
     },

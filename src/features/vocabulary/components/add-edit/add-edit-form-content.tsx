@@ -15,7 +15,7 @@ import {
 import { useAlert } from "@/context/alert-context";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { LanguageSelector } from "@/features/languages/components/language-selector";
-import { type Language } from "@/features/languages/interfaces/language.interface";
+import { type Language } from "@/features/languages/types";
 import { useCreateTranslation } from "@/features/vocabulary/api/create-translation";
 import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
 import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadsheet";
@@ -27,7 +27,7 @@ import {
   MAX_TAGS,
 } from "@/features/vocabulary/components/add-edit/inline-tag-input";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
-import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import { type Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 
 const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";

@@ -7,7 +7,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { StatisticsContainer } from "@/features/statistics/components/statistics-container";
-import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/features/statistics/types";
 import { groupStatsByWeek } from "@/features/statistics/utils";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";

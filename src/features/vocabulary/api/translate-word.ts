@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { apiClient } from "@/lib/api-client";
 
@@ -8,20 +9,20 @@ interface TranslateWordRequest {
   targetLanguageId: number;
 }
 
-interface TranslateWordResponse {
-  translations: string[];
-  sourceLanguageId: number;
-  targetLanguageId: number;
-}
+const translateWordResponseSchema = z.object({
+  translations: z.array(z.string()),
+  sourceLanguageId: z.number(),
+  targetLanguageId: z.number(),
+});
 
 export const useTranslateWord = () => {
   return useMutation({
     mutationFn: async (request: TranslateWordRequest) => {
-      const { data } = await apiClient.post<TranslateWordResponse>(
+      const { data } = await apiClient.post<unknown>(
         "/translations/translate",
         request,
       );
-      return data;
+      return translateWordResponseSchema.parse(data);
     },
   });
 };

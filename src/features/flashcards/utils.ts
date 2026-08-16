@@ -1,4 +1,8 @@
-import type { Direction } from "./types";
+import type { Direction, Flashcard } from "./types";
+import { flashcardSchema } from "./types";
+
+export const parseFlashcardResponse = (data: unknown): Flashcard | null =>
+  data ? flashcardSchema.parse(data) : null;
 
 export const getCardAnimation = (
   flipped: boolean,

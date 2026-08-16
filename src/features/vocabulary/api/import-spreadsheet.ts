@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { apiClient } from "@/lib/api-client";
 
@@ -6,22 +7,22 @@ interface ImportSpreadsheetRequest {
   file: File;
 }
 
-interface ImportSpreadsheetResponse {
-  importedCount: number;
-  failedCount: number;
-}
+const importSpreadsheetResponseSchema = z.object({
+  importedCount: z.number(),
+  failedCount: z.number(),
+});
 
 export const useImportSpreadsheet = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (importData: ImportSpreadsheetRequest) => {
-      const { data } = await apiClient.post<ImportSpreadsheetResponse>(
+      const { data } = await apiClient.post<unknown>(
         "/translations/import",
         importData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
-      return data;
+      return importSpreadsheetResponseSchema.parse(data);
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });

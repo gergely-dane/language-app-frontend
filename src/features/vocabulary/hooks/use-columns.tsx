@@ -16,7 +16,7 @@ import {
   TranslationsHeader,
   WordHeader,
 } from "@/features/vocabulary/components/table/column-headers";
-import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import type { Translation } from "@/features/vocabulary/types";
 
 export const useColumns = (
   onEdit: (translation: Translation) => void,

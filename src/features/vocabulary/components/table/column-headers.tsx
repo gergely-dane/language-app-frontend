@@ -3,7 +3,7 @@
 import type { HeaderContext } from "@tanstack/react-table";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import type { Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 
 import { SortableTableHeaderText } from "./sortable-table-header-text";

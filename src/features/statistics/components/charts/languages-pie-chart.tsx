@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/chart";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { StatisticsContainer } from "@/features/statistics/components/statistics-container";
-import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/features/statistics/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { AddEditFormContent } from "@/features/vocabulary/components/add-edit/add-edit-form-content";
-import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import { type Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 

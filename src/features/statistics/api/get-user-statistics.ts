@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
+import { userStatisticsSchema } from "@/features/statistics/types";
 import { apiClient } from "@/lib/api-client";
 
 export interface GetUserStatisticsParams {
@@ -14,10 +14,10 @@ export const getUserStatisticsQueryOptions = (
   queryOptions({
     queryKey: ["statistics", params] as const,
     queryFn: async () => {
-      const { data } = await apiClient.get<UserStatistics>("/users/me/stats", {
+      const { data } = await apiClient.get<unknown>("/users/me/stats", {
         params,
       });
-      return data;
+      return userStatisticsSchema.parse(data);
     },
   });
 

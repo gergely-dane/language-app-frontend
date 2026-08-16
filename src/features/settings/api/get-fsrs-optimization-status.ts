@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-import { type FsrsOptimizationStatus } from "@/features/settings/interfaces/fsrs-optimization.interface";
+import { fsrsOptimizationStatusSchema } from "@/features/settings/types";
 import { isFsrsOptimizationInProgress } from "@/features/settings/utils";
 import { apiClient } from "@/lib/api-client";
 
@@ -10,10 +10,10 @@ export const getFsrsOptimizationStatusQueryOptions = () =>
   queryOptions({
     queryKey: fsrsOptimizationStatusQueryKey,
     queryFn: async () => {
-      const { data } = await apiClient.get<FsrsOptimizationStatus>(
+      const { data } = await apiClient.get<unknown>(
         "/users/me/fsrs-optimization-status",
       );
-      return data;
+      return fsrsOptimizationStatusSchema.parse(data);
     },
     refetchInterval: (query) =>
       isFsrsOptimizationInProgress(query.state.data) ? 5000 : false,

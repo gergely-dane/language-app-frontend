@@ -4,8 +4,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import type { Flashcard } from "@/features/flashcards/interfaces/flashcard.interface";
-import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import type { Flashcard } from "@/features/flashcards/types";
+import { translationSchema } from "@/features/vocabulary/types";
 import { apiClient } from "@/lib/api-client";
 
 export interface UpdateTranslationRequest {
@@ -29,11 +29,11 @@ export const useUpdateTranslation = (
 
   return useMutation({
     mutationFn: async (updatedTranslation: UpdateTranslationRequest) => {
-      const { data } = await apiClient.put<Translation>(
+      const { data } = await apiClient.put<unknown>(
         `/translations/${id}`,
         updatedTranslation,
       );
-      return data;
+      return translationSchema.parse(data);
     },
     onSuccess: (updatedTranslation) => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });

@@ -20,10 +20,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PaginationNavigator } from "@/features/vocabulary/components/table/pagination-navigator";
-import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import { type Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
-import { type PaginatedResponse } from "@/interfaces/paginated-response.interface";
+import { type PaginatedResponse } from "@/types";
 
 type VocabularyTableProps<TValue> = {
   columns: ColumnDef<Translation, TValue>[];

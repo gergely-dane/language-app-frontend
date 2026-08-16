@@ -13,7 +13,7 @@ import {
   TOTAL_CELL,
   WEEKS,
 } from "@/features/statistics/constants";
-import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/features/statistics/types";
 import { getIntensityClass } from "@/features/statistics/utils";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";

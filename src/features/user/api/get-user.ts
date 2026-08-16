@@ -1,14 +1,14 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-import { type User } from "@/features/user/interfaces/user.interface";
+import { userSchema } from "@/features/user/types";
 import { apiClient } from "@/lib/api-client";
 
 export const getUserQueryOptions = () =>
   queryOptions({
     queryKey: ["user"],
     queryFn: async () => {
-      const { data } = await apiClient.get<User>("/users/me");
-      return data;
+      const { data } = await apiClient.get<unknown>("/users/me");
+      return userSchema.parse(data);
     },
   });
 

@@ -12,7 +12,7 @@ import React, {
   useState,
 } from "react";
 
-import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import type { Translation } from "@/features/vocabulary/types";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { cn } from "@/lib/utils";
 

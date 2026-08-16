@@ -1,19 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { type LanguagePair } from "@/features/languages/interfaces/language-pair.interface";
+import { type LanguagePair } from "@/features/languages/types";
 import { apiClient } from "@/lib/api-client";
 import { queryClient } from "@/lib/query-client";
 
-import type { Flashcard } from "../interfaces/flashcard.interface";
+import { parseFlashcardResponse } from "../utils";
 export interface FlashcardParams extends Partial<LanguagePair> {
   isReverse?: boolean;
 }
 
 const getFlashcard = async (params?: FlashcardParams | null) => {
-  const { data } = await apiClient.get<Flashcard>("/flashcards/next", {
+  const { data } = await apiClient.get<unknown>("/flashcards/next", {
     params,
   });
-  return data;
+  return parseFlashcardResponse(data);
 };
 
 export const useFlashcard = (params?: FlashcardParams | null, index?: number) =>

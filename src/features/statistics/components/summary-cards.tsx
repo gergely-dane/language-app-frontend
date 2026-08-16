@@ -9,7 +9,7 @@ import {
   type TablerIcon,
 } from "@tabler/icons-react";
 
-import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/features/statistics/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";
 

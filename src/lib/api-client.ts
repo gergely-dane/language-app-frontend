@@ -5,6 +5,7 @@ import type {
 } from "axios";
 import axios from "axios";
 
+import { env } from "@/lib/env";
 import { supabaseClient } from "@/lib/supabase-client";
 
 class ApiClient {
@@ -13,7 +14,7 @@ class ApiClient {
 
   private constructor() {
     this.client = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+      baseURL: env.NEXT_PUBLIC_BACKEND_URL,
       timeout: 10000,
       headers: { "Content-Type": "application/json" },
     });

@@ -6,7 +6,7 @@ import type { CellContext } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguages } from "@/features/languages/api/get-languages";
-import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import type { Translation } from "@/features/vocabulary/types";
 
 import { PlayAudioButton } from "../play-audio-button";
 

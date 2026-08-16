@@ -4,7 +4,7 @@ import { IconArrowRight } from "@tabler/icons-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { type UserStatistics } from "@/features/statistics/interfaces/user-statistics.interface";
+import { type UserStatistics } from "@/features/statistics/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";
 

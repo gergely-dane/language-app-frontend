@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { type UpdateTranslationRequest } from "@/features/vocabulary/api/update-translation";
-import { type Translation } from "@/features/vocabulary/interfaces/translation.interface";
+import { translationSchema } from "@/features/vocabulary/types";
 import { apiClient } from "@/lib/api-client";
 
 interface CreateTranslationRequest extends UpdateTranslationRequest {
@@ -13,11 +13,11 @@ export const useCreateTranslation = () => {
 
   return useMutation({
     mutationFn: async (newTranslation: CreateTranslationRequest) => {
-      const { data } = await apiClient.post<Translation>(
+      const { data } = await apiClient.post<unknown>(
         "/translations",
         newTranslation,
       );
-      return data;
+      return translationSchema.parse(data);
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["translations"] });

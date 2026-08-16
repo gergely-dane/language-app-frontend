@@ -1,7 +1,7 @@
 import {
   type UserStatisticsDaily,
   type UserStatisticsWeekly,
-} from "@/features/statistics/interfaces/user-statistics.interface";
+} from "@/features/statistics/types";
 
 export function groupStatsByWeek(
   daily: UserStatisticsDaily[],
