@@ -28,7 +28,7 @@ export const SessionPanel = ({
       <SectionLabel>{t("flashcards.session")}</SectionLabel>
 
       <div className="flex flex-col gap-3 max-lg:gap-2">
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <div className="flex gap-y-1 max-lg:flex-wrap max-lg:items-baseline max-lg:gap-x-4 lg:flex-col">
           <div className="flex items-baseline gap-1.5">
             <p className="text-3xl font-semibold tabular-nums max-lg:text-lg">
               {reviewedCount}
