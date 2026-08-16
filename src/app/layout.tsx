@@ -40,7 +40,7 @@ const RootLayout = async ({
   return (
     <html suppressHydrationWarning>
       <body
-        className={`${instrumentSans.variable} ${splineSansMono.variable} ${fraunces.variable} antialiased`}
+        className={`${instrumentSans.variable} ${splineSansMono.variable} ${fraunces.variable} overflow-x-clip antialiased`}
       >
         <AppProvider i18nConfig={i18nConfig}>
           <Navbar />

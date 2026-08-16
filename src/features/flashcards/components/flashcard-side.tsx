@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { FlashcardPlayButton } from "@/features/flashcards/components/flashcard-play-button";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import type { Translation } from "@/features/vocabulary/interfaces/translation.interface";
 import { useI18n } from "@/hooks/use-i18n";
@@ -64,6 +65,20 @@ export const FlashcardSide = ({
     >
       {translation && (
         <div className="relative flex h-full flex-col items-center justify-center">
+          <FlashcardPlayButton
+            className="absolute -top-1 -right-1"
+            text={
+              isFront
+                ? translation.words.map((w) => w.word).join(", ")
+                : translation.translations.map((tr) => tr.word).join(", ")
+            }
+            languageCode={getLanguageCode(
+              isFront
+                ? translation.sourceLanguageId
+                : translation.targetLanguageId,
+            )}
+          />
+
           <div className="text-primary-foreground/75 absolute top-1 left-2 flex items-center gap-1 text-xs font-semibold uppercase">
             {getLanguageCode(
               isFront

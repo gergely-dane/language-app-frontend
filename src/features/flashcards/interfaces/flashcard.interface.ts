@@ -7,4 +7,5 @@ export interface Flashcard {
   notSureNextReviewMinutes: number;
   knowItNextReviewMinutes: number;
   easyNextReviewMinutes: number;
+  remainingCount: number;
 }

@@ -1,6 +1,10 @@
 "use client";
 
-import { motion } from "motion/react";
+import {
+  type AnimationDefinition,
+  motion,
+  type TargetAndTransition,
+} from "motion/react";
 import React, {
   useCallback,
   useEffect,
@@ -100,11 +104,20 @@ export const FlashcardComp = React.forwardRef<
       ),
     );
 
-    const handleAnimationComplete = () => {
-      onAnimationStateChange?.(false);
+    const handleAnimationComplete = (definition: AnimationDefinition) => {
+      // Gesture and interrupted animations complete too; only react to the target we animated to.
+      const target = definition as TargetAndTransition;
+
       if (swipeAnimationDirection) {
-        onSwipeAnimationComplete?.(swipeAnimationDirection);
-      } else {
+        if (target.opacity === 0) {
+          onAnimationStateChange?.(false);
+          onSwipeAnimationComplete?.(swipeAnimationDirection);
+        }
+        return;
+      }
+
+      if (target.opacity === 1) {
+        onAnimationStateChange?.(false);
         setIsFlipAnimating(false);
         setIsEntering(false);
       }
@@ -201,7 +214,7 @@ export const FlashcardComp = React.forwardRef<
             whileHover={swipeAnimationDirection ? undefined : { y: -4 }}
             whileTap={swipeAnimationDirection ? undefined : { y: -4 }}
             onClick={() => startFlip()}
-            onAnimationComplete={() => handleAnimationComplete()}
+            onAnimationComplete={handleAnimationComplete}
           >
             <FlashcardSide
               translation={!isLoading ? currentDisplayTranslation : undefined}

@@ -2,6 +2,8 @@ import { z } from "zod";
 
 export type Direction = "left" | "down" | "right" | "up";
 
+export type FlashcardRating = 1 | 2 | 3 | 4;
+
 export type FlashcardTimeKey =
   | "dontKnowNextReviewMinutes"
   | "notSureNextReviewMinutes"
@@ -19,3 +21,12 @@ export const flashcardParamsSchema = z.object({
   targetLanguageId: z.number().nullable().optional(),
   isReverse: z.boolean().optional(),
 });
+
+export const flashcardSessionStateSchema = z.object({
+  startedAt: z.number(),
+  history: z.array(
+    z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+  ),
+});
+
+export type FlashcardSessionState = z.infer<typeof flashcardSessionStateSchema>;

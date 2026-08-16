@@ -19,15 +19,18 @@ import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flas
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
 import { SectionLabel } from "@/features/flashcards/components/section-label";
+import { SessionPanel } from "@/features/flashcards/components/session-panel";
 import {
   FLASHCARD_DIRECTION_RATINGS,
   FLASHCARD_DIRECTIONS,
   FLASHCARD_FILTERS_STATE_STORAGE_KEY,
   FLASHCARD_RATING_META,
 } from "@/features/flashcards/constants";
+import { useFlashcardSession } from "@/features/flashcards/hooks/use-flashcard-session";
 import type {
   Direction,
   FlashcardCompHandle,
+  FlashcardRating,
 } from "@/features/flashcards/types";
 import { flashcardParamsSchema } from "@/features/flashcards/types";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
@@ -82,7 +85,7 @@ export const FlashcardsPage = () => {
   const [isCardAnimating, setIsCardAnimating] = useState(false);
   const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [sessionHistory, setSessionHistory] = useState<(1 | 2 | 3 | 4)[]>([]);
+  const { sessionHistory, recordResponse } = useFlashcardSession();
 
   const flashcardParams = useMemo<FlashcardParams>(() => {
     const params = {
@@ -112,12 +115,12 @@ export const FlashcardsPage = () => {
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
   const handleRespondByRating = useCallback(
-    async (response: 1 | 2 | 3 | 4) => {
+    async (response: FlashcardRating) => {
       if (isCardAnimating || respondToFlashcard.isPending || !flashcard) {
         return;
       }
 
-      setSessionHistory((prev) => [...prev, response]);
+      recordResponse(response);
 
       await respondToFlashcard.mutateAsync({
         flashcardId: flashcard.id,
@@ -127,7 +130,13 @@ export const FlashcardsPage = () => {
         },
       });
     },
-    [isCardAnimating, respondToFlashcard, flashcard, flashcardParams],
+    [
+      isCardAnimating,
+      respondToFlashcard,
+      flashcard,
+      recordResponse,
+      flashcardParams,
+    ],
   );
 
   const handleRespond = useCallback(
@@ -255,42 +264,12 @@ export const FlashcardsPage = () => {
         </aside>
 
         <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
-          <section className="bg-card max-lg:short:hidden flex flex-col gap-3 rounded-xl border p-4 max-lg:gap-2 max-lg:py-3">
-            <SectionLabel>{t("flashcards.session")}</SectionLabel>
-
-            <div className="flex flex-col gap-3 max-lg:gap-2">
-              <div className="flex items-baseline gap-1.5">
-                <p className="text-3xl font-semibold tabular-nums max-lg:text-base">
-                  {sessionHistory.length}
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  {t("flashcards.reviewed")}
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-1.5 max-lg:grid max-lg:grid-cols-2 max-lg:gap-x-6">
-                {FLASHCARD_DIRECTIONS.map((direction) => (
-                  <div
-                    key={direction}
-                    className="flex items-center justify-between gap-2 text-sm"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span
-                        className={cn(
-                          "size-2 rounded-full",
-                          FLASHCARD_RATING_META[direction].dotClass,
-                        )}
-                      />
-                      <span className="text-muted-foreground">
-                        {ratingLabels[direction]}
-                      </span>
-                    </span>
-                    <span className="tabular-nums">{tally[direction]}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <SessionPanel
+            reviewedCount={sessionHistory.length}
+            remainingCount={flashcard?.remainingCount ?? 0}
+            tally={tally}
+            ratingLabels={ratingLabels}
+          />
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col">
