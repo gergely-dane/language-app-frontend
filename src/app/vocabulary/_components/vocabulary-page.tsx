@@ -87,7 +87,15 @@ export const VocabularyPage = () => {
 
   return (
     <div className="flex min-h-[calc(100vh-var(--navbar-height))] w-full flex-col">
-      <h1 className="text-3xl">{t("vocabulary.title")}</h1>
+      <div className="flex items-baseline justify-between">
+        <h1 className="text-3xl">{t("vocabulary.title")}</h1>
+
+        {!!words?.totalCount && (
+          <p className="text-muted-foreground font-mono text-[13px]">
+            {t("vocabulary.entries", { count: words.totalCount })}
+          </p>
+        )}
+      </div>
 
       <p className="text-muted-foreground font-semibold">
         {t("vocabulary.anOverviewOfAllYourWords")}

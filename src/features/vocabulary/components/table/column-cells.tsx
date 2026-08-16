@@ -87,7 +87,12 @@ export const EditCell = ({ row, onEdit }: EditCellProps) => {
   const rowData = row.original;
 
   return (
-    <Button variant="outline" size="icon" onClick={() => onEdit(rowData)}>
+    <Button
+      className="hover:bg-muted dark:hover:bg-muted opacity-0 transition-opacity group-hover:opacity-100 max-lg:opacity-100"
+      variant="ghost"
+      size="icon"
+      onClick={() => onEdit(rowData)}
+    >
       <IconPencil />
     </Button>
   );

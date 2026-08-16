@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCheck, IconSelector } from "@tabler/icons-react";
+import { IconSelector } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -71,16 +71,16 @@ export const LanguageSelector = ({
     <CommandItem
       key={language.id}
       value={LANGUAGES[language.code]}
+      className={cn(
+        value?.id === language.id &&
+          "text-primary data-[selected=true]:text-primary",
+      )}
       onSelect={() => {
         onChange(language);
         setOpen(false);
       }}
     >
-      <IconCheck
-        className={value?.id === language.id ? "opacity-100" : "opacity-0"}
-      />
-
-      <p>{LANGUAGES[language.code]}</p>
+      {LANGUAGES[language.code]}
     </CommandItem>
   );
 
@@ -89,7 +89,10 @@ export const LanguageSelector = ({
       <Popover onOpenChange={setOpen} open={open}>
         <PopoverTrigger asChild>
           <Button
-            className={cn("justify-between", className)}
+            className={cn(
+              "font-normal [&>[data-slot=button-content]]:w-full [&>[data-slot=button-content]]:justify-between",
+              className,
+            )}
             variant="outline"
             role="combobox"
             aria-expanded={open}
@@ -123,7 +126,10 @@ export const LanguageSelector = ({
             <CommandList>
               <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
               {usedLanguages.length > 0 && (
-                <CommandGroup>
+                <CommandGroup
+                  heading={t("vocabulary.mostUsed")}
+                  className="pb-0 [&_[cmdk-group-heading]]:pb-0 [&_[cmdk-group-heading]]:tracking-wide [&_[cmdk-group-heading]]:uppercase"
+                >
                   {usedLanguages.map(renderLanguageItem)}
                 </CommandGroup>
               )}
@@ -132,7 +138,17 @@ export const LanguageSelector = ({
                 <CommandSeparator />
               )}
 
-              <CommandGroup>
+              <CommandGroup
+                heading={
+                  usedLanguages.length > 0
+                    ? t("vocabulary.allLanguages")
+                    : undefined
+                }
+                className={cn(
+                  "[&_[cmdk-group-heading]]:pb-0 [&_[cmdk-group-heading]]:tracking-wide [&_[cmdk-group-heading]]:uppercase",
+                  usedLanguages.length > 0 && "pt-0",
+                )}
+              >
                 {otherLanguages.map(renderLanguageItem)}
               </CommandGroup>
             </CommandList>

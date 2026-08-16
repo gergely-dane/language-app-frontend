@@ -40,6 +40,7 @@ export const SelectHeader = ({
   table,
 }: HeaderContext<Translation, unknown>) => (
   <Checkbox
+    className="data-[state=checked]:border-primary-foreground"
     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
     checked={
       table.getIsAllPageRowsSelected() ||

@@ -86,7 +86,7 @@ export const FlashcardSide = ({
             </p>
 
             <p
-              className="line-clamp-3 text-2xl leading-snug font-semibold text-balance md:text-4xl"
+              className="line-clamp-3 text-2xl leading-snug font-semibold text-balance md:text-3xl"
               ref={textRef}
             >
               {isFront
