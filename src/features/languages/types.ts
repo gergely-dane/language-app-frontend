@@ -1,13 +1,12 @@
 import { z } from "zod";
 
-import { baseEntitySchema } from "@/types";
-
 export type LanguageFilterValue = {
   sourceLanguageId: number | null;
   targetLanguageId: number | null;
 };
 
-export const languageSchema = baseEntitySchema.extend({
+export const languageSchema = z.object({
+  id: z.number(),
   englishName: z.string(),
   nativeName: z.string(),
   code: z.string(),
