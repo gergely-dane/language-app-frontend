@@ -40,6 +40,7 @@ type AddEditFormContentProps = {
   onClose: () => void;
   currentTranslation?: Translation;
   flashcardQueryKey?: readonly unknown[];
+  onDeleted?: () => void;
 };
 
 export const AddEditFormContent = ({
@@ -47,6 +48,7 @@ export const AddEditFormContent = ({
   onClose,
   currentTranslation,
   flashcardQueryKey,
+  onDeleted,
 }: AddEditFormContentProps) => {
   const t = useI18n();
   const { showAlert } = useAlert();
@@ -217,6 +219,7 @@ export const AddEditFormContent = ({
   const handleDelete = async () => {
     try {
       await deleteTranslation.mutateAsync();
+      onDeleted?.();
       onClose();
       showAlert({
         title: t("vocabulary.translationDeletedSuccessfully"),

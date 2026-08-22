@@ -1,6 +1,6 @@
 "use client";
 
-import { IconPencil } from "@tabler/icons-react";
+import { IconPencil, IconRefresh } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
@@ -106,6 +106,7 @@ export const FlashcardsPage = () => {
     data: flashcard,
     isFetching,
     error,
+    refetch,
   } = useFlashcard(flashcardParams, flashcardIndex);
   const respondToFlashcard = useRespondToFlashcard(flashcardIndex);
 
@@ -289,6 +290,17 @@ export const FlashcardsPage = () => {
                     {t("flashcards.errorLoadingFlashcard")}
                   </h2>
                 )}
+
+                <Button
+                  className="mt-2"
+                  variant="outline"
+                  onClick={() => void refetch()}
+                  disabled={isFetching}
+                >
+                  <IconRefresh className={cn(isFetching && "animate-spin")} />
+
+                  {t("flashcards.refresh")}
+                </Button>
               </div>
             ) : (
               flashcard.translation && (
@@ -356,6 +368,7 @@ export const FlashcardsPage = () => {
             editMode={true}
             currentTranslation={flashcard.translation}
             flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
+            onDeleted={() => flashcardRef.current?.reset()}
           />
         )}
       </div>

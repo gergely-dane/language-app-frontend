@@ -11,6 +11,7 @@ type AddEditWordDialogProps = {
   editMode?: boolean;
   currentTranslation?: Translation;
   flashcardQueryKey?: readonly unknown[];
+  onDeleted?: () => void;
 };
 
 export const AddEditWordDialog = ({
@@ -19,6 +20,7 @@ export const AddEditWordDialog = ({
   editMode = false,
   currentTranslation,
   flashcardQueryKey,
+  onDeleted,
 }: AddEditWordDialogProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
@@ -29,6 +31,7 @@ export const AddEditWordDialog = ({
       onClose={() => onOpenChange(false)}
       currentTranslation={currentTranslation}
       flashcardQueryKey={flashcardQueryKey}
+      onDeleted={onDeleted}
     />
   );
 
