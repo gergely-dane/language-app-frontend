@@ -101,7 +101,7 @@ export const VocabularyPage = () => {
         {t("vocabulary.anOverviewOfAllYourWords")}
       </p>
 
-      <div className="mt-6 mb-1.5 flex flex-wrap gap-1.5">
+      <div className="mt-6 mb-1.5 flex flex-wrap gap-1.5 max-lg:mt-4">
         <SearchInput
           className="flex-7 lg:w-70 lg:flex-none"
           value={searchFilter}

@@ -54,14 +54,18 @@ export const SettingsPage = () => {
   };
 
   if (isLoading) {
-    return <p className="p-4">{t("settings.loading")}</p>;
+    return <p>{t("settings.loading")}</p>;
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl p-4">
-      <h1 className="mb-6 text-3xl">{t("settings.title")}</h1>
+    <div className="mx-auto w-full max-w-2xl self-stretch">
+      <h1 className="text-3xl">{t("settings.title")}</h1>
 
-      <div className="flex flex-col gap-6">
+      <p className="text-muted-foreground font-semibold">
+        {t("settings.manageYourPreferences")}
+      </p>
+
+      <div className="mt-6 flex flex-col gap-6 max-lg:mt-4">
         <Card>
           <CardHeader>
             <CardTitle>{t("settings.profile")}</CardTitle>

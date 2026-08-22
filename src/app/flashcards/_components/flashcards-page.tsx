@@ -1,6 +1,6 @@
 "use client";
 
-import { IconHandMove, IconPencil } from "@tabler/icons-react";
+import { IconPencil } from "@tabler/icons-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
@@ -37,12 +37,10 @@ import { LanguagePairSelector } from "@/features/languages/components/language-p
 import { type LanguageFilterValue } from "@/features/languages/types";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";
 
 export const FlashcardsPage = () => {
   const t = useI18n();
-  const isMobile = useIsMobileScreen();
   const flashcardRef = useRef<FlashcardCompHandle | null>(null);
 
   const storedFiltersState = useMemo(() => {
@@ -275,7 +273,7 @@ export const FlashcardsPage = () => {
         <main className="flex min-w-0 flex-1 flex-col">
           <div className="max-lg:short:gap-2 mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
             {error || !flashcard ? (
-              <div className="bg-card flex h-64 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-76 lg:h-86">
+              <div className="bg-card flex h-58 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-70 lg:h-80">
                 {!error ? (
                   <>
                     <h2 className="text-xl whitespace-pre-line">
@@ -295,6 +293,7 @@ export const FlashcardsPage = () => {
             ) : (
               flashcard.translation && (
                 <FlashcardComp
+                  className="-m-1"
                   key={`${flashcardIndex}-${isReverse}`}
                   ref={flashcardRef}
                   isLoading={isFetching}
@@ -311,19 +310,6 @@ export const FlashcardsPage = () => {
                   setEditDialogOpen={setEditDialogOpen}
                 />
               )
-            )}
-
-            {isMobile && (
-              <p
-                className={cn(
-                  "text-muted-foreground/70 short:hidden mx-auto -mt-6 -mb-1 flex gap-1.5 text-center text-sm transition-opacity",
-                  !flashcard && "pointer-events-none opacity-0",
-                )}
-              >
-                {t.rich("flashcards.hintTrySwiping", {
-                  hand: () => <IconHandMove />,
-                })}
-              </p>
             )}
 
             <div

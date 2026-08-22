@@ -9,6 +9,7 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 
@@ -55,6 +56,7 @@ export const FlashcardComp = React.forwardRef<
     },
     ref,
   ) => {
+    const swipeTimeoutRef = useRef<number | null>(null);
     const [displayTranslation, setDisplayTranslation] = useState(translation);
 
     const [flipped, setFlipped] = useState(isReverse);
@@ -67,13 +69,21 @@ export const FlashcardComp = React.forwardRef<
       ? displayTranslation
       : translation;
 
+    const clearSwipeTimeout = useCallback(() => {
+      if (swipeTimeoutRef.current !== null) {
+        window.clearTimeout(swipeTimeoutRef.current);
+        swipeTimeoutRef.current = null;
+      }
+    }, []);
+
     const reset = useCallback(() => {
+      clearSwipeTimeout();
       setFlipped(isReverse);
       onFlipStateChange?.(isReverse);
       setIsFlipAnimating(false);
       setSwipeAnimationDirection(null);
       setIsEntering(true);
-    }, [isReverse, onFlipStateChange]);
+    }, [clearSwipeTimeout, isReverse, onFlipStateChange]);
 
     const startFlip = useCallback(() => {
       if (disabled) return;
@@ -84,14 +94,31 @@ export const FlashcardComp = React.forwardRef<
 
     const respond = useCallback(
       (direction: Direction) => {
-        if (disabled) return;
+        if (disabled || swipeAnimationDirection) return;
 
         setDisplayTranslation(translation);
         onRespond?.(direction);
         setSwipeAnimationDirection(direction);
         onSwipeAnimationStart?.();
+
+        swipeTimeoutRef.current = window.setTimeout(
+          () => {
+            swipeTimeoutRef.current = null;
+            onAnimationStateChange?.(false);
+            onSwipeAnimationComplete?.(direction);
+          },
+          SWIPE_TRANSITION.duration * 1000 + 100,
+        );
       },
-      [disabled, onRespond, onSwipeAnimationStart, translation],
+      [
+        disabled,
+        onAnimationStateChange,
+        onRespond,
+        onSwipeAnimationComplete,
+        onSwipeAnimationStart,
+        swipeAnimationDirection,
+        translation,
+      ],
     );
 
     const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
@@ -105,16 +132,9 @@ export const FlashcardComp = React.forwardRef<
     );
 
     const handleAnimationComplete = (definition: AnimationDefinition) => {
-      // Gesture and interrupted animations complete too; only react to the target we animated to.
       const target = definition as TargetAndTransition;
 
-      if (swipeAnimationDirection) {
-        if (target.opacity === 0) {
-          onAnimationStateChange?.(false);
-          onSwipeAnimationComplete?.(swipeAnimationDirection);
-        }
-        return;
-      }
+      if (swipeAnimationDirection) return;
 
       if (target.opacity === 1) {
         onAnimationStateChange?.(false);
@@ -132,6 +152,8 @@ export const FlashcardComp = React.forwardRef<
       }),
       [reset, respond, startFlip],
     );
+
+    useEffect(() => clearSwipeTimeout, [clearSwipeTimeout]);
 
     useEffect(() => {
       onAnimationStateChange?.(isFlipAnimating || !!swipeAnimationDirection);
@@ -180,11 +202,14 @@ export const FlashcardComp = React.forwardRef<
 
     return (
       <div
-        className={cn("cursor-pointer touch-none p-1 select-none", className)}
+        className={cn(
+          "cursor-pointer touch-none p-1 select-none max-lg:overflow-x-clip",
+          className,
+        )}
         ref={swipeRef}
       >
         <div
-          className="relative h-62 md:h-74 lg:h-84"
+          className="relative h-58 md:h-70 lg:h-80"
           style={{ perspective: 1600 }}
         >
           <div
