@@ -22,6 +22,9 @@ import type { Direction, FlashcardCompHandle } from "../types";
 import { getCardAnimation } from "../utils";
 import { FlashcardSide } from "./flashcard-side";
 
+// An onUpdate subscriber makes motion run all values on its JS frameloop instead of WAAPI, whose opacity animations some phones snap to the end state instantly.
+const forceJsAnimation = () => {};
+
 type FlashcardCompProps = {
   className?: string;
   translation: Translation;
@@ -239,6 +242,7 @@ export const FlashcardComp = React.forwardRef<
             whileHover={swipeAnimationDirection ? undefined : { y: -4 }}
             whileTap={swipeAnimationDirection ? undefined : { y: -4 }}
             onClick={() => startFlip()}
+            onUpdate={forceJsAnimation}
             onAnimationComplete={handleAnimationComplete}
           >
             <FlashcardSide
