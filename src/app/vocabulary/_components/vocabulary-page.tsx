@@ -2,6 +2,7 @@
 
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import {
+  type OnChangeFn,
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table";
@@ -75,6 +76,21 @@ export const VocabularyPage = () => {
     sortAscending: sorting[0] ? !sorting[0].desc : false,
   });
 
+  const onSearchChange = (value: string) => {
+    setSearchFilter(value);
+    setPageNumber(1);
+  };
+
+  const onLanguageFilterChange = (value: LanguageFilterValue) => {
+    setLanguageFilter(value);
+    setPageNumber(1);
+  };
+
+  const onSortingChange: OnChangeFn<SortingState> = (updater) => {
+    setSorting(updater);
+    setPageNumber(1);
+  };
+
   const onEdit = useCallback((translation: Translation) => {
     setEditingTranslation(translation);
     setIsEditDialogOpen(true);
@@ -105,14 +121,14 @@ export const VocabularyPage = () => {
         <SearchInput
           className="flex-7 lg:w-70 lg:flex-none"
           value={searchFilter}
-          onChange={(value) => setSearchFilter(value)}
+          onChange={onSearchChange}
           placeholder={t("vocabulary.searchForAWord")}
         />
 
         <LanguagePairSelector
           className="flex-1 lg:flex-none"
           value={languageFilter}
-          onChange={(value) => setLanguageFilter(value)}
+          onChange={onLanguageFilterChange}
         />
 
         <Button
@@ -176,7 +192,7 @@ export const VocabularyPage = () => {
         columns={columns}
         words={words}
         sorting={sorting}
-        onSortingChange={setSorting}
+        onSortingChange={onSortingChange}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         onPageChange={(page) => setPageNumber(page)}
