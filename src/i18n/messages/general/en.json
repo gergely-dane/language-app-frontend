@@ -1,6 +1,7 @@
 {
   "addedOn": "Added on",
   "cancel": "Cancel",
+  "dark": "Dark",
   "flashcards": "Flashcards",
   "from": "From",
   "goodAfternoon": "Good afternoon",
@@ -8,6 +9,7 @@
   "goodMorning": "Good morning",
   "heresSomeInfo": "Here's some info about your learning progress.",
   "home": "Home",
+  "light": "Light",
   "save": "Save",
   "search": "Search...",
   "statistics": "Statistics",

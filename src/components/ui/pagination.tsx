@@ -92,9 +92,7 @@ function PaginationFirst({
       {...props}
     >
       <IconChevronsLeft className="mt-0.5" />
-      <span className="hidden sm:block">
-        {t("vocabulary.first" as any) || "First"}
-      </span>
+      <span className="hidden sm:block">{t("vocabulary.first")}</span>
     </PaginationLink>
   );
 }
@@ -168,9 +166,7 @@ function PaginationLast({
       )}
       {...props}
     >
-      <span className="hidden sm:block">
-        {t("vocabulary.last" as any) || "Last"}
-      </span>
+      <span className="hidden sm:block">{t("vocabulary.last")}</span>
       <IconChevronsRight className="mt-0.5" />
     </PaginationLink>
   );

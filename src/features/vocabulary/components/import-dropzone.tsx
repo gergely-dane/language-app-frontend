@@ -104,7 +104,9 @@ export const ImportDropzone = ({
           </>
         ) : (
           <div className="relative flex h-full w-full flex-col items-center justify-center text-center">
-            <p className="text-muted-foreground/70">File uploaded:</p>
+            <p className="text-muted-foreground/70">
+              {t("vocabulary.fileUploaded")}
+            </p>
 
             <div className="flex gap-1">
               <IconFileSpreadsheet className="text-muted-foreground/80" />

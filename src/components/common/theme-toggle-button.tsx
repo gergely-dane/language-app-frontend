@@ -4,6 +4,7 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";
 
 type AnimationVariant = "circle" | "circle-blur" | "gif" | "polygon";
@@ -34,6 +35,7 @@ export const ThemeToggleButton = ({
   className,
   onClick,
 }: ThemeToggleButtonProps) => {
+  const t = useI18n();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -211,7 +213,7 @@ export const ThemeToggleButton = ({
       )}
       {showLabel && (
         <span className="text-sm">
-          {currentTheme === "light" ? "Light" : "Dark"}
+          {currentTheme === "light" ? t("general.light") : t("general.dark")}
         </span>
       )}
     </Button>

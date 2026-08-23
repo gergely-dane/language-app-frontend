@@ -4,6 +4,7 @@ import { IconVolume } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { usePlayAudio } from "@/features/vocabulary/hooks/use-play-audio";
+import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";
 
 interface PlayAudioButtonProps {
@@ -15,6 +16,7 @@ export const PlayAudioButton = ({
   text,
   languageCode,
 }: PlayAudioButtonProps) => {
+  const t = useI18n();
   const { play, isPlaying, isDisabled } = usePlayAudio(text, languageCode);
 
   return (
@@ -23,7 +25,7 @@ export const PlayAudioButton = ({
       size="icon"
       ripple={!isDisabled && !isPlaying}
       onClick={() => void play()}
-      aria-label="Play audio"
+      aria-label={t("flashcards.playAudio")}
       className={cn(
         "hover:bg-muted dark:hover:bg-muted -mt-1 -mb-[5px] size-5.5 shrink-0 opacity-0 group-hover:opacity-100 max-lg:opacity-100",
         isPlaying

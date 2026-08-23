@@ -38,14 +38,18 @@ export const AddedOnHeader = ({
 
 export const SelectHeader = ({
   table,
-}: HeaderContext<Translation, unknown>) => (
-  <Checkbox
-    className="data-[state=checked]:border-primary-foreground"
-    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    checked={
-      table.getIsAllPageRowsSelected() ||
-      (table.getIsSomePageRowsSelected() && "indeterminate")
-    }
-    aria-label="Select all"
-  />
-);
+}: HeaderContext<Translation, unknown>) => {
+  const t = useI18n();
+
+  return (
+    <Checkbox
+      className="data-[state=checked]:border-primary-foreground"
+      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+      checked={
+        table.getIsAllPageRowsSelected() ||
+        (table.getIsSomePageRowsSelected() && "indeterminate")
+      }
+      aria-label={t("vocabulary.selection.selectAll")}
+    />
+  );
+};

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import type { Translation } from "@/features/vocabulary/types";
+import { useI18n } from "@/hooks/use-i18n";
 
 import { PlayAudioButton } from "../play-audio-button";
 
@@ -98,10 +99,14 @@ export const EditCell = ({ row, onEdit }: EditCellProps) => {
   );
 };
 
-export const SelectCell = ({ row }: CellContext<Translation, unknown>) => (
-  <Checkbox
-    onCheckedChange={(value) => row.toggleSelected(!!value)}
-    checked={row.getIsSelected()}
-    aria-label="Select row"
-  />
-);
+export const SelectCell = ({ row }: CellContext<Translation, unknown>) => {
+  const t = useI18n();
+
+  return (
+    <Checkbox
+      onCheckedChange={(value) => row.toggleSelected(!!value)}
+      checked={row.getIsSelected()}
+      aria-label={t("vocabulary.selection.selectRow")}
+    />
+  );
+};

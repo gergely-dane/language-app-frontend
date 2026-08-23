@@ -9,6 +9,8 @@
   "anOverviewOfAllYourWords": "An overview of all your words.",
   "browse": "browse",
   "chooseFile": "choose file",
+  "clearFilter": "Clear filter",
+  "fileUploaded": "File uploaded:",
   "deleteWords": {
     "areYouSure": "Are you sure?",
     "delete": "Delete",
@@ -35,7 +37,9 @@
   "searchForAWord": "Search for a word...",
   "selection": {
     "selected": "{count} selected",
-    "clear": "Clear"
+    "clear": "Clear",
+    "selectRow": "Select row",
+    "selectAll": "Select all"
   },
   "searchLanguages": "Search languages...",
   "selectLanguage": "Select language",
