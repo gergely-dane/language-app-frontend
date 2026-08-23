@@ -16,12 +16,15 @@ export const LoginPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoggingIn(true);
     login(email, password)
       .then((data) => {
         if (!data?.data?.user) {
+          setIsLoggingIn(false);
           showAlert({
             title: t("auth.errorLoggingIn"),
             message: t("auth.incorrectEmailOrPassword"),
@@ -34,6 +37,7 @@ export const LoginPage = () => {
       })
       .catch((err) => {
         console.error("Login failed:", err);
+        setIsLoggingIn(false);
         showAlert({
           title: t("auth.errorLoggingIn"),
           message: (err?.message as string) || undefined,
@@ -48,23 +52,25 @@ export const LoginPage = () => {
 
       <Separator className="my-2" />
 
-      <Input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        label={t("auth.email")}
-        type="email"
-      />
+      <form className="flex flex-col gap-2" onSubmit={handleLogin}>
+        <Input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          label={t("auth.email")}
+          type="email"
+        />
 
-      <Input
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        label={t("auth.password")}
-        type="password"
-      />
+        <Input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          label={t("auth.password")}
+          type="password"
+        />
 
-      <Button className="mt-2" onClick={handleLogin}>
-        {t("auth.login")}
-      </Button>
+        <Button className="mt-2" type="submit" isLoading={isLoggingIn}>
+          {t("auth.login")}
+        </Button>
+      </form>
     </div>
   );
 };
