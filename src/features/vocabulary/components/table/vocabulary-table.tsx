@@ -25,6 +25,8 @@ import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { type PaginatedResponse } from "@/types";
 
+const EMPTY_DATA: Translation[] = [];
+
 type VocabularyTableProps<TValue> = {
   columns: ColumnDef<Translation, TValue>[];
   words: PaginatedResponse<Translation> | undefined;
@@ -48,9 +50,10 @@ export const VocabularyTable = <TValue,>({
   const isMobile = useIsMobileScreen();
 
   const table = useReactTable({
-    data: words?.data ?? [],
+    data: words?.data ?? EMPTY_DATA,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
     onSortingChange,
     onRowSelectionChange,
     getFacetedUniqueValues: getFacetedUniqueValues(),

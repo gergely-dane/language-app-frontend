@@ -66,7 +66,7 @@ export const VocabularyPage = () => {
     );
   };
 
-  const { data: words, isFetching } = useTranslations({
+  const { data: words } = useTranslations({
     pageNumber,
     search: debouncedSearchFilter,
     sourceLanguageId: languageFilter?.sourceLanguageId,
@@ -113,7 +113,6 @@ export const VocabularyPage = () => {
           className="flex-1 lg:flex-none"
           value={languageFilter}
           onChange={(value) => setLanguageFilter(value)}
-          disabled={isFetching}
         />
 
         <Button
@@ -122,7 +121,6 @@ export const VocabularyPage = () => {
             setEditingTranslation(undefined);
             setIsEditDialogOpen(true);
           }}
-          disabled={isFetching}
         >
           <IconPlus className="h-4 w-4" />
           <p className="hidden lg:block">{t("vocabulary.addWord")}</p>
