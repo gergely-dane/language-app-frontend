@@ -69,17 +69,6 @@ class ApiClient {
     });
   }
 
-  public async patch<T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ) {
-    return this.client.patch<T>(url, data, {
-      ...config,
-      headers: { ...config?.headers, ...(await this.getHeaders()) },
-    });
-  }
-
   public async delete<T = any>(url: string, config?: AxiosRequestConfig) {
     return this.client.delete<T>(url, {
       ...config,

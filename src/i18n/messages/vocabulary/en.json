@@ -1,7 +1,6 @@
 {
   "1mbMaxFileSize": "1MB max file size",
   "acceptedFormats": "Accepted formats:",
-  "addNewWord": "Add a new word to your vocabulary.",
   "addWord": "Add word",
   "adjustTheSlider": "Adjust the slider according to your knowledge level",
   "allLanguages": "All languages",
@@ -16,14 +15,12 @@
     "description": "You are about to delete {count} words from your vocabulary."
   },
   "dragAndDropOr": "Drag and drop or",
-  "editWord": "Edit Word",
   "enterDefinition": "Enter a definition (optional) ",
   "enterTheTranslation": "Enter the translation(s)",
   "enterTheWord": "Enter the word",
   "entries": "{count, number} entries",
   "errorAddingTranslation": "Error adding translation",
   "errorDeletingTranslation": "Error deleting translation",
-  "export": "Export",
   "first": "First",
   "howWellDoYouKnowTheWord": "How well do you know the word?",
   "import": "Import",
@@ -32,7 +29,6 @@
   "last": "Last",
   "mostUsed": "Most used",
   "next": "Next",
-  "noLanguagePairsFound": "No language pairs found.",
   "noLanguagesFound": "No languages found.",
   "noResults": "No results.",
   "previous": "Previous",
@@ -52,6 +48,5 @@
   "translations": "translations",
   "translationsDeletedSuccessfully": "Translations deleted successfully",
   "translateWordInto": "Translate <bold>{word}</bold> into <bold>{targetLanguage}</bold>",
-  "errorTranslatingWord": "Could not translate {word} to {targetLanguage}",
-  "pressEnterToAccept": "Enter ↵"
+  "errorTranslatingWord": "Could not translate {word} to {targetLanguage}"
 }

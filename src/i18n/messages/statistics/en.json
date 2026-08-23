@@ -1,28 +1,15 @@
 {
-  "didntKnow": "Didn't know",
   "flashcardsCompleted": "Flashcards Completed",
-  "inTheLastXDays": "In the last {days} days",
   "totalInLastDays": "{total} in the last {days} days",
-  "knew": "Knew",
   "newWords": "New Words",
   "other": "Other",
-  "streakCard": {
-    "dayOne": "Do some practice today to start a streak!",
-    "keepGoing": "Keep up the good work!",
-    "streak": "{days} day streak!",
-    "title": "You're on a"
-  },
   "translationsAdded": "Translations Added",
   "yourLanguages": "Your Languages",
-  "weekOf": "Week of {date}",
   "timePeriod": {
     "30d": "30d",
     "90d": "90d",
     "180d": "180d",
     "1y": "1y"
-  },
-  "languageFilter": {
-    "all": "All Languages"
   },
   "summaryCards": {
     "currentStreak": "Current Streak",
@@ -39,7 +26,6 @@
   },
   "heatmap": {
     "title": "Activity Heatmap (1 year)",
-    "activities": "{count, plural, one {# activity} other {# activities}}",
     "flashcards": "Cards Reviewed",
     "translations": "Translations Added",
     "noActivity": "No activity"
