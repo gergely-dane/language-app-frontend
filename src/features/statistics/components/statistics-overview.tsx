@@ -27,15 +27,19 @@ export const StatisticsOverview = ({ className }: StatisticsOverviewProps) => {
   if (isLoading) {
     return (
       <div className={cn("flex flex-col gap-5", className)}>
-        <Skeleton className="h-[104px] w-full rounded-lg" />
+        <Skeleton className="h-40 w-full rounded-lg sm:h-26" />
 
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 rounded-lg" />
+            <Skeleton key={i} className="h-26 rounded-lg" />
           ))}
         </div>
 
-        <Skeleton className="h-9 w-56 rounded-md" />
+        <div className="flex flex-wrap gap-3">
+          <Skeleton className="h-9 w-44 rounded-md" />
+          <Skeleton className="h-9 w-40 rounded-md" />
+          <Skeleton className="h-9 w-28 rounded-md" />
+        </div>
       </div>
     );
   }
@@ -64,16 +68,16 @@ export const StatisticsOverview = ({ className }: StatisticsOverviewProps) => {
           </Link>
         </Button>
 
-        <Button variant="outline" onClick={() => setAddWordOpen(true)}>
-          <IconPlus className="size-4" />
-          {t("vocabulary.addWord")}
-        </Button>
-
         <Button variant="outline" asChild>
           <Link href="/vocabulary">
             <IconBook2 className="size-4" />
             {t("statistics.overview.browseVocabulary")}
           </Link>
+        </Button>
+
+        <Button variant="outline" onClick={() => setAddWordOpen(true)}>
+          <IconPlus className="size-4" />
+          {t("vocabulary.addWord")}
         </Button>
       </div>
 

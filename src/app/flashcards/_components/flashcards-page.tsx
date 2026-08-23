@@ -17,6 +17,10 @@ import {
 } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
+import {
+  FlashcardResponseButtonsSkeleton,
+  FlashcardSkeleton,
+} from "@/features/flashcards/components/flashcard-skeleton";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
 import { SectionLabel } from "@/features/flashcards/components/section-label";
 import { SessionPanel } from "@/features/flashcards/components/session-panel";
@@ -35,6 +39,7 @@ import {
   getStoredFlashcardFilters,
   storeFlashcardFilters,
 } from "@/features/flashcards/utils";
+import { useLanguages } from "@/features/languages/api/get-languages";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import { type LanguageFilterValue } from "@/features/languages/types";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
@@ -86,10 +91,13 @@ export const FlashcardsPage = () => {
 
   const {
     data: flashcard,
+    isLoading: isFlashcardLoading,
     isFetching,
     error,
     refetch,
   } = useFlashcard(flashcardParams, flashcardIndex);
+  const { isLoading: isLanguagesLoading } = useLanguages();
+  const isLoading = isFlashcardLoading || isLanguagesLoading;
   const respondToFlashcard = useRespondToFlashcard(flashcardIndex);
 
   const areButtonsDisabled =
@@ -255,7 +263,9 @@ export const FlashcardsPage = () => {
 
         <main className="flex min-w-0 flex-1 flex-col">
           <div className="max-lg:short:gap-2 mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
-            {error || !flashcard ? (
+            {isLoading ? (
+              <FlashcardSkeleton />
+            ) : error || !flashcard ? (
               <div className="bg-card flex h-58 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-70 lg:h-80">
                 {!error ? (
                   <>
@@ -306,40 +316,47 @@ export const FlashcardsPage = () => {
               )
             )}
 
-            <div
-              className={cn(
-                "bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border transition-opacity sm:grid-cols-4",
-                !flashcard && "pointer-events-none opacity-0",
-              )}
-            >
-              {FLASHCARD_DIRECTIONS.map((direction) => {
-                const meta = FLASHCARD_RATING_META[direction];
-                const Icon = meta.icon;
+            {isLoading ? (
+              <FlashcardResponseButtonsSkeleton />
+            ) : (
+              <div
+                className={cn(
+                  "bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border transition-opacity sm:grid-cols-4",
+                  !flashcard && "pointer-events-none opacity-0",
+                )}
+              >
+                {FLASHCARD_DIRECTIONS.map((direction) => {
+                  const meta = FLASHCARD_RATING_META[direction];
+                  const Icon = meta.icon;
 
-                return (
-                  <button
-                    key={direction}
-                    className={cn(
-                      "bg-card max-lg:short:py-2 flex cursor-pointer flex-col items-center gap-1 px-2 py-3 transition-colors disabled:pointer-events-none disabled:opacity-50",
-                      meta.hoverClass,
-                      meta.mobileOrderClass,
-                    )}
-                    onClick={() => flashcardRef.current?.respond(direction)}
-                    disabled={areButtonsDisabled}
-                  >
-                    <span className="flex items-center gap-1.5 text-sm font-medium">
-                      <Icon size={18} className={meta.iconClass} />
-                      {ratingLabels[direction]}
-                    </span>
+                  return (
+                    <button
+                      key={direction}
+                      className={cn(
+                        "bg-card max-lg:short:py-2 flex cursor-pointer flex-col items-center gap-1 px-2 py-3 transition-colors disabled:pointer-events-none disabled:opacity-50",
+                        meta.hoverClass,
+                        meta.mobileOrderClass,
+                      )}
+                      onClick={() => flashcardRef.current?.respond(direction)}
+                      disabled={areButtonsDisabled}
+                    >
+                      <span className="flex items-center gap-1.5 text-sm font-medium">
+                        <Icon size={18} className={meta.iconClass} />
+                        {ratingLabels[direction]}
+                      </span>
 
-                    <ReviewTimeDisplay
-                      minutes={flashcard?.[meta.timeKey] ?? 0}
-                      className={cn("text-xs", isSwipeAnimating && "opacity-0")}
-                    />
-                  </button>
-                );
-              })}
-            </div>
+                      <ReviewTimeDisplay
+                        minutes={flashcard?.[meta.timeKey] ?? 0}
+                        className={cn(
+                          "text-xs",
+                          isSwipeAnimating && "opacity-0",
+                        )}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </main>
 

@@ -10,20 +10,20 @@ export const StatisticsSkeleton = ({ className }: StatisticsSkeletonProps) => {
     <div className={cn("flex flex-col gap-5", className)}>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-lg" />
+          <Skeleton key={i} className="h-26 rounded-lg" />
         ))}
       </div>
 
-      <Skeleton className="hidden h-[210px] w-full rounded-lg md:block" />
+      <Skeleton className="hidden h-[210px] w-full rounded-lg md:block lg:h-70" />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Skeleton className="h-[300px] rounded-lg lg:h-[280px]" />
-        <Skeleton className="h-[300px] rounded-lg lg:h-[280px]" />
+        <Skeleton className="h-[310px] rounded-lg" />
+        <Skeleton className="h-[310px] rounded-lg" />
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Skeleton className="h-[400px] rounded-lg lg:h-[280px]" />
-        <Skeleton className="h-[400px] rounded-lg lg:h-[280px]" />
+        <Skeleton className="h-55 rounded-lg lg:h-74" />
+        <Skeleton className="h-55 rounded-lg lg:h-74" />
       </div>
     </div>
   );

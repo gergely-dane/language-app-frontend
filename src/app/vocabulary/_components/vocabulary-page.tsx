@@ -67,7 +67,7 @@ export const VocabularyPage = () => {
     );
   };
 
-  const { data: words } = useTranslations({
+  const { data: words, isLoading } = useTranslations({
     pageNumber,
     search: debouncedSearchFilter,
     sourceLanguageId: languageFilter?.sourceLanguageId,
@@ -191,6 +191,7 @@ export const VocabularyPage = () => {
       <VocabularyTable
         columns={columns}
         words={words}
+        isLoading={isLoading}
         sorting={sorting}
         onSortingChange={onSortingChange}
         rowSelection={rowSelection}

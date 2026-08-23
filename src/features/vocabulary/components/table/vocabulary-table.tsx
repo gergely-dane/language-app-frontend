@@ -11,6 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { Loader } from "@/components/ui/loader";
 import {
   Table,
   TableBody,
@@ -30,6 +31,7 @@ const EMPTY_DATA: Translation[] = [];
 type VocabularyTableProps<TValue> = {
   columns: ColumnDef<Translation, TValue>[];
   words: PaginatedResponse<Translation> | undefined;
+  isLoading?: boolean;
   sorting: SortingState;
   onSortingChange: OnChangeFn<SortingState>;
   rowSelection: RowSelectionState;
@@ -40,6 +42,7 @@ type VocabularyTableProps<TValue> = {
 export const VocabularyTable = <TValue,>({
   columns,
   words,
+  isLoading = false,
   sorting,
   onSortingChange,
   rowSelection,
@@ -98,7 +101,13 @@ export const VocabularyTable = <TValue,>({
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell className="h-24" colSpan={columns.length}>
+                  <Loader />
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

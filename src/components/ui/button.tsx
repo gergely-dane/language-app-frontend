@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { motion, type Transition } from "motion/react";
 import * as React from "react";
 
-import { DotsBounceIcon } from "@/components/icons/dots-bounce-icon";
+import { Loader } from "@/components/ui/loader";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -147,11 +147,7 @@ const Button = ({
             {children}
           </span>
 
-          {isLoading && (
-            <span className="absolute inset-0 flex items-center justify-center">
-              <DotsBounceIcon />
-            </span>
-          )}
+          {isLoading && <Loader className="absolute inset-0" />}
 
           {ripple &&
             ripples.map((r) => (

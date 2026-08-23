@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { type LanguageFilterValue } from "@/features/languages/types";
@@ -42,8 +43,13 @@ export const LanguagePairSelector = ({
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
-  const { getLanguageString, getLanguageCode } = useLanguages();
-  const { data: languagePairs = [] } = useLanguagePairs();
+  const {
+    getLanguageString,
+    getLanguageCode,
+    isLoading: isLanguagesLoading,
+  } = useLanguages();
+  const { data: languagePairs = [], isLoading: isLanguagePairsLoading } =
+    useLanguagePairs();
 
   const currentSourceId = value?.sourceLanguageId || null;
   const currentTargetId = value?.targetLanguageId || null;
@@ -82,6 +88,12 @@ export const LanguagePairSelector = ({
       targetLanguageId: type === "translation" ? id : currentTargetId,
     });
   };
+
+  if (isLanguagesLoading || isLanguagePairsLoading) {
+    return (
+      <Skeleton className={cn("h-9 min-h-9 min-w-32 rounded-md", className)} />
+    );
+  }
 
   return (
     <div className={className}>
