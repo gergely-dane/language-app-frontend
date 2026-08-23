@@ -22,7 +22,6 @@ import { useAuth } from "@/context/auth-context";
 import { useUserStatistics } from "@/features/statistics/api/get-user-statistics";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";
 
 import { Brand } from "./brand";
@@ -37,10 +36,9 @@ const NAV_ITEMS = [
 
 export const Sidebar = () => {
   const { isAuthenticated } = useAuth();
-  const isMobile = useIsMobileScreen();
   const pathname = usePathname();
 
-  if (isMobile || !isAuthenticated || pathname === "/login") return null;
+  if (!isAuthenticated || pathname === "/login") return null;
 
   return <SidebarContent pathname={pathname} />;
 };

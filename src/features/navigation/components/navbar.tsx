@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { cn } from "@/lib/utils";
 
 import { Brand } from "./brand";
 import { UserButton } from "./user-button";
@@ -23,7 +23,6 @@ export const Navbar = () => {
   const { isAuthenticated } = useAuth();
   const { theme, setTheme } = useTheme();
   const { startTransition } = useThemeTransition();
-  const isMobile = useIsMobileScreen();
   const pathname = usePathname();
 
   const handleThemeToggle = useCallback(() => {
@@ -32,10 +31,13 @@ export const Navbar = () => {
     });
   }, [startTransition, theme, setTheme]);
 
-  if (!isMobile && isAuthenticated && pathname !== "/login") return null;
-
   return (
-    <nav className="bg-background/80 sticky top-0 z-10 flex h-[var(--navbar-height)] w-full items-center justify-center gap-6 border-b shadow-sm">
+    <nav
+      className={cn(
+        "bg-background/80 sticky top-0 z-10 flex h-[var(--navbar-height)] w-full items-center justify-center gap-6 border-b shadow-sm",
+        isAuthenticated && pathname !== "/login" && "lg:hidden",
+      )}
+    >
       <div className="flex w-full items-center gap-6 px-2.5 xl:max-w-9/10 2xl:max-w-5/7">
         <Brand />
 

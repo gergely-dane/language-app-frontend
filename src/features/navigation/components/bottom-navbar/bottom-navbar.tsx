@@ -11,16 +11,14 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { useUserStatistics } from "@/features/statistics/api/get-user-statistics";
 import { useI18n } from "@/hooks/use-i18n";
-import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 import { BottomNavbarButton } from "./bottom-navbar-button";
 
 export const BottomNavbar = () => {
   const { isAuthenticated } = useAuth();
   const pathname = usePathname();
-  const isMobile = useIsMobileScreen();
 
-  if (!isMobile || !isAuthenticated || pathname === "/login") {
+  if (!isAuthenticated || pathname === "/login") {
     return null;
   }
 
@@ -35,7 +33,7 @@ const BottomNavbarContent = ({ pathname }: { pathname: string }) => {
 
   return (
     <nav
-      className="bg-background/95 fixed bottom-0 z-10 flex h-16 w-full items-stretch gap-2 border-t px-2 py-1.5 shadow-sm backdrop-blur-sm"
+      className="bg-background/95 fixed bottom-0 z-10 flex h-16 w-full items-stretch gap-2 border-t px-2 py-1.5 shadow-sm backdrop-blur-sm lg:hidden"
       style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.375rem)" }}
     >
       <BottomNavbarButton
