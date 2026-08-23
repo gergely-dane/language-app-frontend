@@ -27,13 +27,18 @@ import {
   MAX_TAGS,
 } from "@/features/vocabulary/components/add-edit/inline-tag-input";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
-import { MAX_TRANSLATION_CACHE_ENTRIES } from "@/features/vocabulary/constants";
+import {
+  LAST_ADDED_SOURCE_LANGUAGE_KEY,
+  LAST_ADDED_TARGET_LANGUAGE_KEY,
+  MAX_TRANSLATION_CACHE_ENTRIES,
+} from "@/features/vocabulary/constants";
 import { type Translation } from "@/features/vocabulary/types";
-import { setWithEvictOldest } from "@/features/vocabulary/utils";
+import {
+  getStoredLanguageId,
+  setWithEvictOldest,
+  storeLastAddedLanguageId,
+} from "@/features/vocabulary/utils";
 import { useI18n } from "@/hooks/use-i18n";
-
-const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";
-const LAST_ADDED_TARGET_LANGUAGE_KEY = "lastAddedTargetLanguageId";
 
 const translationCache = new Map<string, string[]>();
 
@@ -65,14 +70,14 @@ export const AddEditFormContent = ({
   const translateWord = useTranslateWord();
 
   const [sourceLanguageId, setSourceLanguageId] = useState<number | null>(
-    currentTranslation?.sourceLanguageId ||
-      Number(localStorage.getItem(LAST_ADDED_SOURCE_LANGUAGE_KEY)) ||
-      null,
+    () =>
+      currentTranslation?.sourceLanguageId ??
+      getStoredLanguageId(LAST_ADDED_SOURCE_LANGUAGE_KEY),
   );
   const [targetLanguageId, setTargetLanguageId] = useState<number | null>(
-    currentTranslation?.targetLanguageId ||
-      Number(localStorage.getItem(LAST_ADDED_TARGET_LANGUAGE_KEY)) ||
-      null,
+    () =>
+      currentTranslation?.targetLanguageId ??
+      getStoredLanguageId(LAST_ADDED_TARGET_LANGUAGE_KEY),
   );
   const [word, setWord] = useState<string>(
     currentTranslation?.words?.length === 1
@@ -193,13 +198,13 @@ export const AddEditFormContent = ({
 
         resetForm();
 
-        window.localStorage.setItem(
+        storeLastAddedLanguageId(
           LAST_ADDED_SOURCE_LANGUAGE_KEY,
-          String(effectiveSourceLanguageId),
+          effectiveSourceLanguageId,
         );
-        window.localStorage.setItem(
+        storeLastAddedLanguageId(
           LAST_ADDED_TARGET_LANGUAGE_KEY,
-          String(effectiveTargetLanguageId),
+          effectiveTargetLanguageId,
         );
       }
 

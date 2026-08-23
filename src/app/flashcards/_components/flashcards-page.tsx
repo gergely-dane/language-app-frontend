@@ -1,7 +1,7 @@
 "use client";
 
 import { IconPencil, IconRefresh } from "@tabler/icons-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,6 @@ import { SessionPanel } from "@/features/flashcards/components/session-panel";
 import {
   FLASHCARD_DIRECTION_RATINGS,
   FLASHCARD_DIRECTIONS,
-  FLASHCARD_FILTERS_STATE_STORAGE_KEY,
   FLASHCARD_RATING_META,
 } from "@/features/flashcards/constants";
 import { useFlashcardSession } from "@/features/flashcards/hooks/use-flashcard-session";
@@ -32,7 +31,10 @@ import type {
   FlashcardCompHandle,
   FlashcardRating,
 } from "@/features/flashcards/types";
-import { flashcardParamsSchema } from "@/features/flashcards/types";
+import {
+  getStoredFlashcardFilters,
+  storeFlashcardFilters,
+} from "@/features/flashcards/utils";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import { type LanguageFilterValue } from "@/features/languages/types";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
@@ -43,23 +45,7 @@ export const FlashcardsPage = () => {
   const t = useI18n();
   const flashcardRef = useRef<FlashcardCompHandle | null>(null);
 
-  const storedFiltersState = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    const storedState = window.localStorage.getItem(
-      FLASHCARD_FILTERS_STATE_STORAGE_KEY,
-    );
-
-    if (!storedState) return null;
-
-    try {
-      const parsed = JSON.parse(storedState) as unknown;
-      const result = flashcardParamsSchema.safeParse(parsed);
-      return result.success ? (result.data as FlashcardParams) : null;
-    } catch (error) {
-      console.error("Error parsing stored flashcard filters state:", error);
-      return null;
-    }
-  }, []);
+  const [storedFiltersState] = useState(getStoredFlashcardFilters);
 
   const [languagePair, setLanguagePair] = useState<LanguageFilterValue | null>(
     () => {
@@ -85,22 +71,18 @@ export const FlashcardsPage = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { sessionHistory, recordResponse } = useFlashcardSession();
 
-  const flashcardParams = useMemo<FlashcardParams>(() => {
-    const params = {
+  const flashcardParams = useMemo<FlashcardParams>(
+    () => ({
       sourceLanguageId: languagePair?.sourceLanguageId,
       targetLanguageId: languagePair?.targetLanguageId,
       isReverse,
-    };
+    }),
+    [languagePair, isReverse],
+  );
 
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(
-        FLASHCARD_FILTERS_STATE_STORAGE_KEY,
-        JSON.stringify(params),
-      );
-    }
-
-    return params;
-  }, [languagePair, isReverse]);
+  useEffect(() => {
+    storeFlashcardFilters(flashcardParams);
+  }, [flashcardParams]);
 
   const {
     data: flashcard,

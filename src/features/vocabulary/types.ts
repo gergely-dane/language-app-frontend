@@ -7,6 +7,8 @@ export const wordSchema = z.object({
   word: z.string(),
 });
 
+export const storedLanguageIdSchema = z.coerce.number().int().positive();
+
 export const translationSchema = baseEntitySchema.extend({
   words: z.array(wordSchema),
   translations: z.array(wordSchema),
