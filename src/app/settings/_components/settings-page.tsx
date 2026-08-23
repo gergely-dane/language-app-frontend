@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAlert } from "@/context/alert-context";
 import { FlashcardSettingsCard } from "@/features/settings/components/flashcard-settings-card";
 import { useGetUser } from "@/features/user/api/get-user";
@@ -53,10 +54,6 @@ export const SettingsPage = () => {
     }
   };
 
-  if (isLoading) {
-    return <p>{t("settings.loading")}</p>;
-  }
-
   return (
     <div className="mx-auto w-full max-w-2xl self-stretch">
       <h1 className="text-3xl">{t("settings.title")}</h1>
@@ -82,28 +79,38 @@ export const SettingsPage = () => {
             >
               <div className="flex flex-col gap-2">
                 <Label htmlFor="firstName">{t("settings.firstName")}</Label>
-                <Input
-                  id="firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  disabled={updateUser.isPending}
-                />
+
+                {isLoading ? (
+                  <Skeleton className="h-9 w-full rounded-md" />
+                ) : (
+                  <Input
+                    id="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    disabled={updateUser.isPending}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col gap-2">
                 <Label htmlFor="lastName">{t("settings.lastName")}</Label>
-                <Input
-                  id="lastName"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  disabled={updateUser.isPending}
-                />
+
+                {isLoading ? (
+                  <Skeleton className="h-9 w-full rounded-md" />
+                ) : (
+                  <Input
+                    id="lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    disabled={updateUser.isPending}
+                  />
+                )}
               </div>
 
               <Button
                 type="submit"
                 className="mt-2 w-20"
-                disabled={updateUser.isPending}
+                disabled={updateUser.isPending || isLoading}
                 isLoading={updateUser.isPending}
               >
                 <IconCheck className="mt-0.5 h-4 w-4" />

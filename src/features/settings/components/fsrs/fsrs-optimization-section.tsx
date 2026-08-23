@@ -113,11 +113,22 @@ export const FsrsOptimizationSection = () => {
   if (isLoading) {
     return (
       <section className="flex flex-col gap-4">
-        <Skeleton className="h-5 w-44" />
-        <div className="grid grid-cols-2 gap-3">
-          <Skeleton className="h-20" />
-          <Skeleton className="h-20" />
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col gap-1">
+            <Skeleton className="h-5 w-44" />
+            <Skeleton className="h-5 w-64 max-w-full" />
+          </div>
+
+          <Skeleton className="h-5.5 w-24 rounded-md" />
         </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Skeleton className="h-19" />
+          <Skeleton className="h-19" />
+        </div>
+
+        <Skeleton className="h-15" />
+
         <Skeleton className="h-9 w-28" />
       </section>
     );

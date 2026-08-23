@@ -9,7 +9,6 @@
   "save": "Save",
   "success": "Profile updated successfully",
   "error": "Failed to update profile",
-  "loading": "Loading...",
   "retry": "Try again",
   "flashcardSettings": "Flashcard Settings",
   "flashcardSettingsDescription": "Manage how your flashcards and reviews behave.",
