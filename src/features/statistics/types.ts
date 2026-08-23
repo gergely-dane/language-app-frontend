@@ -2,7 +2,9 @@ import { z } from "zod";
 
 const userStatisticsTotalSchema = z.object({
   successfulFlashcards: z.number(),
+  easyFlashcards: z.number(),
   failedFlashcards: z.number(),
+  wasntSureFlashcards: z.number(),
   totalTranslations: z.number(),
   translationsMastered: z.number(),
   languages: z.array(
