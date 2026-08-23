@@ -16,13 +16,11 @@ export function useDetectSwipeOnElement<T extends HTMLElement>(
   useEffect(() => {
     if (!el) return;
 
-    const detectSwipe = (e: TouchEvent | MouseEvent) => {
+    const detectSwipe = (e: TouchEvent) => {
       if (startX.current === null || startY.current === null) return;
 
-      const clientX =
-        "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX;
-      const clientY =
-        "changedTouches" in e ? e.changedTouches[0].clientY : e.clientY;
+      const clientX = e.changedTouches[0].clientX;
+      const clientY = e.changedTouches[0].clientY;
 
       const diffX = startX.current - clientX;
       const diffY = startY.current - clientY;
@@ -68,30 +66,14 @@ export function useDetectSwipeOnElement<T extends HTMLElement>(
       startY.current = null;
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
-      startX.current = e.clientX;
-      startY.current = e.clientY;
-    };
-
-    const handleMouseUp = () => {
-      startX.current = null;
-      startY.current = null;
-    };
-
     el.addEventListener("touchstart", handleTouchStart);
     el.addEventListener("touchmove", detectSwipe);
     el.addEventListener("touchend", handleTouchEnd);
-    el.addEventListener("mousedown", handleMouseDown);
-    el.addEventListener("mousemove", detectSwipe);
-    el.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       el.removeEventListener("touchstart", handleTouchStart);
       el.removeEventListener("touchmove", detectSwipe);
       el.removeEventListener("touchend", handleTouchEnd);
-      el.removeEventListener("mousedown", handleMouseDown);
-      el.removeEventListener("mousemove", detectSwipe);
-      el.removeEventListener("mouseup", handleMouseUp);
     };
   }, [el, minSwipeLength, onSwipe]);
 
