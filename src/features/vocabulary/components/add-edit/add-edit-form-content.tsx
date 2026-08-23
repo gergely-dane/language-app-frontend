@@ -27,7 +27,9 @@ import {
   MAX_TAGS,
 } from "@/features/vocabulary/components/add-edit/inline-tag-input";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
+import { MAX_TRANSLATION_CACHE_ENTRIES } from "@/features/vocabulary/constants";
 import { type Translation } from "@/features/vocabulary/types";
+import { setWithEvictOldest } from "@/features/vocabulary/utils";
 import { useI18n } from "@/hooks/use-i18n";
 
 const LAST_ADDED_SOURCE_LANGUAGE_KEY = "lastAddedSourceLanguageId";
@@ -280,7 +282,12 @@ export const AddEditFormContent = ({
           targetLanguageId: effectiveTargetLanguageId,
         });
         translations = result.translations;
-        translationCache.set(cacheKey, translations);
+        setWithEvictOldest(
+          translationCache,
+          cacheKey,
+          translations,
+          MAX_TRANSLATION_CACHE_ENTRIES,
+        );
       }
 
       const overlapping = translations.filter((t) =>

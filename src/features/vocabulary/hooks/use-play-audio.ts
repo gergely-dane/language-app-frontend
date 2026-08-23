@@ -3,6 +3,8 @@
 import { useState, useSyncExternalStore } from "react";
 
 import { useSynthesizeSpeech } from "@/features/vocabulary/api/synthesize-speech";
+import { MAX_AUDIO_CACHE_ENTRIES } from "@/features/vocabulary/constants";
+import { setWithEvictOldest } from "@/features/vocabulary/utils";
 
 const audioCache = new Map<string, string>();
 
@@ -49,7 +51,13 @@ export const usePlayAudio = (text: string, languageCode: string) => {
     });
 
     const url = URL.createObjectURL(blob);
-    audioCache.set(cacheKey, url);
+    setWithEvictOldest(
+      audioCache,
+      cacheKey,
+      url,
+      MAX_AUDIO_CACHE_ENTRIES,
+      (evictedUrl) => URL.revokeObjectURL(evictedUrl),
+    );
 
     return url;
   };
