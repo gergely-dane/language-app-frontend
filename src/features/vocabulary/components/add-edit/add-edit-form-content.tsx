@@ -21,11 +21,7 @@ import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translati
 import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadsheet";
 import { useTranslateWord } from "@/features/vocabulary/api/translate-word";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
-import {
-  InlineTagInput,
-  MAX_TAG_LENGTH,
-  MAX_TAGS,
-} from "@/features/vocabulary/components/add-edit/inline-tag-input";
+import { InlineTagInput } from "@/features/vocabulary/components/add-edit/inline-tag-input";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import {
   LAST_ADDED_SOURCE_LANGUAGE_KEY,
@@ -35,6 +31,7 @@ import {
 import { type Translation } from "@/features/vocabulary/types";
 import {
   getStoredLanguageId,
+  parseTagInput,
   setWithEvictOldest,
   storeLastAddedLanguageId,
 } from "@/features/vocabulary/utils";
@@ -163,21 +160,8 @@ export const AddEditFormContent = ({
       return;
     }
 
-    const parseInputToTags = (inputValue: string, currentTags: string[]) => {
-      const trimmed = inputValue.trim();
-      if (!trimmed) return currentTags;
-
-      const newTags = trimmed
-        .split(",")
-        .map((part) => part.trim())
-        .filter((part) => part && !currentTags.includes(part))
-        .map((part) => part.slice(0, MAX_TAG_LENGTH));
-
-      return [...currentTags, ...newTags].slice(0, MAX_TAGS);
-    };
-
-    const finalWords = parseInputToTags(word, wordList);
-    const finalTranslations = parseInputToTags(translation, translationList);
+    const finalWords = parseTagInput(word, wordList);
+    const finalTranslations = parseTagInput(translation, translationList);
 
     const payload = {
       words: finalWords,

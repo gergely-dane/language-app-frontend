@@ -17,6 +17,7 @@
     "description": "You are about to delete {count} words from your vocabulary."
   },
   "dragAndDropOr": "Drag and drop or",
+  "editEntry": "Edit {value}",
   "enterDefinition": "Enter a definition (optional) ",
   "enterTheTranslation": "Enter the translation(s)",
   "enterTheWord": "Enter the word",
@@ -34,6 +35,7 @@
   "noLanguagesFound": "No languages found.",
   "noResults": "No results.",
   "previous": "Previous",
+  "removeEntry": "Remove {value}",
   "searchForAWord": "Search for a word...",
   "selection": {
     "selected": "{count} selected",

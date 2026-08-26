@@ -70,6 +70,9 @@ const SidebarContent = ({ pathname }: { pathname: string }) => {
       )
         return;
 
+      if (document.querySelector('[role="dialog"], [role="alertdialog"]'))
+        return;
+
       event.preventDefault();
       setAddWordOpen(true);
     };
