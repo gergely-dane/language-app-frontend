@@ -103,7 +103,6 @@ export const FlashcardsPage = () => {
   const areButtonsDisabled =
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
-  // hold last known value so the count only changes when the next card arrives
   const [lastRemainingCount, setLastRemainingCount] = useState(0);
   if (flashcard && flashcard.remainingCount !== lastRemainingCount) {
     setLastRemainingCount(flashcard.remainingCount);
