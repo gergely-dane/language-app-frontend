@@ -103,6 +103,12 @@ export const FlashcardsPage = () => {
   const areButtonsDisabled =
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
+  // hold last known value so the count only changes when the next card arrives
+  const [lastRemainingCount, setLastRemainingCount] = useState(0);
+  if (flashcard && flashcard.remainingCount !== lastRemainingCount) {
+    setLastRemainingCount(flashcard.remainingCount);
+  }
+
   const handleRespondByRating = useCallback(
     async (response: FlashcardRating) => {
       if (isCardAnimating || respondToFlashcard.isPending || !flashcard) {
@@ -255,7 +261,7 @@ export const FlashcardsPage = () => {
         <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
           <SessionPanel
             reviewedCount={sessionHistory.length}
-            remainingCount={flashcard?.remainingCount ?? 0}
+            remainingCount={flashcard?.remainingCount ?? lastRemainingCount}
             tally={tally}
             ratingLabels={ratingLabels}
           />
