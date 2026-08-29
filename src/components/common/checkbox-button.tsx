@@ -23,7 +23,9 @@ const CheckboxButton = React.forwardRef<HTMLLabelElement, CheckboxButtonProps>(
       size = "default",
       id,
       disabled,
+      onClick,
       onPointerDown,
+      onPointerMove,
       onPointerEnter,
       onPointerLeave,
       onFocus,
@@ -42,8 +44,14 @@ const CheckboxButton = React.forwardRef<HTMLLabelElement, CheckboxButtonProps>(
       <label
         ref={ref}
         htmlFor={checkboxId}
+        onClick={
+          onClick as unknown as React.MouseEventHandler<HTMLLabelElement>
+        }
         onPointerDown={
           onPointerDown as unknown as React.PointerEventHandler<HTMLLabelElement>
+        }
+        onPointerMove={
+          onPointerMove as unknown as React.PointerEventHandler<HTMLLabelElement>
         }
         onPointerEnter={
           onPointerEnter as unknown as React.PointerEventHandler<HTMLLabelElement>
