@@ -35,7 +35,7 @@ export const SettingsPage = () => {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
     }
-  }, [user?.id]);
+  }, [user]);
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
