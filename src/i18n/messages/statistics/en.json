@@ -5,6 +5,9 @@
   "other": "Other",
   "translationsAdded": "Translations Added",
   "yourLanguages": "Your Languages",
+  "languageFilter": {
+    "all": "All languages"
+  },
   "timePeriod": {
     "30d": "30d",
     "90d": "90d",

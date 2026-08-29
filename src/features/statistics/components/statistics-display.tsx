@@ -13,15 +13,18 @@ import { cn } from "@/lib/utils";
 
 type StatisticsDisplayProps = {
   previousDays: number;
+  languageId?: number | null;
   className?: string;
 };
 
 export const StatisticsDisplay = ({
   previousDays,
+  languageId,
   className,
 }: StatisticsDisplayProps) => {
   const { data: stats, isLoading } = useUserStatistics({
     previousDays: previousDays || 30,
+    ...(languageId != null && { languageId }),
   });
 
   if (isLoading) {
