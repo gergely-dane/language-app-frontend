@@ -104,8 +104,14 @@ export const FlashcardsPage = () => {
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
   const [lastRemainingCount, setLastRemainingCount] = useState(0);
-  if (flashcard && flashcard.remainingCount !== lastRemainingCount) {
-    setLastRemainingCount(flashcard.remainingCount);
+  const settledRemainingCount = isFlashcardLoading
+    ? null
+    : (flashcard?.remainingCount ?? 0);
+  if (
+    settledRemainingCount !== null &&
+    settledRemainingCount !== lastRemainingCount
+  ) {
+    setLastRemainingCount(settledRemainingCount);
   }
 
   const handleRespondByRating = useCallback(
@@ -260,7 +266,7 @@ export const FlashcardsPage = () => {
         <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
           <SessionPanel
             reviewedCount={sessionHistory.length}
-            remainingCount={flashcard?.remainingCount ?? lastRemainingCount}
+            remainingCount={lastRemainingCount}
             tally={tally}
             ratingLabels={ratingLabels}
           />
