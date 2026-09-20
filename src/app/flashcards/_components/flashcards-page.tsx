@@ -1,6 +1,6 @@
 "use client";
 
-import { IconPencil, IconRefresh } from "@tabler/icons-react";
+import { IconPencil } from "@tabler/icons-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
@@ -11,20 +11,20 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  type FlashcardParams,
-  useFlashcard,
-} from "@/features/flashcards/api/get-flashcard";
+import { useFlashcardQueue } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
+import { FlashcardEmptyState } from "@/features/flashcards/components/flashcard-empty-state";
 import {
   FlashcardResponseButtonsSkeleton,
   FlashcardSkeleton,
 } from "@/features/flashcards/components/flashcard-skeleton";
+import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
 import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
 import { SectionLabel } from "@/features/flashcards/components/section-label";
 import { SessionPanel } from "@/features/flashcards/components/session-panel";
 import {
+  DEFAULT_PRACTICE_MODE,
   FLASHCARD_DIRECTION_RATINGS,
   FLASHCARD_DIRECTIONS,
   FLASHCARD_RATING_META,
@@ -33,9 +33,12 @@ import { useFlashcardSession } from "@/features/flashcards/hooks/use-flashcard-s
 import type {
   Direction,
   FlashcardCompHandle,
+  FlashcardParams,
   FlashcardRating,
+  PracticeMode,
 } from "@/features/flashcards/types";
 import {
+  getRemainingCount,
   getStoredFlashcardFilters,
   storeFlashcardFilters,
 } from "@/features/flashcards/utils";
@@ -69,6 +72,9 @@ export const FlashcardsPage = () => {
     }
     return false;
   });
+  const [practiceMode, setPracticeMode] = useState<PracticeMode>(
+    () => storedFiltersState?.practiceMode ?? DEFAULT_PRACTICE_MODE,
+  );
   const [flashcardIndex, setFlashcardIndex] = useState(0);
   const [wasFlipped, setWasFlipped] = useState(false);
   const [isCardAnimating, setIsCardAnimating] = useState(false);
@@ -81,8 +87,9 @@ export const FlashcardsPage = () => {
       sourceLanguageId: languagePair?.sourceLanguageId,
       targetLanguageId: languagePair?.targetLanguageId,
       isReverse,
+      practiceMode,
     }),
-    [languagePair, isReverse],
+    [languagePair, isReverse, practiceMode],
   );
 
   useEffect(() => {
@@ -90,12 +97,13 @@ export const FlashcardsPage = () => {
   }, [flashcardParams]);
 
   const {
-    data: flashcard,
+    data: queue,
     isLoading: isFlashcardLoading,
     isFetching,
     error,
     refetch,
-  } = useFlashcard(flashcardParams, flashcardIndex);
+  } = useFlashcardQueue(flashcardParams, flashcardIndex);
+  const flashcard = queue?.flashcard ?? null;
   const { isLoading: isLanguagesLoading } = useLanguages();
   const isLoading = isFlashcardLoading || isLanguagesLoading;
   const respondToFlashcard = useRespondToFlashcard(flashcardIndex);
@@ -103,15 +111,22 @@ export const FlashcardsPage = () => {
   const areButtonsDisabled =
     isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
 
-  const [lastRemainingCount, setLastRemainingCount] = useState(0);
-  const settledRemainingCount = isFlashcardLoading
+  const [lastCounts, setLastCounts] = useState({
+    newCount: 0,
+    existingCount: 0,
+  });
+  const settledCounts = isFlashcardLoading
     ? null
-    : (flashcard?.remainingCount ?? 0);
+    : {
+        newCount: queue?.newCount ?? 0,
+        existingCount: queue?.existingCount ?? 0,
+      };
   if (
-    settledRemainingCount !== null &&
-    settledRemainingCount !== lastRemainingCount
+    settledCounts !== null &&
+    (settledCounts.newCount !== lastCounts.newCount ||
+      settledCounts.existingCount !== lastCounts.existingCount)
   ) {
-    setLastRemainingCount(settledRemainingCount);
+    setLastCounts(settledCounts);
   }
 
   const handleRespondByRating = useCallback(
@@ -165,6 +180,13 @@ export const FlashcardsPage = () => {
     setWasFlipped(false);
   };
 
+  const onPracticeModeChange = (newMode: PracticeMode) => {
+    setPracticeMode(newMode);
+    setFlashcardIndex(0);
+    flashcardRef.current?.reset();
+    setWasFlipped(false);
+  };
+
   const tally = useMemo(() => {
     const counts: Record<Direction, number> = {
       left: 0,
@@ -207,6 +229,13 @@ export const FlashcardsPage = () => {
                 className="flex-1 lg:w-full"
                 value={languagePair}
                 onChange={(newPair) => onLanguagePairChange(newPair)}
+                disabled={areButtonsDisabled}
+              />
+
+              <PracticeModeSelector
+                className="w-full max-lg:order-last"
+                value={practiceMode}
+                onChange={onPracticeModeChange}
                 disabled={areButtonsDisabled}
               />
 
@@ -266,9 +295,8 @@ export const FlashcardsPage = () => {
         <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
           <SessionPanel
             reviewedCount={sessionHistory.length}
-            remainingCount={lastRemainingCount}
+            remainingCount={getRemainingCount(lastCounts, practiceMode)}
             tally={tally}
-            ratingLabels={ratingLabels}
           />
         </aside>
 
@@ -277,34 +305,15 @@ export const FlashcardsPage = () => {
             {isLoading ? (
               <FlashcardSkeleton />
             ) : error || !flashcard ? (
-              <div className="bg-card flex h-58 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-70 lg:h-80">
-                {!error ? (
-                  <>
-                    <h2 className="text-xl whitespace-pre-line">
-                      {t("flashcards.congratulations")}
-                    </h2>
-
-                    <p className="text-muted-foreground max-w-md">
-                      {t("flashcards.keepPracticing")}
-                    </p>
-                  </>
-                ) : (
-                  <h2 className="text-xl whitespace-pre-line">
-                    {t("flashcards.errorLoadingFlashcard")}
-                  </h2>
-                )}
-
-                <Button
-                  className="mt-2"
-                  variant="outline"
-                  onClick={() => void refetch()}
-                  disabled={isFetching}
-                >
-                  <IconRefresh className={cn(isFetching && "animate-spin")} />
-
-                  {t("flashcards.refresh")}
-                </Button>
-              </div>
+              <FlashcardEmptyState
+                hasError={!!error}
+                practiceMode={practiceMode}
+                newCount={lastCounts.newCount}
+                existingCount={lastCounts.existingCount}
+                isRefreshing={isFetching}
+                onRefresh={() => void refetch()}
+                onPracticeModeChange={onPracticeModeChange}
+              />
             ) : (
               flashcard.translation && (
                 <FlashcardComp

@@ -12,16 +12,21 @@ type SessionPanelProps = {
   reviewedCount: number;
   remainingCount: number;
   tally: Record<Direction, number>;
-  ratingLabels: Record<Direction, string>;
 };
 
 export const SessionPanel = ({
   reviewedCount,
   remainingCount,
   tally,
-  ratingLabels,
 }: SessionPanelProps) => {
   const t = useI18n();
+
+  const ratingLabels: Record<Direction, string> = {
+    left: t("flashcards.didntKnow"),
+    down: t("flashcards.wasntSure"),
+    right: t("flashcards.knewIt"),
+    up: t("flashcards.easy"),
+  };
 
   return (
     <section className="bg-card max-lg:short:hidden flex flex-col gap-3 rounded-xl border p-4 max-lg:gap-2 max-lg:py-3">

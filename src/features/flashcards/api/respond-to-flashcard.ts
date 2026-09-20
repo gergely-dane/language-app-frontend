@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/lib/api-client";
 
-import { parseFlashcardResponse } from "../utils";
-import type { FlashcardParams } from "./get-flashcard";
+import type { FlashcardParams } from "../types";
+import { parseFlashcardQueue } from "../utils";
 
 interface RespondToFlashcardRequest {
   flashcardId: number;
@@ -18,7 +18,7 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
 
   return useMutation({
     mutationFn: async ({ flashcardId, response }: RespondToFlashcardRequest) =>
-      parseFlashcardResponse(
+      parseFlashcardQueue(
         (
           await apiClient.post<unknown>(
             `/flashcards/${flashcardId}/review`,
@@ -29,7 +29,7 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
     onError: (error) => {
       console.error("Failed to respond to flashcard:", error);
     },
-    onSuccess: (nextFlashcard, variables) => {
+    onSuccess: (nextQueue, variables) => {
       void queryClient.invalidateQueries({ queryKey: ["statistics"] });
 
       if (flashcardIndex === undefined) {
@@ -38,7 +38,7 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
 
       queryClient.setQueryData(
         ["flashcards", variables.response.nextCardQuery, flashcardIndex + 1],
-        nextFlashcard,
+        nextQueue,
       );
     },
   });

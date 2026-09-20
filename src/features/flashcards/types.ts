@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { translationSchema } from "@/features/vocabulary/types";
 
+import { PRACTICE_MODE } from "./constants";
+
 export type Direction = "left" | "down" | "right" | "up";
 
 export type FlashcardRating = 1 | 2 | 3 | 4;
@@ -18,11 +20,18 @@ export type FlashcardCompHandle = {
   reset: () => void;
 };
 
+export const practiceModeSchema = z.enum(PRACTICE_MODE);
+
+export type PracticeMode = z.infer<typeof practiceModeSchema>;
+
 export const flashcardParamsSchema = z.object({
   sourceLanguageId: z.number().nullable().optional(),
   targetLanguageId: z.number().nullable().optional(),
   isReverse: z.boolean().optional(),
+  practiceMode: practiceModeSchema.optional(),
 });
+
+export type FlashcardParams = z.infer<typeof flashcardParamsSchema>;
 
 export const flashcardSessionStateSchema = z.object({
   startedAt: z.number(),
@@ -40,7 +49,14 @@ export const flashcardSchema = z.object({
   notSureNextReviewMinutes: z.number(),
   knowItNextReviewMinutes: z.number(),
   easyNextReviewMinutes: z.number(),
-  remainingCount: z.number(),
 });
 
 export type Flashcard = z.infer<typeof flashcardSchema>;
+
+export const flashcardQueueSchema = z.object({
+  flashcard: flashcardSchema.nullable(),
+  newCount: z.number(),
+  existingCount: z.number(),
+});
+
+export type FlashcardQueue = z.infer<typeof flashcardQueueSchema>;

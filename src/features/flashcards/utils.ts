@@ -1,15 +1,28 @@
-import type { z } from "zod";
+import {
+  FLASHCARD_FILTERS_STATE_STORAGE_KEY,
+  PRACTICE_MODE,
+} from "./constants";
+import type {
+  Direction,
+  FlashcardParams,
+  FlashcardQueue,
+  PracticeMode,
+} from "./types";
+import { flashcardParamsSchema, flashcardQueueSchema } from "./types";
 
-import { FLASHCARD_FILTERS_STATE_STORAGE_KEY } from "./constants";
-import type { Direction, Flashcard } from "./types";
-import { flashcardParamsSchema, flashcardSchema } from "./types";
+export const parseFlashcardQueue = (data: unknown): FlashcardQueue =>
+  flashcardQueueSchema.parse(data);
 
-export const parseFlashcardResponse = (data: unknown): Flashcard | null =>
-  data ? flashcardSchema.parse(data) : null;
+export const getRemainingCount = (
+  counts: Pick<FlashcardQueue, "newCount" | "existingCount">,
+  practiceMode: PracticeMode,
+) => {
+  if (practiceMode === PRACTICE_MODE.New) return counts.newCount;
+  if (practiceMode === PRACTICE_MODE.Existing) return counts.existingCount;
+  return counts.newCount + counts.existingCount;
+};
 
-export const getStoredFlashcardFilters = (): z.infer<
-  typeof flashcardParamsSchema
-> | null => {
+export const getStoredFlashcardFilters = (): FlashcardParams | null => {
   if (typeof window === "undefined") return null;
 
   try {
@@ -26,9 +39,7 @@ export const getStoredFlashcardFilters = (): z.infer<
   }
 };
 
-export const storeFlashcardFilters = (
-  params: z.infer<typeof flashcardParamsSchema>,
-) => {
+export const storeFlashcardFilters = (params: FlashcardParams) => {
   try {
     window.localStorage.setItem(
       FLASHCARD_FILTERS_STATE_STORAGE_KEY,

@@ -1,7 +1,12 @@
 import { IconCheck, IconHelp, IconStar, IconX } from "@tabler/icons-react";
 import type { Transition } from "motion/react";
 
-import type { Direction, FlashcardRating, FlashcardTimeKey } from "./types";
+import type {
+  Direction,
+  FlashcardRating,
+  FlashcardTimeKey,
+  PracticeMode,
+} from "./types";
 
 export const FLIP_TRANSITION = {
   duration: 0.6,
@@ -20,6 +25,32 @@ export const FLASHCARD_FILTERS_STATE_STORAGE_KEY = "flashcardFiltersState";
 export const FLASHCARD_SESSION_STATE_STORAGE_KEY = "flashcardSessionState";
 
 export const FLASHCARD_SESSION_DURATION_MS = 60 * 60 * 1000;
+
+export const PRACTICE_MODE = {
+  Both: 0,
+  New: 1,
+  Existing: 2,
+} as const;
+
+export const DEFAULT_PRACTICE_MODE: PracticeMode = PRACTICE_MODE.Both;
+
+export const PRACTICE_MODE_OPTIONS = [
+  {
+    value: PRACTICE_MODE.New,
+    label: "practiceModeNew",
+    tooltip: "practiceModeNewTooltip",
+  },
+  {
+    value: PRACTICE_MODE.Existing,
+    label: "practiceModeExisting",
+    tooltip: "practiceModeExistingTooltip",
+  },
+  {
+    value: PRACTICE_MODE.Both,
+    label: "practiceModeBoth",
+    tooltip: "practiceModeBothTooltip",
+  },
+] as const;
 
 export const FLASHCARD_DIRECTION_RATINGS: Record<Direction, FlashcardRating> = {
   left: 1,

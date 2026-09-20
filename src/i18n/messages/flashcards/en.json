@@ -33,5 +33,17 @@
   "years": "years",
   "hour": "hour",
   "hours": "hours",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "practiceModeNew": "New",
+  "practiceModeExisting": "Existing",
+  "practiceModeBoth": "Both",
+  "practiceModeNewTooltip": "Words you have not learned yet",
+  "practiceModeExistingTooltip": "Words you already learned that are due for review",
+  "practiceModeBothTooltip": "New and existing words together",
+  "noNewWordsLeft": "No new words left",
+  "existingWordsWaiting": "{count, plural, one {# word is waiting for review.} other {# words are waiting for review.}}",
+  "practiceExistingWords": "Practice existing words",
+  "allCaughtUp": "All caught up on reviews!",
+  "newWordsWaiting": "{count, plural, one {# new word is waiting.} other {# new words are waiting.}}",
+  "practiceNewWords": "Learn new words"
 }
