@@ -296,6 +296,7 @@ export const FlashcardsPage = () => {
           <SessionPanel
             reviewedCount={sessionHistory.length}
             remainingCount={getRemainingCount(lastCounts, practiceMode)}
+            practiceMode={practiceMode}
             tally={tally}
           />
         </aside>

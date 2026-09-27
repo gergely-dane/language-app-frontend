@@ -4,22 +4,30 @@ import { SectionLabel } from "@/features/flashcards/components/section-label";
 import {
   FLASHCARD_DIRECTIONS,
   FLASHCARD_RATING_META,
+  PRACTICE_MODE,
 } from "@/features/flashcards/constants";
-import type { Direction } from "@/features/flashcards/types";
+import type { Direction, PracticeMode } from "@/features/flashcards/types";
 import { useI18n } from "@/hooks/use-i18n";
 
 type SessionPanelProps = {
   reviewedCount: number;
   remainingCount: number;
+  practiceMode: PracticeMode;
   tally: Record<Direction, number>;
 };
 
 export const SessionPanel = ({
   reviewedCount,
   remainingCount,
+  practiceMode,
   tally,
 }: SessionPanelProps) => {
   const t = useI18n();
+
+  const remainingLabel =
+    practiceMode === PRACTICE_MODE.New
+      ? t("flashcards.newWordsLeft")
+      : t("flashcards.reviewsLeft");
 
   const ratingLabels: Record<Direction, string> = {
     left: t("flashcards.didntKnow"),
@@ -49,9 +57,7 @@ export const SessionPanel = ({
               {remainingCount}
             </p>
 
-            <p className="text-muted-foreground text-xs">
-              {t("flashcards.reviewsLeft")}
-            </p>
+            <p className="text-muted-foreground text-xs">{remainingLabel}</p>
           </div>
         </div>
 
