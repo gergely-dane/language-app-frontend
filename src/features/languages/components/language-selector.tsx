@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { LANGUAGES } from "@/features/languages/constants";
@@ -41,7 +42,7 @@ export const LanguageSelector = ({
 }: LanguageSelectorProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
-  const { data: languages } = useLanguages();
+  const { data: languages, isLoading: isLanguagesLoading } = useLanguages();
   const { data: languagePairs } = useLanguagePairs();
 
   const [open, setOpen] = useState(false);
@@ -83,6 +84,12 @@ export const LanguageSelector = ({
       {LANGUAGES[language.code]}
     </CommandItem>
   );
+
+  if (isLanguagesLoading) {
+    return (
+      <Skeleton className={cn("h-9 min-h-9 shrink-0 rounded-md", className)} />
+    );
+  }
 
   return (
     <div>
