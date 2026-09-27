@@ -42,6 +42,17 @@ export const flashcardSessionStateSchema = z.object({
 
 export type FlashcardSessionState = z.infer<typeof flashcardSessionStateSchema>;
 
+export const flashcardCollapsedSectionsSchema = z.object({
+  deck: z.boolean().optional(),
+  session: z.boolean().optional(),
+});
+
+export type FlashcardCollapsedSections = z.infer<
+  typeof flashcardCollapsedSectionsSchema
+>;
+
+export type FlashcardSection = keyof FlashcardCollapsedSections;
+
 export const flashcardSchema = z.object({
   id: z.number(),
   translation: translationSchema,

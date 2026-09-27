@@ -24,6 +24,12 @@ export const FLASHCARD_FILTERS_STATE_STORAGE_KEY = "flashcardFiltersState";
 
 export const FLASHCARD_SESSION_STATE_STORAGE_KEY = "flashcardSessionState";
 
+export const FLASHCARD_COLLAPSED_SECTIONS_STORAGE_KEY =
+  "flashcardCollapsedSectionsState";
+
+// Keep in sync with the `short` custom variant in globals.css.
+export const SHORT_SCREEN_MEDIA_QUERY = "(max-height: 820px)";
+
 export const FLASHCARD_SESSION_DURATION_MS = 60 * 60 * 1000;
 
 export const PRACTICE_MODE = {

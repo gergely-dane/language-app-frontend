@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFlashcardQueue } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
+import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import { FlashcardEmptyState } from "@/features/flashcards/components/flashcard-empty-state";
 import {
@@ -219,59 +220,55 @@ export const FlashcardsPage = () => {
         {t("flashcards.practiceYourWords")}
       </p>
 
-      <div className="max-lg:short:gap-2 mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-4 max-lg:flex-col max-lg:gap-3 lg:mx-0">
+      <div className="mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-4 max-lg:flex-col max-lg:gap-3 lg:mx-0">
         <aside className="max-lg:short:gap-2 flex w-full flex-col gap-4 max-lg:mx-auto max-lg:max-w-120 max-lg:gap-3 lg:w-60 lg:shrink-0">
-          <section className="bg-card flex flex-col gap-3 rounded-xl border p-4 max-lg:gap-2 max-lg:py-3">
-            <SectionLabel>{t("flashcards.deck")}</SectionLabel>
+          <CollapsibleSection section="deck" title={t("flashcards.deck")}>
+            <div className="flex items-center gap-2 lg:contents">
+              <LanguagePairSelector
+                className="flex-1 lg:w-full"
+                value={languagePair}
+                onChange={(newPair) => onLanguagePairChange(newPair)}
+                disabled={areButtonsDisabled}
+              />
 
-            <div className="flex flex-col gap-3 max-lg:gap-2">
-              <div className="flex items-center gap-2 lg:contents">
-                <LanguagePairSelector
-                  className="flex-1 lg:w-full"
-                  value={languagePair}
-                  onChange={(newPair) => onLanguagePairChange(newPair)}
-                  disabled={areButtonsDisabled}
-                />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <CheckboxButton
+                    className="justify-start lg:order-last"
+                    label={t("flashcards.reverseCards")}
+                    checked={isReverse}
+                    onCheckedChange={(checked) => onReverseChange(!!checked)}
+                    disabled={areButtonsDisabled}
+                  />
+                </TooltipTrigger>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <CheckboxButton
-                      className="justify-start lg:order-last"
-                      label={t("flashcards.reverseCards")}
-                      checked={isReverse}
-                      onCheckedChange={(checked) => onReverseChange(!!checked)}
-                      disabled={areButtonsDisabled}
-                    />
-                  </TooltipTrigger>
-
-                  <TooltipContent>
-                    <p>{t("flashcards.reverseCardsTooltip")}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-
-              <div className="flex items-center gap-2 lg:contents">
-                <PracticeModeSelector
-                  className="flex-1 lg:w-full"
-                  value={practiceMode}
-                  onChange={onPracticeModeChange}
-                  disabled={areButtonsDisabled}
-                />
-
-                <Button
-                  className="lg:order-last"
-                  variant="outline"
-                  onClick={() => setEditDialogOpen(true)}
-                  disabled={areButtonsDisabled || !flashcard}
-                >
-                  <IconPencil />
-                  <span className="max-lg:hidden">
-                    {t("flashcards.editTranslation")}
-                  </span>
-                </Button>
-              </div>
+                <TooltipContent>
+                  <p>{t("flashcards.reverseCardsTooltip")}</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
-          </section>
+
+            <div className="flex items-center gap-2 lg:contents">
+              <PracticeModeSelector
+                className="flex-1 lg:w-full"
+                value={practiceMode}
+                onChange={onPracticeModeChange}
+                disabled={areButtonsDisabled}
+              />
+
+              <Button
+                className="lg:order-last"
+                variant="outline"
+                onClick={() => setEditDialogOpen(true)}
+                disabled={areButtonsDisabled || !flashcard}
+              >
+                <IconPencil />
+                <span className="max-lg:hidden">
+                  {t("flashcards.editTranslation")}
+                </span>
+              </Button>
+            </div>
+          </CollapsibleSection>
 
           <section className="bg-card hidden flex-col gap-2 rounded-xl border p-4 lg:flex lg:flex-1 lg:justify-between">
             <SectionLabel>{t("flashcards.shortcuts")}</SectionLabel>
@@ -307,7 +304,7 @@ export const FlashcardsPage = () => {
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col">
-          <div className="max-lg:short:gap-2 mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
+          <div className="mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
             {isLoading ? (
               <FlashcardSkeleton />
             ) : error || !flashcard ? (
