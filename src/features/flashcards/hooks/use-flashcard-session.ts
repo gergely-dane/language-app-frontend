@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import {
-  FLASHCARD_SESSION_DURATION_MS,
+  FLASHCARD_SESSION_IDLE_TIMEOUT_MS,
   FLASHCARD_SESSION_STATE_STORAGE_KEY,
 } from "@/features/flashcards/constants";
 import type {
@@ -12,11 +12,11 @@ import type {
 } from "@/features/flashcards/types";
 import { flashcardSessionStateSchema } from "@/features/flashcards/types";
 
-const emptySession: FlashcardSessionState = { startedAt: 0, history: [] };
+const emptySession: FlashcardSessionState = { lastActivityAt: 0, history: [] };
 
 const isSessionExpired = (session: FlashcardSessionState) =>
   session.history.length === 0 ||
-  Date.now() - session.startedAt > FLASHCARD_SESSION_DURATION_MS;
+  Date.now() - session.lastActivityAt > FLASHCARD_SESSION_IDLE_TIMEOUT_MS;
 
 const loadStoredSession = (): FlashcardSessionState => {
   if (typeof window === "undefined") return emptySession;
@@ -54,11 +54,10 @@ export const useFlashcardSession = () => {
   }, [session]);
 
   const recordResponse = useCallback((rating: FlashcardRating) => {
-    setSession((prev) =>
-      isSessionExpired(prev)
-        ? { startedAt: Date.now(), history: [rating] }
-        : { ...prev, history: [...prev.history, rating] },
-    );
+    setSession((prev) => ({
+      lastActivityAt: Date.now(),
+      history: isSessionExpired(prev) ? [rating] : [...prev.history, rating],
+    }));
   }, []);
 
   return { sessionHistory: session.history, recordResponse };

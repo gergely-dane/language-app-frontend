@@ -34,7 +34,7 @@ export const flashcardParamsSchema = z.object({
 export type FlashcardParams = z.infer<typeof flashcardParamsSchema>;
 
 export const flashcardSessionStateSchema = z.object({
-  startedAt: z.number(),
+  lastActivityAt: z.number(),
   history: z.array(
     z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
   ),
