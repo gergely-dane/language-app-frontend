@@ -119,7 +119,7 @@ export const VocabularyPage = () => {
 
       <div className="mt-6 mb-1.5 flex flex-wrap gap-1.5 max-lg:mt-4">
         <SearchInput
-          className="flex-7 lg:w-70 lg:flex-none"
+          className="w-full lg:w-70 lg:flex-none"
           value={searchFilter}
           onChange={onSearchChange}
           placeholder={t("vocabulary.searchForAWord")}
@@ -132,14 +132,14 @@ export const VocabularyPage = () => {
         />
 
         <Button
-          className="ml-auto flex-1 lg:flex-none"
+          className="ml-auto"
           onClick={() => {
             setEditingTranslation(undefined);
             setIsEditDialogOpen(true);
           }}
         >
           <IconPlus className="h-4 w-4" />
-          <p className="hidden lg:block">{t("vocabulary.addWord")}</p>
+          <p>{t("vocabulary.addWord")}</p>
         </Button>
       </div>
 

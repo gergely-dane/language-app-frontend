@@ -224,47 +224,52 @@ export const FlashcardsPage = () => {
           <section className="bg-card flex flex-col gap-3 rounded-xl border p-4 max-lg:gap-2 max-lg:py-3">
             <SectionLabel>{t("flashcards.deck")}</SectionLabel>
 
-            <div className="flex flex-col gap-3 max-lg:flex-row max-lg:flex-wrap max-lg:items-center max-lg:gap-2">
-              <LanguagePairSelector
-                className="flex-1 lg:w-full"
-                value={languagePair}
-                onChange={(newPair) => onLanguagePairChange(newPair)}
-                disabled={areButtonsDisabled}
-              />
+            <div className="flex flex-col gap-3 max-lg:gap-2">
+              <div className="flex items-center gap-2 lg:contents">
+                <LanguagePairSelector
+                  className="flex-1 lg:w-full"
+                  value={languagePair}
+                  onChange={(newPair) => onLanguagePairChange(newPair)}
+                  disabled={areButtonsDisabled}
+                />
 
-              <PracticeModeSelector
-                className="w-full max-lg:order-last"
-                value={practiceMode}
-                onChange={onPracticeModeChange}
-                disabled={areButtonsDisabled}
-              />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <CheckboxButton
+                      className="justify-start lg:order-last"
+                      label={t("flashcards.reverseCards")}
+                      checked={isReverse}
+                      onCheckedChange={(checked) => onReverseChange(!!checked)}
+                      disabled={areButtonsDisabled}
+                    />
+                  </TooltipTrigger>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <CheckboxButton
-                    className="justify-start"
-                    label={t("flashcards.reverseCards")}
-                    checked={isReverse}
-                    onCheckedChange={(checked) => onReverseChange(!!checked)}
-                    disabled={areButtonsDisabled}
-                  />
-                </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t("flashcards.reverseCardsTooltip")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
 
-                <TooltipContent>
-                  <p>{t("flashcards.reverseCardsTooltip")}</p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-2 lg:contents">
+                <PracticeModeSelector
+                  className="flex-1 lg:w-full"
+                  value={practiceMode}
+                  onChange={onPracticeModeChange}
+                  disabled={areButtonsDisabled}
+                />
 
-              <Button
-                variant="outline"
-                onClick={() => setEditDialogOpen(true)}
-                disabled={areButtonsDisabled || !flashcard}
-              >
-                <IconPencil />
-                <span className="max-lg:hidden">
-                  {t("flashcards.editTranslation")}
-                </span>
-              </Button>
+                <Button
+                  className="lg:order-last"
+                  variant="outline"
+                  onClick={() => setEditDialogOpen(true)}
+                  disabled={areButtonsDisabled || !flashcard}
+                >
+                  <IconPencil />
+                  <span className="max-lg:hidden">
+                    {t("flashcards.editTranslation")}
+                  </span>
+                </Button>
+              </div>
             </div>
           </section>
 

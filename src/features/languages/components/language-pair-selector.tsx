@@ -43,11 +43,7 @@ export const LanguagePairSelector = ({
   const t = useI18n();
   const isMobile = useIsMobileScreen();
 
-  const {
-    getLanguageString,
-    getLanguageCode,
-    isLoading: isLanguagesLoading,
-  } = useLanguages();
+  const { getLanguageString, isLoading: isLanguagesLoading } = useLanguages();
   const { data: languagePairs = [], isLoading: isLanguagePairsLoading } =
     useLanguagePairs();
 
@@ -108,9 +104,7 @@ export const LanguagePairSelector = ({
             <div className="flex items-center gap-2 truncate">
               <p className="truncate">
                 {currentSourceId
-                  ? !isMobile
-                    ? getLanguageString(currentSourceId)
-                    : getLanguageCode(currentSourceId).toUpperCase()
+                  ? getLanguageString(currentSourceId)
                   : t("vocabulary.any")}
               </p>
 
@@ -118,9 +112,7 @@ export const LanguagePairSelector = ({
 
               <p className="truncate">
                 {currentTargetId
-                  ? !isMobile
-                    ? getLanguageString(currentTargetId)
-                    : getLanguageCode(currentTargetId).toUpperCase()
+                  ? getLanguageString(currentTargetId)
                   : t("vocabulary.any")}
               </p>
             </div>
