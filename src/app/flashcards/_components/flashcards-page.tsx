@@ -391,6 +391,7 @@ export const FlashcardsPage = () => {
             currentTranslation={flashcard.translation}
             flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
             onDeleted={() => flashcardRef.current?.reset()}
+            onProgressReset={() => flashcardRef.current?.reset()}
           />
         )}
       </div>

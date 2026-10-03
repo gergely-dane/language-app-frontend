@@ -22,6 +22,7 @@ import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadshe
 import { useTranslateWord } from "@/features/vocabulary/api/translate-word";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
 import { InlineTagInput } from "@/features/vocabulary/components/add-edit/inline-tag-input";
+import { ResetProgressButton } from "@/features/vocabulary/components/add-edit/reset-progress-button";
 import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
 import {
   LAST_ADDED_SOURCE_LANGUAGE_KEY,
@@ -45,6 +46,7 @@ type AddEditFormContentProps = {
   currentTranslation?: Translation;
   flashcardQueryKey?: readonly unknown[];
   onDeleted?: () => void;
+  onProgressReset?: () => void;
 };
 
 export const AddEditFormContent = ({
@@ -53,6 +55,7 @@ export const AddEditFormContent = ({
   currentTranslation,
   flashcardQueryKey,
   onDeleted,
+  onProgressReset,
 }: AddEditFormContentProps) => {
   const t = useI18n();
   const { showAlert } = useAlert();
@@ -457,14 +460,23 @@ export const AddEditFormContent = ({
           </Button>
 
           {editMode && (
-            <Button
-              className="absolute"
-              variant="outline"
-              size="icon"
-              onClick={() => void handleDelete()}
-            >
-              <IconTrash className="text-destructive" />
-            </Button>
+            <div className="absolute flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => void handleDelete()}
+              >
+                <IconTrash className="text-destructive" />
+              </Button>
+
+              <ResetProgressButton
+                translationId={currentTranslation?.id}
+                onReset={() => {
+                  onProgressReset?.();
+                  onClose();
+                }}
+              />
+            </div>
           )}
         </div>
       </TabsContent>

@@ -36,6 +36,14 @@
   "noResults": "No results.",
   "previous": "Previous",
   "removeEntry": "Remove {value}",
+  "resetProgress": {
+    "tooltip": "Reset progress",
+    "title": "Reset progress?",
+    "description": "This word will start over as a new word, in both normal and reverse cards. Your statistics are not affected.",
+    "confirm": "Reset",
+    "success": "Progress reset successfully",
+    "error": "Error resetting progress"
+  },
   "searchForAWord": "Search for a word...",
   "selection": {
     "selected": "{count} selected",
