@@ -1,7 +1,7 @@
 "use client";
 
 import { IconPencil } from "@tabler/icons-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
 import { Button } from "@/components/ui/button";
@@ -11,17 +11,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useFlashcardQueue } from "@/features/flashcards/api/get-flashcard";
-import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
 import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
-import { FlashcardComp } from "@/features/flashcards/components/flashcard";
+import { FlashcardDeck } from "@/features/flashcards/components/flashcard-deck";
 import { FlashcardEmptyState } from "@/features/flashcards/components/flashcard-empty-state";
+import { FlashcardResponseButtons } from "@/features/flashcards/components/flashcard-response-buttons";
 import {
   FlashcardResponseButtonsSkeleton,
   FlashcardSkeleton,
 } from "@/features/flashcards/components/flashcard-skeleton";
 import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
-import ReviewTimeDisplay from "@/features/flashcards/components/review-time-display";
 import { SectionLabel } from "@/features/flashcards/components/section-label";
 import { SessionPanel } from "@/features/flashcards/components/session-panel";
 import {
@@ -30,12 +28,12 @@ import {
   FLASHCARD_DIRECTIONS,
   FLASHCARD_RATING_META,
 } from "@/features/flashcards/constants";
+import { useFlashcardDeck } from "@/features/flashcards/hooks/use-flashcard-deck";
 import { useFlashcardSession } from "@/features/flashcards/hooks/use-flashcard-session";
+import { useFlashcardShortcuts } from "@/features/flashcards/hooks/use-flashcard-shortcuts";
 import type {
   Direction,
-  FlashcardCompHandle,
   FlashcardParams,
-  FlashcardRating,
   PracticeMode,
 } from "@/features/flashcards/types";
 import {
@@ -48,11 +46,9 @@ import { LanguagePairSelector } from "@/features/languages/components/language-p
 import { type LanguageFilterValue } from "@/features/languages/types";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
-import { cn } from "@/lib/utils";
 
 export const FlashcardsPage = () => {
   const t = useI18n();
-  const flashcardRef = useRef<FlashcardCompHandle | null>(null);
 
   const [storedFiltersState] = useState(getStoredFlashcardFilters);
 
@@ -76,10 +72,6 @@ export const FlashcardsPage = () => {
   const [practiceMode, setPracticeMode] = useState<PracticeMode>(
     () => storedFiltersState?.practiceMode ?? DEFAULT_PRACTICE_MODE,
   );
-  const [flashcardIndex, setFlashcardIndex] = useState(0);
-  const [wasFlipped, setWasFlipped] = useState(false);
-  const [isCardAnimating, setIsCardAnimating] = useState(false);
-  const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { sessionHistory, recordResponse } = useFlashcardSession();
 
@@ -97,30 +89,25 @@ export const FlashcardsPage = () => {
     storeFlashcardFilters(flashcardParams);
   }, [flashcardParams]);
 
-  const {
-    data: queue,
-    isLoading: isFlashcardLoading,
-    isFetching,
-    error,
-    refetch,
-  } = useFlashcardQueue(flashcardParams, flashcardIndex);
-  const flashcard = queue?.flashcard ?? null;
+  const deck = useFlashcardDeck(flashcardParams, recordResponse);
   const { isLoading: isLanguagesLoading } = useLanguages();
-  const isLoading = isFlashcardLoading || isLanguagesLoading;
-  const respondToFlashcard = useRespondToFlashcard(flashcardIndex);
+  const isLoading = deck.isLoading || isLanguagesLoading;
 
-  const areButtonsDisabled =
-    isCardAnimating || respondToFlashcard.isPending || editDialogOpen;
+  useFlashcardShortcuts({
+    enabled: !editDialogOpen,
+    onFlip: deck.flip,
+    onRespond: deck.respond,
+  });
 
   const [lastCounts, setLastCounts] = useState({
     newCount: 0,
     existingCount: 0,
   });
-  const settledCounts = isFlashcardLoading
+  const settledCounts = deck.isLoading
     ? null
     : {
-        newCount: queue?.newCount ?? 0,
-        existingCount: queue?.existingCount ?? 0,
+        newCount: deck.queue?.newCount ?? 0,
+        existingCount: deck.queue?.existingCount ?? 0,
       };
   if (
     settledCounts !== null &&
@@ -130,62 +117,23 @@ export const FlashcardsPage = () => {
     setLastCounts(settledCounts);
   }
 
-  const handleRespondByRating = useCallback(
-    async (response: FlashcardRating) => {
-      if (isCardAnimating || respondToFlashcard.isPending || !flashcard) {
-        return;
-      }
-
-      recordResponse(response);
-
-      await respondToFlashcard.mutateAsync({
-        flashcardId: flashcard.id,
-        response: {
-          response,
-          nextCardQuery: flashcardParams,
-        },
-      });
-    },
-    [
-      isCardAnimating,
-      respondToFlashcard,
-      flashcard,
-      recordResponse,
-      flashcardParams,
-    ],
-  );
-
-  const handleRespond = useCallback(
-    (direction: Direction) => {
-      void handleRespondByRating(FLASHCARD_DIRECTION_RATINGS[direction]);
-    },
-    [handleRespondByRating],
-  );
-
-  const onSwipeAnimationComplete = () => {
-    setFlashcardIndex((prev) => prev + 1);
-    setWasFlipped(false);
-    setIsSwipeAnimating(false);
-  };
-
   const onLanguagePairChange = (newPair: LanguageFilterValue | null) => {
     setLanguagePair(newPair);
-    setFlashcardIndex(0);
-    flashcardRef.current?.reset();
+    deck.redeal();
   };
 
   const onReverseChange = (checked: boolean) => {
     setIsReverse(checked);
-    setFlashcardIndex(0);
-    flashcardRef.current?.reset();
-    setWasFlipped(false);
+    deck.redeal();
   };
 
   const onPracticeModeChange = (newMode: PracticeMode) => {
     setPracticeMode(newMode);
-    setFlashcardIndex(0);
-    flashcardRef.current?.reset();
-    setWasFlipped(false);
+    deck.redeal();
+  };
+
+  const onEditClick = () => {
+    if (deck.dealtCard) setEditDialogOpen(true);
   };
 
   const tally = useMemo(() => {
@@ -206,9 +154,9 @@ export const FlashcardsPage = () => {
   }, [sessionHistory]);
 
   const ratingLabels: Record<Direction, string> = {
-    left: !wasFlipped ? t("flashcards.dontKnow") : t("flashcards.didntKnow"),
-    down: !wasFlipped ? t("flashcards.notSure") : t("flashcards.wasntSure"),
-    right: !wasFlipped ? t("flashcards.knowIt") : t("flashcards.knewIt"),
+    left: !deck.revealed ? t("flashcards.dontKnow") : t("flashcards.didntKnow"),
+    down: !deck.revealed ? t("flashcards.notSure") : t("flashcards.wasntSure"),
+    right: !deck.revealed ? t("flashcards.knowIt") : t("flashcards.knewIt"),
     up: t("flashcards.easy"),
   };
 
@@ -228,7 +176,6 @@ export const FlashcardsPage = () => {
                 className="flex-1 lg:w-full"
                 value={languagePair}
                 onChange={(newPair) => onLanguagePairChange(newPair)}
-                disabled={areButtonsDisabled}
               />
 
               <Tooltip>
@@ -238,7 +185,6 @@ export const FlashcardsPage = () => {
                     label={t("flashcards.reverseCards")}
                     checked={isReverse}
                     onCheckedChange={(checked) => onReverseChange(!!checked)}
-                    disabled={areButtonsDisabled}
                   />
                 </TooltipTrigger>
 
@@ -253,14 +199,13 @@ export const FlashcardsPage = () => {
                 className="flex-1 lg:w-full"
                 value={practiceMode}
                 onChange={onPracticeModeChange}
-                disabled={areButtonsDisabled}
               />
 
               <Button
                 className="lg:order-last"
                 variant="outline"
-                onClick={() => setEditDialogOpen(true)}
-                disabled={areButtonsDisabled || !flashcard}
+                onClick={onEditClick}
+                disabled={!deck.flashcard}
               >
                 <IconPencil />
                 <span className="max-lg:hidden">
@@ -307,91 +252,54 @@ export const FlashcardsPage = () => {
           <div className="mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
             {isLoading ? (
               <FlashcardSkeleton />
-            ) : error || !flashcard ? (
-              <FlashcardEmptyState
-                hasError={!!error}
-                practiceMode={practiceMode}
-                newCount={lastCounts.newCount}
-                existingCount={lastCounts.existingCount}
-                isRefreshing={isFetching}
-                onRefresh={() => void refetch()}
-                onPracticeModeChange={onPracticeModeChange}
-              />
             ) : (
-              flashcard.translation && (
-                <FlashcardComp
-                  className="-m-1"
-                  key={`${flashcardIndex}-${isReverse}`}
-                  ref={flashcardRef}
-                  isLoading={isFetching}
-                  translation={flashcard.translation}
-                  disabled={areButtonsDisabled}
-                  isReverse={isReverse}
-                  onAnimationStateChange={setIsCardAnimating}
-                  onFlipStateChange={setWasFlipped}
-                  onRespond={(direction) => {
-                    void handleRespond(direction);
-                  }}
-                  onSwipeAnimationStart={() => setIsSwipeAnimating(true)}
-                  onSwipeAnimationComplete={onSwipeAnimationComplete}
-                  setEditDialogOpen={setEditDialogOpen}
-                />
-              )
+              <FlashcardDeck
+                dealtCard={deck.dealtCard}
+                flipped={deck.flipped}
+                exitDirections={deck.exitDirections}
+                emptyState={
+                  deck.isEmpty && (
+                    <FlashcardEmptyState
+                      hasError={!!deck.error}
+                      practiceMode={practiceMode}
+                      newCount={lastCounts.newCount}
+                      existingCount={lastCounts.existingCount}
+                      isRefreshing={deck.isFetching}
+                      onRefresh={() => void deck.refetch()}
+                      onPracticeModeChange={onPracticeModeChange}
+                    />
+                  )
+                }
+                onFlip={deck.flip}
+                onSwipe={deck.respond}
+                onExitComplete={deck.clearExitDirections}
+                setEditDialogOpen={setEditDialogOpen}
+              />
             )}
 
             {isLoading ? (
               <FlashcardResponseButtonsSkeleton />
             ) : (
-              <div
-                className={cn(
-                  "bg-border grid grid-cols-2 gap-px overflow-hidden rounded-xl border transition-opacity sm:grid-cols-4",
-                  !flashcard && "pointer-events-none opacity-0",
-                )}
-              >
-                {FLASHCARD_DIRECTIONS.map((direction) => {
-                  const meta = FLASHCARD_RATING_META[direction];
-                  const Icon = meta.icon;
-
-                  return (
-                    <button
-                      key={direction}
-                      className={cn(
-                        "bg-card max-lg:short:py-2 flex cursor-pointer flex-col items-center gap-1 px-2 py-3 transition-colors disabled:pointer-events-none disabled:opacity-50",
-                        meta.hoverClass,
-                        meta.mobileOrderClass,
-                      )}
-                      onClick={() => flashcardRef.current?.respond(direction)}
-                      disabled={areButtonsDisabled}
-                    >
-                      <span className="flex items-center gap-1.5 text-sm font-medium">
-                        <Icon size={18} className={meta.iconClass} />
-                        {ratingLabels[direction]}
-                      </span>
-
-                      <ReviewTimeDisplay
-                        minutes={flashcard?.[meta.timeKey] ?? 0}
-                        className={cn(
-                          "text-xs",
-                          isSwipeAnimating && "opacity-0",
-                        )}
-                      />
-                    </button>
-                  );
-                })}
-              </div>
+              <FlashcardResponseButtons
+                flashcard={deck.flashcard}
+                labels={ratingLabels}
+                isHidden={!deck.flashcard}
+                areTimesHidden={!deck.dealtCard}
+                onRespond={deck.respond}
+              />
             )}
           </div>
         </main>
 
-        {!!flashcard && (
+        {!!deck.flashcard && (
           <AddEditWordDialog
             open={editDialogOpen}
             onOpenChange={(open) => setEditDialogOpen(open)}
             editMode={true}
-            currentTranslation={flashcard.translation}
-            flashcardQueryKey={["flashcards", flashcardParams, flashcardIndex]}
-            onDeleted={() => flashcardRef.current?.reset()}
-            onProgressReset={() => flashcardRef.current?.reset()}
+            currentTranslation={deck.flashcard.translation}
+            flashcardQueryKey={deck.flashcardQueryKey}
+            onDeleted={deck.redeal}
+            onProgressReset={deck.redeal}
           />
         )}
       </div>

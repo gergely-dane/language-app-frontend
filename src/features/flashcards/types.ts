@@ -14,11 +14,7 @@ export type FlashcardTimeKey =
   | "knowItNextReviewMinutes"
   | "easyNextReviewMinutes";
 
-export type FlashcardCompHandle = {
-  flip: () => void;
-  respond: (direction: Direction) => void;
-  reset: () => void;
-};
+export type FlashcardExitDirections = Partial<Record<string, Direction>>;
 
 export const practiceModeSchema = z.enum(PRACTICE_MODE);
 
@@ -63,6 +59,11 @@ export const flashcardSchema = z.object({
 });
 
 export type Flashcard = z.infer<typeof flashcardSchema>;
+
+export type DealtFlashcard = {
+  key: string;
+  flashcard: Flashcard;
+};
 
 export const flashcardQueueSchema = z.object({
   flashcard: flashcardSchema.nullable(),

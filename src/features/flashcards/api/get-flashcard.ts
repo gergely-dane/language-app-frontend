@@ -13,6 +13,11 @@ const getFlashcardQueue = async (params?: FlashcardParams | null) => {
   return parseFlashcardQueue(data);
 };
 
+export const getFlashcardQueueQueryKey = (
+  params?: FlashcardParams | null,
+  index?: number,
+) => ["flashcards", params, index] as const;
+
 export const useFlashcardQueue = (
   params?: FlashcardParams | null,
   index?: number,
@@ -32,9 +37,10 @@ export const useFlashcardQueue = (
   }, [index, queryClient]);
 
   return useQuery({
-    queryKey: ["flashcards", params, index],
+    queryKey: getFlashcardQueueQueryKey(params, index),
     queryFn: () => getFlashcardQueue(params),
-    staleTime: 0,
+    // The next card is seeded by the review response, refetching it would only race that response.
+    staleTime: Infinity,
     refetchOnMount: "always",
   });
 };

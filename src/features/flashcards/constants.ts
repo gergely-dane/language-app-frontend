@@ -1,5 +1,5 @@
 import { IconCheck, IconHelp, IconStar, IconX } from "@tabler/icons-react";
-import type { Transition } from "motion/react";
+import type { TargetAndTransition, Transition } from "motion/react";
 
 import type {
   Direction,
@@ -8,15 +8,50 @@ import type {
   PracticeMode,
 } from "./types";
 
-export const FLIP_TRANSITION = {
+export const CARD_TRANSITION = {
   duration: 0.6,
   ease: [0.22, 0.85, 0.1, 1],
 } as const satisfies Transition;
 
-export const SWIPE_TRANSITION = {
-  duration: 0.55,
-  ease: [0.3, 0.85, 0.1, 1],
+export const HOVER_TRANSITION = {
+  duration: 0.2,
+  ease: "easeOut",
 } as const satisfies Transition;
+
+export const FADE_TRANSITION = {
+  duration: 0.25,
+  ease: "easeOut",
+} as const satisfies Transition;
+
+export const FLASHCARD_HOVER_LIFT = -4;
+
+export const FLASHCARD_STACKED_TARGET = {
+  opacity: 0,
+  scale: 0.98,
+  y: 16,
+} as const satisfies TargetAndTransition;
+
+export const FLASHCARD_DEALT_TARGET = {
+  opacity: 1,
+  scale: 1,
+  y: 0,
+} as const satisfies TargetAndTransition;
+
+export const FLASHCARD_EXIT_TARGETS: Record<Direction, TargetAndTransition> = {
+  left: { opacity: 0, scale: 0.98, x: -384, y: 16, rotateZ: -5 },
+  right: { opacity: 0, scale: 0.98, x: 384, y: 16, rotateZ: 5 },
+  down: { opacity: 0, scale: 0.98, y: 184 },
+  up: { opacity: 0, scale: 0.98, y: -184 },
+};
+
+export const FLASHCARD_KEY_DIRECTIONS: Partial<Record<string, Direction>> = {
+  ArrowLeft: "left",
+  ArrowDown: "down",
+  ArrowRight: "right",
+  ArrowUp: "up",
+};
+
+export const FLASHCARD_SWIPE_THRESHOLD = 50;
 
 export const MINUTES_IN_DAY = 1440;
 

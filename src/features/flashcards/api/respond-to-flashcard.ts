@@ -4,16 +4,18 @@ import { apiClient } from "@/lib/api-client";
 
 import type { FlashcardParams } from "../types";
 import { parseFlashcardQueue } from "../utils";
+import { getFlashcardQueueQueryKey } from "./get-flashcard";
 
 interface RespondToFlashcardRequest {
   flashcardId: number;
+  flashcardIndex: number;
   response: {
     response: number;
     nextCardQuery: FlashcardParams | null;
   };
 }
 
-export const useRespondToFlashcard = (flashcardIndex?: number) => {
+export const useRespondToFlashcard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -32,12 +34,11 @@ export const useRespondToFlashcard = (flashcardIndex?: number) => {
     onSuccess: (nextQueue, variables) => {
       void queryClient.invalidateQueries({ queryKey: ["statistics"] });
 
-      if (flashcardIndex === undefined) {
-        return;
-      }
-
       queryClient.setQueryData(
-        ["flashcards", variables.response.nextCardQuery, flashcardIndex + 1],
+        getFlashcardQueueQueryKey(
+          variables.response.nextCardQuery,
+          variables.flashcardIndex + 1,
+        ),
         nextQueue,
       );
     },

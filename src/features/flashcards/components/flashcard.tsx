@@ -1,270 +1,85 @@
 "use client";
 
-import {
-  type AnimationDefinition,
-  motion,
-  type TargetAndTransition,
-} from "motion/react";
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import { motion, useIsPresent, usePresenceData } from "motion/react";
 
 import type { Translation } from "@/features/vocabulary/types";
-import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { cn } from "@/lib/utils";
 
-import { FLIP_TRANSITION, SWIPE_TRANSITION } from "../constants";
-import type { Direction, FlashcardCompHandle } from "../types";
-import { getCardAnimation } from "../utils";
+import {
+  CARD_TRANSITION,
+  FLASHCARD_DEALT_TARGET,
+  FLASHCARD_EXIT_TARGETS,
+  FLASHCARD_HOVER_LIFT,
+  FLASHCARD_STACKED_TARGET,
+  HOVER_TRANSITION,
+} from "../constants";
+import type { FlashcardExitDirections } from "../types";
 import { FlashcardSide } from "./flashcard-side";
 
 // An onUpdate subscriber makes motion run all values on its JS frameloop instead of WAAPI, whose opacity animations some phones snap to the end state instantly.
 const forceJsAnimation = () => {};
 
 type FlashcardCompProps = {
-  className?: string;
+  cardKey: string;
   translation: Translation;
-  disabled?: boolean;
-  isReverse?: boolean;
-  isLoading?: boolean;
-  onAnimationStateChange?: (isAnimating: boolean) => void;
-  onFlipStateChange?: (flipped: boolean) => void;
-  onRespond?: (direction: Direction) => void;
-  onSwipeAnimationStart?: () => void;
-  onSwipeAnimationComplete?: (direction: Direction) => void;
+  flipped: boolean;
+  onFlip: () => void;
   setEditDialogOpen?: (open: boolean) => void;
 };
 
-export const FlashcardComp = React.forwardRef<
-  FlashcardCompHandle,
-  FlashcardCompProps
->(
-  (
-    {
-      className,
-      translation,
-      disabled = false,
-      isReverse = false,
-      isLoading = false,
-      onAnimationStateChange,
-      onFlipStateChange,
-      onRespond,
-      onSwipeAnimationStart,
-      onSwipeAnimationComplete,
-      setEditDialogOpen,
-    },
-    ref,
-  ) => {
-    const swipeTimeoutRef = useRef<number | null>(null);
-    const [displayTranslation, setDisplayTranslation] = useState(translation);
+export const FlashcardComp = ({
+  cardKey,
+  translation,
+  flipped,
+  onFlip,
+  setEditDialogOpen,
+}: FlashcardCompProps) => {
+  const isPresent = useIsPresent();
+  const exitDirections = usePresenceData() as
+    | FlashcardExitDirections
+    | undefined;
+  const exitDirection = exitDirections?.[cardKey];
 
-    const [flipped, setFlipped] = useState(isReverse);
-    const [isFlipAnimating, setIsFlipAnimating] = useState(false);
-    const [swipeAnimationDirection, setSwipeAnimationDirection] =
-      useState<Direction | null>(null);
-    const [isEntering, setIsEntering] = useState(true);
-
-    const currentDisplayTranslation = swipeAnimationDirection
-      ? displayTranslation
-      : translation;
-
-    const clearSwipeTimeout = useCallback(() => {
-      if (swipeTimeoutRef.current !== null) {
-        window.clearTimeout(swipeTimeoutRef.current);
-        swipeTimeoutRef.current = null;
+  return (
+    // Opacity lives on this layer only: on the preserve-3d layer below it would flatten the faces and break backface hiding.
+    <motion.div
+      className={cn(
+        "absolute inset-x-0 top-0 h-54 will-change-transform md:h-66 lg:h-76",
+        !isPresent && "pointer-events-none",
+        !isPresent && exitDirection && "z-10",
+      )}
+      style={{ perspective: 1600 }}
+      initial={FLASHCARD_STACKED_TARGET}
+      animate={FLASHCARD_DEALT_TARGET}
+      exit={
+        exitDirection
+          ? FLASHCARD_EXIT_TARGETS[exitDirection]
+          : FLASHCARD_STACKED_TARGET
       }
-    }, []);
-
-    const reset = useCallback(() => {
-      clearSwipeTimeout();
-      setFlipped(isReverse);
-      onFlipStateChange?.(isReverse);
-      setIsFlipAnimating(false);
-      setSwipeAnimationDirection(null);
-      setIsEntering(true);
-    }, [clearSwipeTimeout, isReverse, onFlipStateChange]);
-
-    const startFlip = useCallback(() => {
-      if (disabled) return;
-
-      setFlipped((prev) => !prev);
-      setIsFlipAnimating(true);
-    }, [disabled]);
-
-    const respond = useCallback(
-      (direction: Direction) => {
-        if (disabled || swipeAnimationDirection) return;
-
-        setDisplayTranslation(translation);
-        onRespond?.(direction);
-        setSwipeAnimationDirection(direction);
-        onSwipeAnimationStart?.();
-
-        swipeTimeoutRef.current = window.setTimeout(
-          () => {
-            swipeTimeoutRef.current = null;
-            onAnimationStateChange?.(false);
-            onSwipeAnimationComplete?.(direction);
-          },
-          SWIPE_TRANSITION.duration * 1000 + 100,
-        );
-      },
-      [
-        disabled,
-        onAnimationStateChange,
-        onRespond,
-        onSwipeAnimationComplete,
-        onSwipeAnimationStart,
-        swipeAnimationDirection,
-        translation,
-      ],
-    );
-
-    const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
-      50,
-      useCallback(
-        (direction: Direction) => {
-          respond(direction);
-        },
-        [respond],
-      ),
-    );
-
-    const handleAnimationComplete = (definition: AnimationDefinition) => {
-      const target = definition as TargetAndTransition;
-
-      if (swipeAnimationDirection) return;
-
-      if (target.opacity === 1) {
-        onAnimationStateChange?.(false);
-        setIsFlipAnimating(false);
-        setIsEntering(false);
-      }
-    };
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        flip: startFlip,
-        respond,
-        reset,
-      }),
-      [reset, respond, startFlip],
-    );
-
-    useEffect(() => clearSwipeTimeout, [clearSwipeTimeout]);
-
-    useEffect(() => {
-      onAnimationStateChange?.(isFlipAnimating || !!swipeAnimationDirection);
-    }, [isFlipAnimating, onAnimationStateChange, swipeAnimationDirection]);
-
-    useEffect(() => {
-      if (flipped) {
-        onFlipStateChange?.(true);
-      }
-    }, [flipped, onFlipStateChange]);
-
-    useEffect(() => {
-      const handleKeyDown = (e: globalThis.KeyboardEvent) => {
-        if (disabled) return;
-
-        switch (e.key) {
-          case " ":
-            e.preventDefault();
-            startFlip();
-            break;
-          case "ArrowLeft":
-            e.preventDefault();
-            respond("left");
-            break;
-          case "ArrowDown":
-            e.preventDefault();
-            respond("down");
-            break;
-          case "ArrowUp":
-            e.preventDefault();
-            respond("up");
-            break;
-          case "ArrowRight":
-            e.preventDefault();
-            respond("right");
-            break;
-        }
-      };
-
-      window.addEventListener("keydown", handleKeyDown);
-
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [disabled, respond, startFlip]);
-
-    return (
-      <div
-        className={cn(
-          "cursor-pointer touch-none p-1 select-none max-lg:overflow-x-clip",
-          className,
-        )}
-        ref={swipeRef}
+      transition={CARD_TRANSITION}
+      onUpdate={forceJsAnimation}
+    >
+      <motion.div
+        className="relative size-full cursor-pointer rounded-xl will-change-transform [transform-style:preserve-3d]"
+        initial={false}
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ ...CARD_TRANSITION, y: HOVER_TRANSITION }}
+        whileHover={{ y: FLASHCARD_HOVER_LIFT }}
+        whileTap={{ y: FLASHCARD_HOVER_LIFT }}
+        onClick={onFlip}
       >
-        <div
-          className="relative h-58 md:h-70 lg:h-80"
-          style={{ perspective: 1600 }}
-        >
-          <div
-            aria-hidden="true"
-            className="ring-foreground absolute inset-x-0 top-4 mx-auto h-54 w-[98%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.3)_c_h)] ring-2 md:h-66 lg:h-76"
-          />
-          <div
-            aria-hidden="true"
-            className="ring-foreground absolute inset-x-0 top-2 mx-auto h-54 w-[99%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.15)_c_h)] ring-2 md:h-66 lg:h-76"
-          />
+        <FlashcardSide
+          translation={translation}
+          isFront={true}
+          setEditDialogOpen={setEditDialogOpen}
+        />
 
-          <motion.div
-            className={cn(
-              "relative h-54 flex-1 cursor-pointer rounded-xl will-change-transform [transform-style:preserve-3d] md:h-66 lg:h-76",
-              swipeAnimationDirection && "pointer-events-none",
-            )}
-            initial={{
-              ...getCardAnimation(isReverse, null),
-              opacity: 0,
-              scale: 0.98,
-              y: 16,
-            }}
-            animate={getCardAnimation(flipped, swipeAnimationDirection)}
-            transition={
-              swipeAnimationDirection ? SWIPE_TRANSITION : FLIP_TRANSITION
-            }
-            whileHover={swipeAnimationDirection ? undefined : { y: -4 }}
-            whileTap={swipeAnimationDirection ? undefined : { y: -4 }}
-            onClick={() => startFlip()}
-            onUpdate={forceJsAnimation}
-            onAnimationComplete={handleAnimationComplete}
-          >
-            <FlashcardSide
-              translation={!isLoading ? currentDisplayTranslation : undefined}
-              isFront={true}
-              flipped={flipped}
-              forceHideBackface={!!swipeAnimationDirection || isEntering}
-              setEditDialogOpen={setEditDialogOpen}
-            />
-
-            <FlashcardSide
-              translation={!isLoading ? currentDisplayTranslation : undefined}
-              isFront={false}
-              flipped={flipped}
-              forceHideBackface={!!swipeAnimationDirection || isEntering}
-              setEditDialogOpen={setEditDialogOpen}
-            />
-          </motion.div>
-        </div>
-      </div>
-    );
-  },
-);
-
-FlashcardComp.displayName = "FlashcardComp";
+        <FlashcardSide
+          translation={translation}
+          isFront={false}
+          setEditDialogOpen={setEditDialogOpen}
+        />
+      </motion.div>
+    </motion.div>
+  );
+};
