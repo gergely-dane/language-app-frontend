@@ -1,11 +1,7 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 
 type TooltipTabsOption<T> = {
   value: T;
@@ -41,19 +37,10 @@ export const TooltipTabs = <T extends string | number | boolean>({
     >
       <TabsList className="w-full">
         {options.map((option) => (
-          <Tooltip key={String(option.value)}>
-            {/* TabsTrigger must be the outer element: both Radix triggers spread props after their own data-state, so the inner one loses. */}
-            <TabsTrigger
-              asChild
-              value={String(option.value)}
-              disabled={disabled}
-            >
-              <TooltipTrigger>{option.label}</TooltipTrigger>
+          <Tooltip key={String(option.value)} content={option.tooltip}>
+            <TabsTrigger value={String(option.value)} disabled={disabled}>
+              {option.label}
             </TabsTrigger>
-
-            <TooltipContent>
-              <p>{option.tooltip}</p>
-            </TooltipContent>
           </Tooltip>
         ))}
       </TabsList>

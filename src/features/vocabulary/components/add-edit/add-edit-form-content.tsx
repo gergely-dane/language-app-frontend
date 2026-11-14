@@ -7,11 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useAlert } from "@/context/alert-context";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { LanguageSelector } from "@/features/languages/components/language-selector";
@@ -336,35 +332,28 @@ export const AddEditFormContent = ({
               onInputValueChange={setWord}
               onEmptyEnter={handleEmptyEnter}
               addonEnd={
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <InputGroupButton
-                      className="border-input size-9 shrink-0 rounded-md border p-0 shadow-xs"
-                      variant="outline"
-                      onClick={() => void handleTranslate()}
-                      isLoading={translateWord.isPending}
-                      disabled={
-                        (!word.trim() && !wordList.length) ||
-                        !effectiveSourceLanguageId ||
-                        !effectiveTargetLanguageId
-                      }
-                    >
-                      <IconLanguage className="text-primary size-4" />
-                    </InputGroupButton>
-                  </TooltipTrigger>
-
-                  <TooltipContent>
-                    <p>
-                      {t.rich("vocabulary.translateWordInto", {
-                        word:
-                          [...wordList, ...(word ? [word] : [])][0] || "...",
-                        targetLanguage: targetLanguage?.englishName || "...",
-                        bold: (chunks) => (
-                          <span className="font-semibold">{chunks}</span>
-                        ),
-                      })}
-                    </p>
-                  </TooltipContent>
+                <Tooltip
+                  content={t.rich("vocabulary.translateWordInto", {
+                    word: [...wordList, ...(word ? [word] : [])][0] || "...",
+                    targetLanguage: targetLanguage?.englishName || "...",
+                    bold: (chunks) => (
+                      <span className="font-semibold">{chunks}</span>
+                    ),
+                  })}
+                >
+                  <InputGroupButton
+                    className="border-input size-9 shrink-0 rounded-md border p-0 shadow-xs"
+                    variant="outline"
+                    onClick={() => void handleTranslate()}
+                    isLoading={translateWord.isPending}
+                    disabled={
+                      (!word.trim() && !wordList.length) ||
+                      !effectiveSourceLanguageId ||
+                      !effectiveTargetLanguageId
+                    }
+                  >
+                    <IconLanguage className="text-primary size-4" />
+                  </InputGroupButton>
                 </Tooltip>
               }
             />
@@ -412,13 +401,8 @@ export const AddEditFormContent = ({
                 {t("vocabulary.howWellDoYouKnowTheWord")}
               </Label>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <IconHelp className="text-muted-foreground ml-1" size={18} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t("vocabulary.adjustTheSlider")}</p>
-                </TooltipContent>
+              <Tooltip content={t("vocabulary.adjustTheSlider")}>
+                <IconHelp className="text-muted-foreground ml-1" size={18} />
               </Tooltip>
             </div>
 

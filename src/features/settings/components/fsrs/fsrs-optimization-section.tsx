@@ -16,11 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useAlert } from "@/context/alert-context";
 import { useGetFsrsOptimizationStatus } from "@/features/settings/api/get-fsrs-optimization-status";
 import { useOptimizeFsrs } from "@/features/settings/api/optimize-fsrs";
@@ -353,15 +349,10 @@ export const FsrsOptimizationSection = () => {
               {optimizeLabel}
             </Button>
           ) : (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="inline-block cursor-not-allowed">
-                  <Button disabled>{optimizeLabel}</Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                {cooldownHelper ?? progressHelper}
-              </TooltipContent>
+            <Tooltip content={cooldownHelper ?? progressHelper}>
+              <span className="inline-block cursor-not-allowed">
+                <Button disabled>{optimizeLabel}</Button>
+              </span>
             </Tooltip>
           )}
 

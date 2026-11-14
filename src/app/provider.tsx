@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { ThemeProvider } from "next-themes";
 import { type ReactNode } from "react";
 
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { AlertProvider } from "@/context/alert-context";
 import { AuthProvider } from "@/context/auth-context";
 import { type I18nConfig } from "@/interfaces/i18n-config.interface";
@@ -30,7 +31,9 @@ export const AppProvider = ({ i18nConfig, children }: AppProviderProps) => {
           timeZone={i18nConfig.timeZone}
         >
           <ThemeProvider attribute="class" enableSystem>
-            <AlertProvider>{children}</AlertProvider>
+            <TooltipProvider>
+              <AlertProvider>{children}</AlertProvider>
+            </TooltipProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </AuthProvider>

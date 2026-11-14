@@ -2,11 +2,7 @@ import { IconRestore } from "@tabler/icons-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useAlert } from "@/context/alert-context";
 import { useResetTranslationProgress } from "@/features/vocabulary/api/reset-translation-progress";
 import { ResetProgressDialog } from "@/features/vocabulary/components/add-edit/reset-progress-dialog";
@@ -52,20 +48,14 @@ export const ResetProgressButton = ({
         if (e.key === "Enter") e.stopPropagation();
       }}
     >
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setIsDialogOpen(true)}
-          >
-            <IconRestore />
-          </Button>
-        </TooltipTrigger>
-
-        <TooltipContent>
-          <p>{t("vocabulary.resetProgress.tooltip")}</p>
-        </TooltipContent>
+      <Tooltip content={t("vocabulary.resetProgress.tooltip")}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setIsDialogOpen(true)}
+        >
+          <IconRestore />
+        </Button>
       </Tooltip>
 
       <ResetProgressDialog

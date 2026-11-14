@@ -2,11 +2,7 @@
 
 import { useMemo } from "react";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
   CELL_SIZE,
   DAYS_IN_WEEK,
@@ -136,63 +132,65 @@ export const ActivityHeatmap = ({ stats, className }: ActivityHeatmapProps) => {
           ))}
 
           {grid.map((cell) => (
-            <Tooltip key={`${cell.week}-${cell.day}`}>
-              <TooltipTrigger asChild>
-                <rect
-                  x={cell.week * TOTAL_CELL}
-                  y={cell.day * TOTAL_CELL + 18}
-                  width={CELL_SIZE}
-                  height={CELL_SIZE}
-                  rx={2}
-                  className={cn(
-                    "transition-opacity hover:opacity-80",
-                    getIntensityClass(cell.count, maxCount),
+            <Tooltip
+              key={`${cell.week}-${cell.day}`}
+              className="grid min-w-[8rem] items-start gap-1.5"
+              content={
+                <>
+                  <div className="font-medium">
+                    {cell.date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </div>
+
+                  {cell.count > 0 ? (
+                    <div className="grid gap-1.5">
+                      {cell.flashcards > 0 && (
+                        <div className="flex w-full items-center gap-2">
+                          <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                            <span className="text-muted-foreground">
+                              {t("statistics.heatmap.flashcards")}
+                            </span>
+                            <span className="text-foreground font-mono font-medium tabular-nums">
+                              {cell.flashcards}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {cell.translations > 0 && (
+                        <div className="flex w-full items-center gap-2">
+                          <div className="flex flex-1 items-center justify-between gap-2 leading-none">
+                            <span className="text-muted-foreground">
+                              {t("statistics.heatmap.translations")}
+                            </span>
+                            <span className="text-foreground font-mono font-medium tabular-nums">
+                              {cell.translations}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-muted-foreground">
+                      {t("statistics.heatmap.noActivity")}
+                    </div>
                   )}
-                />
-              </TooltipTrigger>
-
-              <TooltipContent className="border-border/50 bg-background text-foreground grid min-w-[8rem] items-start gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl [&_svg]:!hidden [&>svg]:!hidden [&>svg]:!opacity-0">
-                <div className="font-medium">
-                  {cell.date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </div>
-
-                {cell.count > 0 ? (
-                  <div className="grid gap-1.5">
-                    {cell.flashcards > 0 && (
-                      <div className="flex w-full items-center gap-2">
-                        <div className="flex flex-1 items-center justify-between gap-2 leading-none">
-                          <span className="text-muted-foreground">
-                            {t("statistics.heatmap.flashcards")}
-                          </span>
-                          <span className="text-foreground font-mono font-medium tabular-nums">
-                            {cell.flashcards}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {cell.translations > 0 && (
-                      <div className="flex w-full items-center gap-2">
-                        <div className="flex flex-1 items-center justify-between gap-2 leading-none">
-                          <span className="text-muted-foreground">
-                            {t("statistics.heatmap.translations")}
-                          </span>
-                          <span className="text-foreground font-mono font-medium tabular-nums">
-                            {cell.translations}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-muted-foreground">
-                    {t("statistics.heatmap.noActivity")}
-                  </div>
+                </>
+              }
+            >
+              <rect
+                x={cell.week * TOTAL_CELL}
+                y={cell.day * TOTAL_CELL + 18}
+                width={CELL_SIZE}
+                height={CELL_SIZE}
+                rx={2}
+                className={cn(
+                  "transition-opacity hover:opacity-80",
+                  getIntensityClass(cell.count, maxCount),
                 )}
-              </TooltipContent>
+              />
             </Tooltip>
           ))}
         </svg>
