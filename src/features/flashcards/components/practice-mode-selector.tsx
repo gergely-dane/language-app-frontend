@@ -1,11 +1,6 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipTabs } from "@/components/common/tooltip-tabs";
 import { PRACTICE_MODE_OPTIONS } from "@/features/flashcards/constants";
 import type { PracticeMode } from "@/features/flashcards/types";
 import { useI18n } from "@/hooks/use-i18n";
@@ -25,37 +20,19 @@ export const PracticeModeSelector = ({
 }: PracticeModeSelectorProps) => {
   const t = useI18n();
 
-  const handleValueChange = (newValue: string) => {
-    const option = PRACTICE_MODE_OPTIONS.find(
-      (option) => String(option.value) === newValue,
-    );
-    if (option) onChange(option.value);
-  };
+  const options = PRACTICE_MODE_OPTIONS.map((option) => ({
+    value: option.value,
+    label: t(`flashcards.${option.label}`),
+    tooltip: t(`flashcards.${option.tooltip}`),
+  }));
 
   return (
-    <Tabs
+    <TooltipTabs
       className={className}
-      value={String(value)}
-      onValueChange={handleValueChange}
-    >
-      <TabsList className="w-full">
-        {PRACTICE_MODE_OPTIONS.map((option) => (
-          <Tooltip key={option.value}>
-            {/* TabsTrigger must be the outer element: both Radix triggers spread props after their own data-state, so the inner one loses. */}
-            <TabsTrigger
-              asChild
-              value={String(option.value)}
-              disabled={disabled}
-            >
-              <TooltipTrigger>{t(`flashcards.${option.label}`)}</TooltipTrigger>
-            </TabsTrigger>
-
-            <TooltipContent>
-              <p>{t(`flashcards.${option.tooltip}`)}</p>
-            </TooltipContent>
-          </Tooltip>
-        ))}
-      </TabsList>
-    </Tabs>
+      value={value}
+      options={options}
+      onChange={onChange}
+      disabled={disabled}
+    />
   );
 };

@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 type CollapsibleSectionProps = {
   section: FlashcardSection;
   title: string;
+  summary?: React.ReactNode;
   defaultCollapsedOnShortScreen?: boolean;
   children: React.ReactNode;
 };
@@ -18,6 +19,7 @@ type CollapsibleSectionProps = {
 export const CollapsibleSection = ({
   section,
   title,
+  summary,
   defaultCollapsedOnShortScreen,
   children,
 }: CollapsibleSectionProps) => {
@@ -32,20 +34,24 @@ export const CollapsibleSection = ({
       <SectionLabel className="lg:hidden">
         <button
           type="button"
-          className="focus-visible:ring-ring/50 flex w-full cursor-pointer items-center justify-between rounded-sm uppercase outline-none focus-visible:ring-[3px]"
+          className="focus-visible:ring-ring/50 flex w-full cursor-pointer items-center justify-between gap-3 rounded-sm uppercase outline-none focus-visible:ring-[3px]"
           aria-expanded={!isCollapsed}
           aria-controls={contentId}
           onClick={toggle}
         >
-          {title}
+          <span className="shrink-0">{title}</span>
 
-          <IconChevronDown
-            size={16}
-            className={cn(
-              "transition-transform duration-200",
-              !isCollapsed && "rotate-180",
-            )}
-          />
+          <span className="flex min-w-0 items-center gap-2">
+            {isCollapsed && summary}
+
+            <IconChevronDown
+              size={16}
+              className={cn(
+                "shrink-0 transition-transform duration-200",
+                !isCollapsed && "rotate-180",
+              )}
+            />
+          </span>
         </button>
       </SectionLabel>
 

@@ -25,7 +25,7 @@ export const ShortcutsPanel = ({ ratingLabels }: ShortcutsPanelProps) => {
   ];
 
   return (
-    <section className="bg-card hidden flex-col gap-2 rounded-xl border p-4 lg:flex lg:flex-1 lg:justify-between">
+    <section className="bg-card hidden flex-col gap-2 rounded-xl border p-4 lg:flex">
       <SectionLabel>{t("flashcards.shortcuts")}</SectionLabel>
 
       {shortcuts.map(({ label, kbd }) => (

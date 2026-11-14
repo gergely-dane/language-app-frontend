@@ -9,7 +9,7 @@ export const SectionLabel = ({
 }) => (
   <h3
     className={cn(
-      "text-muted-foreground font-sans text-xs font-medium tracking-widest uppercase",
+      "text-muted-foreground font-sans text-xs font-semibold tracking-widest uppercase lg:text-[13px]/4",
       className,
     )}
   >

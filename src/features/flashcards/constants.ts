@@ -114,7 +114,7 @@ export const PRACTICE_MODE = {
   Existing: 2,
 } as const;
 
-export const DEFAULT_PRACTICE_MODE: PracticeMode = PRACTICE_MODE.Both;
+export const DEFAULT_PRACTICE_MODE: PracticeMode = PRACTICE_MODE.Existing;
 
 export const PRACTICE_MODE_OPTIONS = [
   {
@@ -131,6 +131,21 @@ export const PRACTICE_MODE_OPTIONS = [
     value: PRACTICE_MODE.Both,
     label: "practiceModeBoth",
     tooltip: "practiceModeBothTooltip",
+  },
+] as const;
+
+export const SHOW_FIRST_OPTIONS = [
+  {
+    value: false,
+    label: "showFirstWord",
+    tooltip: "showFirstWordTooltip",
+    summary: "wordFirst",
+  },
+  {
+    value: true,
+    label: "showFirstTranslation",
+    tooltip: "showFirstTranslationTooltip",
+    summary: "translationFirst",
   },
 ] as const;
 

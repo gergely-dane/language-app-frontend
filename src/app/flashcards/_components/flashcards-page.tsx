@@ -1,16 +1,8 @@
 "use client";
 
-import { IconArrowBackUp, IconPencil } from "@tabler/icons-react";
 import { useEffect, useMemo, useState } from "react";
 
-import { CheckboxButton } from "@/components/common/checkbox-button";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
+import { DeckPanel } from "@/features/flashcards/components/deck-panel";
 import { FlashcardDeck } from "@/features/flashcards/components/flashcard-deck";
 import { FlashcardEmptyState } from "@/features/flashcards/components/flashcard-empty-state";
 import { FlashcardResponseButtons } from "@/features/flashcards/components/flashcard-response-buttons";
@@ -18,7 +10,7 @@ import {
   FlashcardResponseButtonsSkeleton,
   FlashcardSkeleton,
 } from "@/features/flashcards/components/flashcard-skeleton";
-import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
+import { FlashcardToolbar } from "@/features/flashcards/components/flashcard-toolbar";
 import { SessionPanel } from "@/features/flashcards/components/session-panel";
 import { ShortcutsPanel } from "@/features/flashcards/components/shortcuts-panel";
 import {
@@ -40,7 +32,6 @@ import {
   storeFlashcardFilters,
 } from "@/features/flashcards/utils";
 import { useLanguages } from "@/features/languages/api/get-languages";
-import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import { type LanguageFilterValue } from "@/features/languages/types";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
@@ -121,8 +112,8 @@ export const FlashcardsPage = () => {
     deck.redeal();
   };
 
-  const onReverseChange = (checked: boolean) => {
-    setIsReverse(checked);
+  const onReverseChange = (newIsReverse: boolean) => {
+    setIsReverse(newIsReverse);
     deck.redeal();
   };
 
@@ -169,62 +160,14 @@ export const FlashcardsPage = () => {
 
       <div className="mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-4 max-lg:flex-col max-lg:gap-3 lg:mx-0">
         <aside className="max-lg:short:gap-2 flex w-full flex-col gap-4 max-lg:mx-auto max-lg:max-w-120 max-lg:gap-3 lg:w-60 lg:shrink-0">
-          <CollapsibleSection section="deck" title={t("flashcards.deck")}>
-            <div className="flex items-center gap-2 lg:contents">
-              <LanguagePairSelector
-                className="flex-1 lg:w-full"
-                value={languagePair}
-                onChange={(newPair) => onLanguagePairChange(newPair)}
-              />
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <CheckboxButton
-                    className="justify-start lg:order-last"
-                    label={t("flashcards.reverseCards")}
-                    checked={isReverse}
-                    onCheckedChange={(checked) => onReverseChange(!!checked)}
-                  />
-                </TooltipTrigger>
-
-                <TooltipContent>
-                  <p>{t("flashcards.reverseCardsTooltip")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            <div className="flex items-center gap-2 lg:contents">
-              <PracticeModeSelector
-                className="flex-1 lg:w-full"
-                value={practiceMode}
-                onChange={onPracticeModeChange}
-              />
-
-              <Button
-                className="lg:order-last"
-                variant="outline"
-                onClick={onEditClick}
-                disabled={!deck.flashcard}
-              >
-                <IconPencil />
-                <span className="max-lg:hidden">
-                  {t("flashcards.editTranslation")}
-                </span>
-              </Button>
-
-              <Button
-                className="lg:order-last"
-                variant="outline"
-                onClick={deck.undo}
-                disabled={!deck.canUndo}
-              >
-                <IconArrowBackUp />
-                <span className="max-lg:hidden">
-                  {t("flashcards.undoReview")}
-                </span>
-              </Button>
-            </div>
-          </CollapsibleSection>
+          <DeckPanel
+            languagePair={languagePair}
+            practiceMode={practiceMode}
+            isReverse={isReverse}
+            onLanguagePairChange={onLanguagePairChange}
+            onPracticeModeChange={onPracticeModeChange}
+            onReverseChange={onReverseChange}
+          />
 
           <ShortcutsPanel ratingLabels={ratingLabels} />
         </aside>
@@ -239,7 +182,14 @@ export const FlashcardsPage = () => {
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col">
-          <div className="mx-auto flex w-full max-w-120 flex-col gap-4 max-lg:gap-3">
+          <div className="mx-auto flex w-full max-w-120 flex-col gap-3.5 max-lg:gap-3">
+            <FlashcardToolbar
+              canUndo={deck.canUndo}
+              canEdit={!!deck.flashcard}
+              onUndo={deck.undo}
+              onEdit={onEditClick}
+            />
+
             {isLoading ? (
               <FlashcardSkeleton />
             ) : (
