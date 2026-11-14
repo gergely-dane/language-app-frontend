@@ -63,12 +63,14 @@ export type Flashcard = z.infer<typeof flashcardSchema>;
 export type DealtFlashcard = {
   key: string;
   flashcard: Flashcard;
+  enterDirection?: Direction;
 };
 
 export type FlashcardStackState = {
   drawCount: number;
   depth: number;
   isLifted: boolean;
+  isSinking: boolean;
 };
 
 export const flashcardQueueSchema = z.object({

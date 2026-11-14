@@ -73,7 +73,9 @@ export const FLASHCARD_HIDDEN_TARGET = {
 export const FLASHCARD_DEALT_TARGET = {
   opacity: 1,
   scale: 1,
+  x: 0,
   y: 0,
+  rotateZ: 0,
 } as const satisfies TargetAndTransition;
 
 export const FLASHCARD_EXIT_TARGETS: Record<Direction, TargetAndTransition> = {

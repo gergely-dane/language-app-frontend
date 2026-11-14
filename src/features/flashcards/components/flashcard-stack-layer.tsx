@@ -15,11 +15,13 @@ import { cn } from "@/lib/utils";
 type FlashcardStackLayerProps = {
   depth: number;
   introDelay: number;
+  entersFromTop: boolean;
 };
 
 export const FlashcardStackLayer = ({
   depth,
   introDelay,
+  entersFromTop,
 }: FlashcardStackLayerProps) => {
   const [delay, setDelay] = useState(introDelay);
   const { target, colorClass } = FLASHCARD_STACK_DEPTHS[depth];
@@ -31,7 +33,11 @@ export const FlashcardStackLayer = ({
         colorClass,
       )}
       style={{ transition: STACK_COLOR_TRANSITION }}
-      initial={FLASHCARD_STACK_HIDDEN_TARGET}
+      initial={
+        entersFromTop
+          ? { ...FLASHCARD_STACK_DEPTHS[0].target, opacity: 1 }
+          : FLASHCARD_STACK_HIDDEN_TARGET
+      }
       animate={{
         ...target,
         opacity: 1,

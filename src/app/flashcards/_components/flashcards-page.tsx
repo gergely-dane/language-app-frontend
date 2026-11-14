@@ -1,11 +1,10 @@
 "use client";
 
-import { IconPencil } from "@tabler/icons-react";
+import { IconArrowBackUp, IconPencil } from "@tabler/icons-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { CheckboxButton } from "@/components/common/checkbox-button";
 import { Button } from "@/components/ui/button";
-import { Kbd } from "@/components/ui/kbd";
 import {
   Tooltip,
   TooltipContent,
@@ -20,13 +19,12 @@ import {
   FlashcardSkeleton,
 } from "@/features/flashcards/components/flashcard-skeleton";
 import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
-import { SectionLabel } from "@/features/flashcards/components/section-label";
 import { SessionPanel } from "@/features/flashcards/components/session-panel";
+import { ShortcutsPanel } from "@/features/flashcards/components/shortcuts-panel";
 import {
   DEFAULT_PRACTICE_MODE,
   FLASHCARD_DIRECTION_RATINGS,
   FLASHCARD_DIRECTIONS,
-  FLASHCARD_RATING_META,
 } from "@/features/flashcards/constants";
 import { useFlashcardDeck } from "@/features/flashcards/hooks/use-flashcard-deck";
 import { useFlashcardSession } from "@/features/flashcards/hooks/use-flashcard-session";
@@ -73,7 +71,8 @@ export const FlashcardsPage = () => {
     () => storedFiltersState?.practiceMode ?? DEFAULT_PRACTICE_MODE,
   );
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const { sessionHistory, recordResponse } = useFlashcardSession();
+  const { sessionHistory, recordResponse, undoResponse } =
+    useFlashcardSession();
 
   const flashcardParams = useMemo<FlashcardParams>(
     () => ({
@@ -89,7 +88,7 @@ export const FlashcardsPage = () => {
     storeFlashcardFilters(flashcardParams);
   }, [flashcardParams]);
 
-  const deck = useFlashcardDeck(flashcardParams, recordResponse);
+  const deck = useFlashcardDeck(flashcardParams, recordResponse, undoResponse);
   const { isLoading: isLanguagesLoading } = useLanguages();
   const isLoading = deck.isLoading || isLanguagesLoading;
 
@@ -212,31 +211,22 @@ export const FlashcardsPage = () => {
                   {t("flashcards.editTranslation")}
                 </span>
               </Button>
+
+              <Button
+                className="lg:order-last"
+                variant="outline"
+                onClick={deck.undo}
+                disabled={!deck.canUndo}
+              >
+                <IconArrowBackUp />
+                <span className="max-lg:hidden">
+                  {t("flashcards.undoReview")}
+                </span>
+              </Button>
             </div>
           </CollapsibleSection>
 
-          <section className="bg-card hidden flex-col gap-2 rounded-xl border p-4 lg:flex lg:flex-1 lg:justify-between">
-            <SectionLabel>{t("flashcards.shortcuts")}</SectionLabel>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
-                {t("flashcards.flipCard")}
-              </span>
-              <Kbd>Space</Kbd>
-            </div>
-
-            {FLASHCARD_DIRECTIONS.map((direction) => (
-              <div
-                key={direction}
-                className="flex items-center justify-between text-sm"
-              >
-                <span className="text-muted-foreground">
-                  {ratingLabels[direction]}
-                </span>
-                <Kbd>{FLASHCARD_RATING_META[direction].kbd}</Kbd>
-              </div>
-            ))}
-          </section>
+          <ShortcutsPanel ratingLabels={ratingLabels} />
         </aside>
 
         <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">

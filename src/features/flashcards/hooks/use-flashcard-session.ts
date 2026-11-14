@@ -60,5 +60,12 @@ export const useFlashcardSession = () => {
     }));
   }, []);
 
-  return { sessionHistory: session.history, recordResponse };
+  const undoResponse = useCallback(() => {
+    setSession((prev) => ({
+      lastActivityAt: Date.now(),
+      history: prev.history.slice(0, -1),
+    }));
+  }, []);
+
+  return { sessionHistory: session.history, recordResponse, undoResponse };
 };

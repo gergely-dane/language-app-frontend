@@ -14,7 +14,7 @@ import {
   FLASHCARD_STACKED_TARGET,
   HOVER_TRANSITION,
 } from "../constants";
-import type { FlashcardExitDirections } from "../types";
+import type { Direction, FlashcardExitDirections } from "../types";
 import { FlashcardSide } from "./flashcard-side";
 
 // An onUpdate subscriber makes motion run all values on its JS frameloop instead of WAAPI, whose opacity animations some phones snap to the end state instantly.
@@ -25,10 +25,19 @@ type FlashcardCompProps = {
   translation: Translation;
   flipped: boolean;
   revealsInPlace: boolean;
+  enterDirection?: Direction;
   enterDelay: number;
   onFlip: () => void;
   onEntered: () => void;
   setEditDialogOpen?: (open: boolean) => void;
+};
+
+const getInitialTarget = (
+  revealsInPlace: boolean,
+  enterDirection?: Direction,
+) => {
+  if (enterDirection) return FLASHCARD_EXIT_TARGETS[enterDirection];
+  return revealsInPlace ? FLASHCARD_HIDDEN_TARGET : FLASHCARD_STACKED_TARGET;
 };
 
 export const FlashcardComp = ({
@@ -36,6 +45,7 @@ export const FlashcardComp = ({
   translation,
   flipped,
   revealsInPlace,
+  enterDirection,
   enterDelay,
   onFlip,
   onEntered,
@@ -53,12 +63,10 @@ export const FlashcardComp = ({
       className={cn(
         "absolute inset-x-0 top-0 h-54 will-change-transform md:h-66 lg:h-76",
         !isPresent && "pointer-events-none",
-        !isPresent && exitDirection && "z-10",
+        ((!isPresent && exitDirection) || enterDirection) && "z-10",
       )}
       style={{ perspective: 1600 }}
-      initial={
-        revealsInPlace ? FLASHCARD_HIDDEN_TARGET : FLASHCARD_STACKED_TARGET
-      }
+      initial={getInitialTarget(revealsInPlace, enterDirection)}
       animate={{
         ...FLASHCARD_DEALT_TARGET,
         transition: { ...CARD_TRANSITION, delay: enterDelay },

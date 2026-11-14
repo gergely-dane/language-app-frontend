@@ -83,6 +83,7 @@ export const FlashcardDeck = ({
               translation={dealtCard.flashcard.translation}
               flipped={flipped}
               revealsInPlace={stack.isLifted}
+              enterDirection={dealtCard.enterDirection}
               enterDelay={
                 dealtCard.key === introCardKey
                   ? introLayerDelays.size * FLASHCARD_STACK_STAGGER

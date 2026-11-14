@@ -18,7 +18,8 @@ export const FlashcardStack = ({ stack, introDelays }: FlashcardStackProps) => (
         <FlashcardStackLayer
           key={layer.id}
           depth={layer.depth}
-          introDelay={introDelays.get(layer.id) ?? 0}
+          introDelay={stack.isSinking ? 0 : (introDelays.get(layer.id) ?? 0)}
+          entersFromTop={stack.isSinking}
         />
       ))}
     </AnimatePresence>

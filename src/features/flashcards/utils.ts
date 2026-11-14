@@ -87,6 +87,9 @@ export const storeCollapsedSections = (
   }
 };
 
+export const getDealtFlashcardKey = (dealIndex: number, flashcardId: number) =>
+  `${dealIndex}-${flashcardId}`;
+
 export const getFlashcardStackDepth = (
   remainingCount: number,
   isAdvancing: boolean,
