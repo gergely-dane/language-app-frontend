@@ -257,6 +257,7 @@ export const FlashcardsPage = () => {
                 dealtCard={deck.dealtCard}
                 flipped={deck.flipped}
                 exitDirections={deck.exitDirections}
+                stack={deck.stack}
                 emptyState={
                   deck.isEmpty && (
                     <FlashcardEmptyState
@@ -273,6 +274,7 @@ export const FlashcardsPage = () => {
                 onFlip={deck.flip}
                 onSwipe={deck.respond}
                 onExitComplete={deck.clearExitDirections}
+                onCardEntered={deck.onCardEntered}
                 setEditDialogOpen={setEditDialogOpen}
               />
             )}

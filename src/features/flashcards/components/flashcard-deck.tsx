@@ -1,19 +1,22 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import { FlashcardComp } from "@/features/flashcards/components/flashcard";
 import { FlashcardStack } from "@/features/flashcards/components/flashcard-stack";
 import {
   FADE_TRANSITION,
+  FLASHCARD_STACK_STAGGER,
   FLASHCARD_SWIPE_THRESHOLD,
 } from "@/features/flashcards/constants";
 import type {
   DealtFlashcard,
   Direction,
   FlashcardExitDirections,
+  FlashcardStackState,
 } from "@/features/flashcards/types";
+import { getFlashcardStackLayers } from "@/features/flashcards/utils";
 import { useDetectSwipeOnElement } from "@/hooks/use-detect-swipe-on-element";
 import { cn } from "@/lib/utils";
 
@@ -21,10 +24,12 @@ type FlashcardDeckProps = {
   dealtCard: DealtFlashcard | null;
   flipped: boolean;
   exitDirections: FlashcardExitDirections;
+  stack: FlashcardStackState;
   emptyState: ReactNode;
   onFlip: () => void;
   onSwipe: (direction: Direction) => void;
   onExitComplete: () => void;
+  onCardEntered: () => void;
   setEditDialogOpen: (open: boolean) => void;
 };
 
@@ -32,16 +37,29 @@ export const FlashcardDeck = ({
   dealtCard,
   flipped,
   exitDirections,
+  stack,
   emptyState,
   onFlip,
   onSwipe,
   onExitComplete,
+  onCardEntered,
   setEditDialogOpen,
 }: FlashcardDeckProps) => {
   const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
     FLASHCARD_SWIPE_THRESHOLD,
     onSwipe,
   );
+
+  const [introLayerDelays] = useState(
+    () =>
+      new Map(
+        getFlashcardStackLayers(stack).map((layer, index) => [
+          layer.id,
+          index * FLASHCARD_STACK_STAGGER,
+        ]),
+      ),
+  );
+  const [introCardKey] = useState(dealtCard?.key);
 
   return (
     <div
@@ -51,8 +69,8 @@ export const FlashcardDeck = ({
       )}
       ref={swipeRef}
     >
-      <div className="relative h-58 md:h-70 lg:h-80">
-        <FlashcardStack isHidden={!!emptyState} />
+      <div className="relative h-62 md:h-74 lg:h-84">
+        <FlashcardStack stack={stack} introDelays={introLayerDelays} />
 
         <AnimatePresence
           custom={exitDirections}
@@ -64,7 +82,14 @@ export const FlashcardDeck = ({
               cardKey={dealtCard.key}
               translation={dealtCard.flashcard.translation}
               flipped={flipped}
+              revealsInPlace={stack.isLifted}
+              enterDelay={
+                dealtCard.key === introCardKey
+                  ? introLayerDelays.size * FLASHCARD_STACK_STAGGER
+                  : 0
+              }
               onFlip={onFlip}
+              onEntered={onCardEntered}
               setEditDialogOpen={setEditDialogOpen}
             />
           )}

@@ -9,6 +9,7 @@ import {
   CARD_TRANSITION,
   FLASHCARD_DEALT_TARGET,
   FLASHCARD_EXIT_TARGETS,
+  FLASHCARD_HIDDEN_TARGET,
   FLASHCARD_HOVER_LIFT,
   FLASHCARD_STACKED_TARGET,
   HOVER_TRANSITION,
@@ -23,7 +24,10 @@ type FlashcardCompProps = {
   cardKey: string;
   translation: Translation;
   flipped: boolean;
+  revealsInPlace: boolean;
+  enterDelay: number;
   onFlip: () => void;
+  onEntered: () => void;
   setEditDialogOpen?: (open: boolean) => void;
 };
 
@@ -31,7 +35,10 @@ export const FlashcardComp = ({
   cardKey,
   translation,
   flipped,
+  revealsInPlace,
+  enterDelay,
   onFlip,
+  onEntered,
   setEditDialogOpen,
 }: FlashcardCompProps) => {
   const isPresent = useIsPresent();
@@ -49,8 +56,13 @@ export const FlashcardComp = ({
         !isPresent && exitDirection && "z-10",
       )}
       style={{ perspective: 1600 }}
-      initial={FLASHCARD_STACKED_TARGET}
-      animate={FLASHCARD_DEALT_TARGET}
+      initial={
+        revealsInPlace ? FLASHCARD_HIDDEN_TARGET : FLASHCARD_STACKED_TARGET
+      }
+      animate={{
+        ...FLASHCARD_DEALT_TARGET,
+        transition: { ...CARD_TRANSITION, delay: enterDelay },
+      }}
       exit={
         exitDirection
           ? FLASHCARD_EXIT_TARGETS[exitDirection]
@@ -58,6 +70,9 @@ export const FlashcardComp = ({
       }
       transition={CARD_TRANSITION}
       onUpdate={forceJsAnimation}
+      onAnimationComplete={() => {
+        if (isPresent) onEntered();
+      }}
     >
       <motion.div
         className="relative size-full cursor-pointer rounded-xl will-change-transform [transform-style:preserve-3d]"

@@ -7,20 +7,29 @@ import {
   useFlashcardQueue,
 } from "@/features/flashcards/api/get-flashcard";
 import { useRespondToFlashcard } from "@/features/flashcards/api/respond-to-flashcard";
-import { FLASHCARD_DIRECTION_RATINGS } from "@/features/flashcards/constants";
+import {
+  DEFAULT_PRACTICE_MODE,
+  FLASHCARD_DIRECTION_RATINGS,
+} from "@/features/flashcards/constants";
 import type {
   DealtFlashcard,
   Direction,
   FlashcardExitDirections,
   FlashcardParams,
   FlashcardRating,
+  FlashcardStackState,
 } from "@/features/flashcards/types";
+import {
+  getFlashcardStackDepth,
+  getRemainingCount,
+} from "@/features/flashcards/utils";
 
 export const useFlashcardDeck = (
   params: FlashcardParams,
   onRespond?: (rating: FlashcardRating) => void,
 ) => {
   const isReverse = params.isReverse ?? false;
+  const practiceMode = params.practiceMode ?? DEFAULT_PRACTICE_MODE;
 
   const [dealIndex, setDealIndex] = useState(0);
   const [isAdvancing, setIsAdvancing] = useState(false);
@@ -30,6 +39,9 @@ export const useFlashcardDeck = (
   const [flipped, setFlipped] = useState(isReverse);
   const [revealed, setRevealed] = useState(false);
   const [lastDealtKey, setLastDealtKey] = useState<string | null>(null);
+  const [drawCount, setDrawCount] = useState(0);
+  const [isDrawPending, setIsDrawPending] = useState(false);
+  const [stackDepth, setStackDepth] = useState(0);
 
   const {
     data: queue,
@@ -42,6 +54,7 @@ export const useFlashcardDeck = (
   const { mutate: respondToFlashcard } = useRespondToFlashcard();
 
   const flashcard = queue?.flashcard ?? null;
+  const remainingCount = queue ? getRemainingCount(queue, practiceMode) : 0;
   const isSettled = !isAdvancing && !isPlaceholderData;
   const isEmpty = isSettled && !isLoading && (!!error || !flashcard);
 
@@ -58,6 +71,25 @@ export const useFlashcardDeck = (
     setFlipped(isReverse);
     setRevealed(false);
   }
+
+  if (isEmpty && isDrawPending) {
+    setIsDrawPending(false);
+  }
+
+  const nextStackDepth = isEmpty
+    ? 0
+    : queue && !isPlaceholderData
+      ? getFlashcardStackDepth(remainingCount, isAdvancing)
+      : stackDepth;
+
+  if (nextStackDepth !== stackDepth) {
+    setStackDepth(nextStackDepth);
+  }
+
+  const stack = useMemo<FlashcardStackState>(
+    () => ({ drawCount, depth: nextStackDepth, isLifted: isDrawPending }),
+    [drawCount, isDrawPending, nextStackDepth],
+  );
 
   const flip = useCallback(() => {
     if (!dealtCard) return;
@@ -76,6 +108,8 @@ export const useFlashcardDeck = (
       onRespond?.(rating);
       setExitDirections((prev) => ({ ...prev, [dealtCard.key]: direction }));
       setIsAdvancing(true);
+      setDrawCount((count) => count + 1);
+      setIsDrawPending(remainingCount > 1);
 
       respondToFlashcard(
         {
@@ -93,12 +127,24 @@ export const useFlashcardDeck = (
         },
       );
     },
-    [dealIndex, dealtCard, onRespond, params, respondToFlashcard],
+    [
+      dealIndex,
+      dealtCard,
+      onRespond,
+      params,
+      remainingCount,
+      respondToFlashcard,
+    ],
   );
 
-  const redeal = useCallback(() => setDealIndex((index) => index + 1), []);
+  const redeal = useCallback(() => {
+    setDealIndex((index) => index + 1);
+    setIsDrawPending(false);
+  }, []);
 
   const clearExitDirections = useCallback(() => setExitDirections({}), []);
+
+  const onCardEntered = useCallback(() => setIsDrawPending(false), []);
 
   return {
     queue,
@@ -113,9 +159,11 @@ export const useFlashcardDeck = (
     flipped,
     revealed,
     exitDirections,
+    stack,
     flip,
     respond,
     redeal,
     clearExitDirections,
+    onCardEntered,
   };
 };

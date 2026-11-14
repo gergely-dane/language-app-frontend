@@ -1,23 +1,26 @@
 "use client";
 
-import { motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
-import { FADE_TRANSITION } from "@/features/flashcards/constants";
+import { FlashcardStackLayer } from "@/features/flashcards/components/flashcard-stack-layer";
+import type { FlashcardStackState } from "@/features/flashcards/types";
+import { getFlashcardStackLayers } from "@/features/flashcards/utils";
 
 type FlashcardStackProps = {
-  isHidden: boolean;
+  stack: FlashcardStackState;
+  introDelays: ReadonlyMap<number, number>;
 };
 
-export const FlashcardStack = ({ isHidden }: FlashcardStackProps) => (
-  <motion.div
-    aria-hidden="true"
-    className="absolute inset-0"
-    initial={false}
-    animate={{ opacity: isHidden ? 0 : 1 }}
-    transition={FADE_TRANSITION}
-  >
-    <div className="ring-foreground absolute inset-x-0 top-4 mx-auto h-54 w-[98%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.3)_c_h)] ring-2 md:h-66 lg:h-76" />
-
-    <div className="ring-foreground absolute inset-x-0 top-2 mx-auto h-54 w-[99%] rounded-xl bg-[oklch(from_var(--color-primary)_calc(l*1.15)_c_h)] ring-2 md:h-66 lg:h-76" />
-  </motion.div>
+export const FlashcardStack = ({ stack, introDelays }: FlashcardStackProps) => (
+  <div aria-hidden="true" className="absolute inset-0">
+    <AnimatePresence>
+      {getFlashcardStackLayers(stack).map((layer) => (
+        <FlashcardStackLayer
+          key={layer.id}
+          depth={layer.depth}
+          introDelay={introDelays.get(layer.id) ?? 0}
+        />
+      ))}
+    </AnimatePresence>
+  </div>
 );

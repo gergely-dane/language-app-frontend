@@ -23,12 +23,51 @@ export const FADE_TRANSITION = {
   ease: "easeOut",
 } as const satisfies Transition;
 
+export const STACK_COLOR_TRANSITION = `background-color ${CARD_TRANSITION.duration}s cubic-bezier(${CARD_TRANSITION.ease.join(", ")})`;
+
+export const FLASHCARD_STACK_STAGGER = 0.075;
+
+export const FLASHCARD_STACK_DEPTHS: readonly {
+  target: TargetAndTransition;
+  colorClass: string;
+}[] = [
+  { target: { y: 0, scaleX: 1 }, colorClass: "bg-primary" },
+  {
+    target: { y: 8, scaleX: 0.99 },
+    colorClass: "bg-[oklch(from_var(--color-primary)_calc(l*1.1)_c_h)]",
+  },
+  {
+    target: { y: 16, scaleX: 0.98 },
+    colorClass: "bg-[oklch(from_var(--color-primary)_calc(l*1.2)_c_h)]",
+  },
+  {
+    target: { y: 24, scaleX: 0.97 },
+    colorClass: "bg-[oklch(from_var(--color-primary)_calc(l*1.3)_c_h)]",
+  },
+  {
+    target: { y: 32, scaleX: 0.96 },
+    colorClass: "bg-[oklch(from_var(--color-primary)_calc(l*1.4)_c_h)]",
+  },
+];
+
+export const FLASHCARD_STACK_MAX_DEPTH = FLASHCARD_STACK_DEPTHS.length - 1;
+
+export const FLASHCARD_STACK_HIDDEN_TARGET = {
+  opacity: 0,
+  y: 40,
+  scaleX: 0.95,
+} as const satisfies TargetAndTransition;
+
 export const FLASHCARD_HOVER_LIFT = -4;
 
 export const FLASHCARD_STACKED_TARGET = {
   opacity: 0,
-  scale: 0.98,
-  y: 16,
+  scale: 0.99,
+  y: 8,
+} as const satisfies TargetAndTransition;
+
+export const FLASHCARD_HIDDEN_TARGET = {
+  opacity: 0,
 } as const satisfies TargetAndTransition;
 
 export const FLASHCARD_DEALT_TARGET = {

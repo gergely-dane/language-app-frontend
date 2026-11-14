@@ -65,6 +65,12 @@ export type DealtFlashcard = {
   flashcard: Flashcard;
 };
 
+export type FlashcardStackState = {
+  drawCount: number;
+  depth: number;
+  isLifted: boolean;
+};
+
 export const flashcardQueueSchema = z.object({
   flashcard: flashcardSchema.nullable(),
   newCount: z.number(),

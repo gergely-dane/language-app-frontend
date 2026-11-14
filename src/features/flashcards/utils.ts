@@ -1,12 +1,14 @@
 import {
   FLASHCARD_COLLAPSED_SECTIONS_STORAGE_KEY,
   FLASHCARD_FILTERS_STATE_STORAGE_KEY,
+  FLASHCARD_STACK_MAX_DEPTH,
   PRACTICE_MODE,
 } from "./constants";
 import type {
   FlashcardCollapsedSections,
   FlashcardParams,
   FlashcardQueue,
+  FlashcardStackState,
   PracticeMode,
 } from "./types";
 import {
@@ -84,6 +86,26 @@ export const storeCollapsedSections = (
     // storage unavailable
   }
 };
+
+export const getFlashcardStackDepth = (
+  remainingCount: number,
+  isAdvancing: boolean,
+) =>
+  Math.min(
+    FLASHCARD_STACK_MAX_DEPTH,
+    Math.max(0, remainingCount - (isAdvancing ? 2 : 1)),
+  );
+
+export const getFlashcardStackLayers = ({
+  drawCount,
+  depth,
+  isLifted,
+}: FlashcardStackState) =>
+  Array.from({ length: depth + (isLifted ? 1 : 0) }, (_, index) => {
+    const layerDepth = depth - index;
+
+    return { id: drawCount + layerDepth, depth: layerDepth };
+  });
 
 export const isEditableTarget = (target: EventTarget | null) =>
   target instanceof HTMLElement &&
