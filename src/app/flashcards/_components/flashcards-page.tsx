@@ -215,7 +215,7 @@ export const FlashcardsPage = () => {
                 onSwipe={deck.respond}
                 onExitComplete={deck.clearExitDirections}
                 onCardEntered={deck.onCardEntered}
-                setEditDialogOpen={setEditDialogOpen}
+                isReverse={isReverse}
               />
             )}
 

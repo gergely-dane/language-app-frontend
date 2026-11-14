@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import {
   AddedOnCell,
+  DefinitionCell,
   EditCell,
   SelectCell,
   TranslationsCell,
@@ -55,6 +56,13 @@ export const useColumns = (
         cell: AddedOnCell,
         meta: {
           className: "w-1/3",
+        },
+      },
+      {
+        id: "definition",
+        cell: DefinitionCell,
+        meta: {
+          className: "w-11 pr-0",
         },
       },
       {

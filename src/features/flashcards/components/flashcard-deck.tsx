@@ -30,7 +30,7 @@ type FlashcardDeckProps = {
   onSwipe: (direction: Direction) => void;
   onExitComplete: () => void;
   onCardEntered: () => void;
-  setEditDialogOpen: (open: boolean) => void;
+  isReverse: boolean;
 };
 
 export const FlashcardDeck = ({
@@ -43,7 +43,7 @@ export const FlashcardDeck = ({
   onSwipe,
   onExitComplete,
   onCardEntered,
-  setEditDialogOpen,
+  isReverse,
 }: FlashcardDeckProps) => {
   const { ref: swipeRef } = useDetectSwipeOnElement<HTMLDivElement>(
     FLASHCARD_SWIPE_THRESHOLD,
@@ -91,7 +91,7 @@ export const FlashcardDeck = ({
               }
               onFlip={onFlip}
               onEntered={onCardEntered}
-              setEditDialogOpen={setEditDialogOpen}
+              isReverse={isReverse}
             />
           )}
 

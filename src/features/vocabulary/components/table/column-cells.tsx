@@ -3,11 +3,13 @@
 import { IconPencil } from "@tabler/icons-react";
 import type { CellContext } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguages } from "@/features/languages/api/get-languages";
+import { DefinitionInfo } from "@/features/vocabulary/components/definition-info";
 import type { Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
+import { cn } from "@/lib/utils";
 
 import { PlayAudioButton } from "../play-audio-button";
 
@@ -77,6 +79,23 @@ export const AddedOnCell = ({
         day: "numeric",
       })}
     </p>
+  );
+};
+
+export const DefinitionCell = ({ row }: CellContext<Translation, unknown>) => {
+  const { definition } = row.original;
+
+  if (!definition) return null;
+
+  return (
+    <DefinitionInfo
+      className={cn(
+        buttonVariants({ variant: "ghost", size: "icon" }),
+        "hover:bg-muted dark:hover:bg-muted opacity-0 transition-opacity group-hover:opacity-100 max-lg:opacity-100",
+      )}
+      iconClassName="size-4"
+      definition={definition}
+    />
   );
 };
 

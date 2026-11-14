@@ -29,7 +29,7 @@ type FlashcardCompProps = {
   enterDelay: number;
   onFlip: () => void;
   onEntered: () => void;
-  setEditDialogOpen?: (open: boolean) => void;
+  isReverse: boolean;
 };
 
 const getInitialTarget = (
@@ -49,7 +49,7 @@ export const FlashcardComp = ({
   enterDelay,
   onFlip,
   onEntered,
-  setEditDialogOpen,
+  isReverse,
 }: FlashcardCompProps) => {
   const isPresent = useIsPresent();
   const exitDirections = usePresenceData() as
@@ -94,13 +94,13 @@ export const FlashcardComp = ({
         <FlashcardSide
           translation={translation}
           isFront={true}
-          setEditDialogOpen={setEditDialogOpen}
+          showsDefinition={isReverse}
         />
 
         <FlashcardSide
           translation={translation}
           isFront={false}
-          setEditDialogOpen={setEditDialogOpen}
+          showsDefinition={!isReverse}
         />
       </motion.div>
     </motion.div>

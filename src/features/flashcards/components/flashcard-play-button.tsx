@@ -35,7 +35,7 @@ export const FlashcardPlayButton = ({
       onClick={handleClick}
       aria-label={t("flashcards.playAudio")}
       className={cn(
-        "hover:bg-primary-foreground/10! size-7",
+        "hover:bg-primary-foreground/10! size-8",
         isPlaying
           ? "text-primary-foreground cursor-default"
           : isDisabled
@@ -44,7 +44,7 @@ export const FlashcardPlayButton = ({
         className,
       )}
     >
-      <IconVolume className="size-4.5" />
+      <IconVolume className="size-5" />
     </Button>
   );
 };
