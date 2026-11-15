@@ -6,7 +6,7 @@ type FlashcardSkeletonProps = {
 };
 
 export const FlashcardSkeleton = ({ className }: FlashcardSkeletonProps) => (
-  <Skeleton className={cn("h-62 rounded-xl md:h-74 lg:h-84", className)} />
+  <Skeleton className={cn("h-58 rounded-xl md:h-74 lg:h-84", className)} />
 );
 
 export const FlashcardResponseButtonsSkeleton = ({

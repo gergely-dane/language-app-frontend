@@ -152,13 +152,13 @@ export const FlashcardsPage = () => {
 
   return (
     <div className="flex w-full flex-col self-stretch">
-      <h1 className="text-3xl">{t("flashcards.title")}</h1>
+      <h1 className="text-3xl max-lg:sr-only">{t("flashcards.title")}</h1>
 
-      <p className="text-muted-foreground short:hidden font-semibold">
+      <p className="text-muted-foreground short:hidden font-semibold max-lg:hidden">
         {t("flashcards.practiceYourWords")}
       </p>
 
-      <div className="mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-4 max-lg:flex-col max-lg:gap-3 lg:mx-0">
+      <div className="mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-0 max-lg:flex-col max-lg:gap-2.5 lg:mx-0">
         <aside className="max-lg:short:gap-2 flex w-full flex-col gap-4 max-lg:mx-auto max-lg:max-w-120 max-lg:gap-3 lg:w-60 lg:shrink-0">
           <DeckPanel
             languagePair={languagePair}
@@ -182,7 +182,7 @@ export const FlashcardsPage = () => {
         </aside>
 
         <main className="flex min-w-0 flex-1 flex-col">
-          <div className="mx-auto flex w-full max-w-120 flex-col gap-3.5 max-lg:gap-3">
+          <div className="mx-auto flex w-full max-w-120 flex-col gap-3.5 max-lg:gap-2.5">
             <FlashcardToolbar
               canUndo={deck.canUndo}
               canEdit={!!deck.flashcard}

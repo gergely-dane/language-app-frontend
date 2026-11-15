@@ -61,11 +61,13 @@ export const FlashcardEmptyState = ({
   })();
 
   return (
-    <div className="bg-card flex h-62 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center md:h-74 lg:h-84">
+    <div className="bg-card flex h-58 flex-col items-center justify-center gap-2 rounded-xl border p-8 text-center max-md:p-4 md:h-74 lg:h-84">
       <h2 className="text-xl whitespace-pre-line">{content.title}</h2>
 
       {content.description && (
-        <p className="text-muted-foreground max-w-md">{content.description}</p>
+        <p className="text-muted-foreground max-w-md max-md:text-sm">
+          {content.description}
+        </p>
       )}
 
       <div className="mt-2 flex flex-wrap justify-center gap-2">

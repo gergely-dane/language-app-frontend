@@ -61,7 +61,7 @@ export const FlashcardComp = ({
     // Opacity lives on this layer only: on the preserve-3d layer below it would flatten the faces and break backface hiding.
     <motion.div
       className={cn(
-        "absolute inset-x-0 top-0 h-54 will-change-transform md:h-66 lg:h-76",
+        "absolute inset-x-0 top-0 h-50 will-change-transform md:h-66 lg:h-76",
         !isPresent && "pointer-events-none",
         ((!isPresent && exitDirection) || enterDirection) && "z-10",
       )}

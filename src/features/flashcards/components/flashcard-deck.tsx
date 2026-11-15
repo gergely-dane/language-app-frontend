@@ -69,7 +69,7 @@ export const FlashcardDeck = ({
       )}
       ref={swipeRef}
     >
-      <div className="relative h-62 md:h-74 lg:h-84">
+      <div className="relative h-58 md:h-74 lg:h-84">
         <FlashcardStack stack={stack} introDelays={introLayerDelays} />
 
         <AnimatePresence
