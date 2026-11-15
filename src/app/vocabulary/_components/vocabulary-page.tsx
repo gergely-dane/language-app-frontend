@@ -40,7 +40,6 @@ export const VocabularyPage = () => {
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const debouncedSearchFilter = useDebounce(searchFilter);
   const deleteTranslationsBulk = useDeleteTranslationsBulk();
   const { showAlert } = useAlert();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -67,14 +66,19 @@ export const VocabularyPage = () => {
     );
   };
 
-  const { data: words, isLoading } = useTranslations({
+  const {
+    data: words,
+    isLoading,
+    isPlaceholderData,
+  } = useTranslations({
     pageNumber,
-    search: debouncedSearchFilter,
+    search: searchFilter,
     sourceLanguageId: languageFilter?.sourceLanguageId,
     targetLanguageId: languageFilter?.targetLanguageId,
     sortBy: sorting[0]?.id ?? "createdAt",
     sortAscending: sorting[0] ? !sorting[0].desc : false,
   });
+  const isRefreshing = useDebounce(isPlaceholderData) && isPlaceholderData;
 
   const onSearchChange = (value: string) => {
     setSearchFilter(value);
@@ -120,8 +124,7 @@ export const VocabularyPage = () => {
       <div className="mt-6 mb-1.5 flex flex-wrap gap-1.5 max-lg:mt-4">
         <SearchInput
           className="w-full lg:w-70 lg:flex-none"
-          value={searchFilter}
-          onChange={onSearchChange}
+          onSearch={onSearchChange}
           placeholder={t("vocabulary.searchForAWord")}
         />
 
@@ -192,6 +195,7 @@ export const VocabularyPage = () => {
         columns={columns}
         words={words}
         isLoading={isLoading}
+        isRefreshing={isRefreshing}
         sorting={sorting}
         onSortingChange={onSortingChange}
         rowSelection={rowSelection}

@@ -24,6 +24,7 @@ import { PaginationNavigator } from "@/features/vocabulary/components/table/pagi
 import { type Translation } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
+import { cn } from "@/lib/utils";
 import { type PaginatedResponse } from "@/types";
 
 const EMPTY_DATA: Translation[] = [];
@@ -32,6 +33,7 @@ type VocabularyTableProps<TValue> = {
   columns: ColumnDef<Translation, TValue>[];
   words: PaginatedResponse<Translation> | undefined;
   isLoading?: boolean;
+  isRefreshing?: boolean;
   sorting: SortingState;
   onSortingChange: OnChangeFn<SortingState>;
   rowSelection: RowSelectionState;
@@ -43,6 +45,7 @@ export const VocabularyTable = <TValue,>({
   columns,
   words,
   isLoading = false,
+  isRefreshing = false,
   sorting,
   onSortingChange,
   rowSelection,
@@ -71,7 +74,7 @@ export const VocabularyTable = <TValue,>({
   return (
     <div className="flex flex-1 flex-col justify-between">
       <div>
-        <Table className="table-fixed">
+        <Table className="table-fixed" aria-busy={isRefreshing}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -100,7 +103,12 @@ export const VocabularyTable = <TValue,>({
             ))}
           </TableHeader>
 
-          <TableBody>
+          <TableBody
+            className={cn(
+              "transition-opacity",
+              isRefreshing && "pointer-events-none opacity-50",
+            )}
+          >
             {isLoading ? (
               <TableRow>
                 <TableCell className="h-24" colSpan={columns.length}>
