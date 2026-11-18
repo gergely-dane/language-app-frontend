@@ -1,11 +1,15 @@
 "use client";
 
+import { useMemo } from "react";
+
+import { useFlashcardDueCounts } from "@/features/flashcards/api/get-flashcard-due-counts";
 import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
 import { DeckSetting } from "@/features/flashcards/components/deck-setting";
 import { DeckSummary } from "@/features/flashcards/components/deck-summary";
 import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
 import { ShowFirstSelector } from "@/features/flashcards/components/show-first-selector";
 import type { PracticeMode } from "@/features/flashcards/types";
+import { getLanguagePairLeftCounts } from "@/features/flashcards/utils";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
 import type { LanguageFilterValue } from "@/features/languages/types";
 import { useI18n } from "@/hooks/use-i18n";
@@ -29,6 +33,21 @@ export const DeckPanel = ({
 }: DeckPanelProps) => {
   const t = useI18n();
 
+  const {
+    data: dueCounts,
+    isLoading: isDueCountsLoading,
+    refetch: refetchDueCounts,
+  } = useFlashcardDueCounts(isReverse);
+
+  const leftCounts = useMemo(
+    () => getLanguagePairLeftCounts(dueCounts ?? [], practiceMode),
+    [dueCounts, practiceMode],
+  );
+
+  const onLanguagePairOpenChange = (open: boolean) => {
+    if (open) void refetchDueCounts();
+  };
+
   return (
     <CollapsibleSection
       section="deck"
@@ -46,6 +65,10 @@ export const DeckPanel = ({
           className="w-full"
           value={languagePair}
           onChange={onLanguagePairChange}
+          onOpenChange={onLanguagePairOpenChange}
+          isLoading={isDueCountsLoading}
+          pairCounts={leftCounts}
+          countLabel={t("flashcards.left")}
         />
       </DeckSetting>
 

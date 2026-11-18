@@ -62,6 +62,7 @@
   "translationSavedSuccessfully": "Translation saved successfully",
   "translations": "translations",
   "translationsDeletedSuccessfully": "Translations deleted successfully",
+  "words": "Words",
   "translateWordInto": "Translate <bold>{word}</bold> into <bold>{targetLanguage}</bold>",
   "errorTranslatingWord": "Could not translate {word} to {targetLanguage}"
 }

@@ -1,3 +1,5 @@
+import type { LanguagePair } from "@/features/languages/types";
+
 import {
   FLASHCARD_COLLAPSED_SECTIONS_STORAGE_KEY,
   FLASHCARD_FILTERS_STATE_STORAGE_KEY,
@@ -6,6 +8,7 @@ import {
 } from "./constants";
 import type {
   FlashcardCollapsedSections,
+  FlashcardDueCount,
   FlashcardParams,
   FlashcardQueue,
   FlashcardStackState,
@@ -28,6 +31,16 @@ export const getRemainingCount = (
   if (practiceMode === PRACTICE_MODE.Existing) return counts.existingCount;
   return counts.newCount + counts.existingCount;
 };
+
+export const getLanguagePairLeftCounts = (
+  dueCounts: FlashcardDueCount[],
+  practiceMode: PracticeMode,
+): LanguagePair[] =>
+  dueCounts.map(({ sourceLanguageId, targetLanguageId, ...counts }) => ({
+    sourceLanguageId,
+    targetLanguageId,
+    count: getRemainingCount(counts, practiceMode),
+  }));
 
 export const getStoredFlashcardFilters = (): FlashcardParams | null => {
   if (typeof window === "undefined") return null;

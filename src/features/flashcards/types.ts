@@ -80,3 +80,12 @@ export const flashcardQueueSchema = z.object({
 });
 
 export type FlashcardQueue = z.infer<typeof flashcardQueueSchema>;
+
+export const flashcardDueCountSchema = z.object({
+  sourceLanguageId: z.number().nullable(),
+  targetLanguageId: z.number().nullable(),
+  newCount: z.number(),
+  existingCount: z.number(),
+});
+
+export type FlashcardDueCount = z.infer<typeof flashcardDueCountSchema>;

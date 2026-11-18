@@ -5,14 +5,6 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -20,7 +12,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
-import { type LanguageFilterValue } from "@/features/languages/types";
+import { LanguageCountList } from "@/features/languages/components/language-count-list";
+import {
+  type LanguageFilterValue,
+  type LanguagePair,
+} from "@/features/languages/types";
+import { getLanguageOptions } from "@/features/languages/utils";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";
@@ -29,14 +26,22 @@ type LanguagePairSelectorProps = {
   className?: string;
   value: LanguageFilterValue | null;
   onChange: (value: LanguageFilterValue) => void;
+  onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
+  isLoading?: boolean;
+  pairCounts?: LanguagePair[];
+  countLabel?: string;
 };
 
 export const LanguagePairSelector = ({
   className,
   value,
   onChange,
+  onOpenChange,
   disabled = false,
+  isLoading = false,
+  pairCounts,
+  countLabel,
 }: LanguagePairSelectorProps) => {
   const [open, setOpen] = useState(false);
 
@@ -47,36 +52,27 @@ export const LanguagePairSelector = ({
   const { data: languagePairs = [], isLoading: isLanguagePairsLoading } =
     useLanguagePairs();
 
+  const columnCountLabel = countLabel ?? t("vocabulary.words");
+
   const currentSourceId = value?.sourceLanguageId || null;
   const currentTargetId = value?.targetLanguageId || null;
 
-  const sourceLanguages = useMemo(() => {
-    const counts = new Map<number | null, number>();
-    const filtered = currentTargetId
-      ? languagePairs.filter((p) => p.targetLanguageId === currentTargetId)
-      : languagePairs;
-    for (const pair of filtered) {
-      counts.set(
-        pair.sourceLanguageId,
-        (counts.get(pair.sourceLanguageId) ?? 0) + pair.count,
-      );
-    }
-    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-  }, [languagePairs, currentTargetId]);
+  const sourceLanguages = useMemo(
+    () =>
+      getLanguageOptions(languagePairs, "source", currentTargetId, pairCounts),
+    [languagePairs, currentTargetId, pairCounts],
+  );
 
-  const translationLanguages = useMemo(() => {
-    const counts = new Map<number | null, number>();
-    const filtered = currentSourceId
-      ? languagePairs.filter((p) => p.sourceLanguageId === currentSourceId)
-      : languagePairs;
-    for (const pair of filtered) {
-      counts.set(
-        pair.targetLanguageId,
-        (counts.get(pair.targetLanguageId) ?? 0) + pair.count,
-      );
-    }
-    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-  }, [languagePairs, currentSourceId]);
+  const translationLanguages = useMemo(
+    () =>
+      getLanguageOptions(languagePairs, "target", currentSourceId, pairCounts),
+    [languagePairs, currentSourceId, pairCounts],
+  );
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    onOpenChange?.(newOpen);
+  };
 
   const handleSelect = (type: "source" | "translation", id: number | null) => {
     onChange({
@@ -85,7 +81,7 @@ export const LanguagePairSelector = ({
     });
   };
 
-  if (isLanguagesLoading || isLanguagePairsLoading) {
+  if (isLoading || isLanguagesLoading || isLanguagePairsLoading) {
     return (
       <Skeleton className={cn("h-9 min-h-9 min-w-32 rounded-md", className)} />
     );
@@ -93,7 +89,7 @@ export const LanguagePairSelector = ({
 
   return (
     <div className={className}>
-      <Popover onOpenChange={setOpen} open={open}>
+      <Popover onOpenChange={handleOpenChange} open={open}>
         <PopoverTrigger asChild disabled={disabled}>
           <Button
             className="w-full justify-between gap-1 font-normal [&>[data-slot=button-content]]:w-full [&>[data-slot=button-content]]:justify-between"
@@ -127,99 +123,27 @@ export const LanguagePairSelector = ({
           onOpenAutoFocus={(e) => isMobile && e.preventDefault()}
         >
           <div className="flex flex-row divide-x">
-            <Command className="flex-1 rounded-r-none">
-              <CommandInput placeholder={t("general.search")} />
-              <CommandList>
-                <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
-                <CommandGroup
-                  heading={t("general.from")}
-                  className="[&_[cmdk-group-heading]]:tracking-wide [&_[cmdk-group-heading]]:uppercase"
-                >
-                  <CommandItem
-                    value="any-source"
-                    className={cn(
-                      "gap-1",
-                      !currentSourceId &&
-                        "text-primary data-[selected=true]:text-primary",
-                    )}
-                    onSelect={() => handleSelect("source", null)}
-                  >
-                    {t("vocabulary.any")}
-                  </CommandItem>
+            <LanguageCountList
+              className="flex-1 rounded-r-none"
+              heading={t("general.from")}
+              countLabel={columnCountLabel}
+              anyLabel={t("vocabulary.any")}
+              anyValue="any-source"
+              languageCounts={sourceLanguages}
+              selectedId={currentSourceId}
+              onSelect={(id) => handleSelect("source", id)}
+            />
 
-                  {sourceLanguages.map(([id, count]) => {
-                    const label = getLanguageString(id);
-                    const isSelected = currentSourceId === id;
-
-                    return (
-                      <CommandItem
-                        key={`source-${id}`}
-                        value={label}
-                        className={cn(
-                          "justify-between gap-1",
-                          isSelected &&
-                            "text-primary data-[selected=true]:text-primary",
-                        )}
-                        onSelect={() => handleSelect("source", id)}
-                      >
-                        <span className="truncate">{label}</span>
-
-                        <span className="text-muted-foreground font-mono text-[11px]">
-                          {count}
-                        </span>
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-
-            <Command className="flex-1">
-              <CommandInput placeholder={t("general.search")} />
-              <CommandList>
-                <CommandEmpty>{t("vocabulary.noLanguagesFound")}</CommandEmpty>
-                <CommandGroup
-                  heading={t("general.to")}
-                  className="[&_[cmdk-group-heading]]:tracking-wide [&_[cmdk-group-heading]]:uppercase"
-                >
-                  <CommandItem
-                    value="any-translation"
-                    className={cn(
-                      "gap-1",
-                      !currentTargetId &&
-                        "text-primary data-[selected=true]:text-primary",
-                    )}
-                    onSelect={() => handleSelect("translation", null)}
-                  >
-                    {t("vocabulary.any")}
-                  </CommandItem>
-
-                  {translationLanguages.map(([id, count]) => {
-                    const label = getLanguageString(id);
-                    const isSelected = currentTargetId === id;
-
-                    return (
-                      <CommandItem
-                        key={`translation-${id}`}
-                        value={label}
-                        className={cn(
-                          "justify-between gap-1",
-                          isSelected &&
-                            "text-primary data-[selected=true]:text-primary",
-                        )}
-                        onSelect={() => handleSelect("translation", id)}
-                      >
-                        <span className="truncate">{label}</span>
-
-                        <span className="text-muted-foreground font-mono text-[11px]">
-                          {count}
-                        </span>
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              </CommandList>
-            </Command>
+            <LanguageCountList
+              className="flex-1"
+              heading={t("general.to")}
+              countLabel={columnCountLabel}
+              anyLabel={t("vocabulary.any")}
+              anyValue="any-translation"
+              languageCounts={translationLanguages}
+              selectedId={currentTargetId}
+              onSelect={(id) => handleSelect("translation", id)}
+            />
           </div>
         </PopoverContent>
       </Popover>
