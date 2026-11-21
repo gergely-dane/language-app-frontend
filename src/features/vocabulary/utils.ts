@@ -1,5 +1,15 @@
-import { MAX_TAG_LENGTH, MAX_TAGS } from "@/features/vocabulary/constants";
-import { storedLanguageIdSchema } from "@/features/vocabulary/types";
+import { APP_NAME } from "@/constants";
+import {
+  EXPORT_FORMAT_EXTENSIONS,
+  EXPORT_SCOPE,
+  MAX_TAG_LENGTH,
+  MAX_TAGS,
+} from "@/features/vocabulary/constants";
+import {
+  type ExportFormat,
+  type ExportScope,
+  storedLanguageIdSchema,
+} from "@/features/vocabulary/types";
 
 const parseTagParts = (value: string, existingTags: string[]): string[] => {
   const parts = value
@@ -77,4 +87,24 @@ export const setWithEvictOldest = <K, V>(
   }
 
   map.set(key, value);
+};
+
+export const getExportFileName = (format: ExportFormat) => {
+  const today = new Date();
+  const date = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  return `${APP_NAME.toLowerCase()}-vocabulary-${date}.${EXPORT_FORMAT_EXTENSIONS[format]}`;
+};
+
+export const getDefaultExportScope = (
+  counts: Record<ExportScope, number>,
+  isFiltered: boolean,
+): ExportScope => {
+  if (counts.selected > 0) return EXPORT_SCOPE.Selected;
+  if (isFiltered && counts.filtered > 0) return EXPORT_SCOPE.Filtered;
+  return EXPORT_SCOPE.All;
 };

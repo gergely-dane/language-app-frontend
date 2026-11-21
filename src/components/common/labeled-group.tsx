@@ -2,17 +2,17 @@ import { useId } from "react";
 
 import { cn } from "@/lib/utils";
 
-type DeckSettingProps = {
+type LabeledGroupProps = {
   className?: string;
   label: string;
   children: React.ReactNode;
 };
 
-export const DeckSetting = ({
+export const LabeledGroup = ({
   className,
   label,
   children,
-}: DeckSettingProps) => {
+}: LabeledGroupProps) => {
   const labelId = useId();
 
   return (

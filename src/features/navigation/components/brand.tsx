@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { APP_NAME } from "@/constants";
 import { cn } from "@/lib/utils";
 
 export const Brand = ({ className }: { className?: string }) => {
@@ -19,7 +20,7 @@ export const Brand = ({ className }: { className?: string }) => {
       </span>
 
       <span className="font-display text-[1.35rem] font-semibold tracking-tight">
-        Kartei
+        {APP_NAME}
       </span>
     </Link>
   );

@@ -17,6 +17,8 @@ import { useDeleteTranslationsBulk } from "@/features/vocabulary/api/delete-tran
 import { useTranslations } from "@/features/vocabulary/api/get-translations";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-dialog";
+import { ExportButton } from "@/features/vocabulary/components/export/export-button";
+import { ExportDialog } from "@/features/vocabulary/components/export/export-dialog";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/table/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
@@ -43,8 +45,13 @@ export const VocabularyPage = () => {
   const deleteTranslationsBulk = useDeleteTranslationsBulk();
   const { showAlert } = useAlert();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   const selectedCount = Object.keys(rowSelection).length;
+  const isFiltered =
+    !!searchFilter.trim() ||
+    !!languageFilter?.sourceLanguageId ||
+    !!languageFilter?.targetLanguageId;
 
   const deleteSelected = () => {
     deleteTranslationsBulk.mutate(
@@ -134,8 +141,13 @@ export const VocabularyPage = () => {
           onChange={onLanguageFilterChange}
         />
 
-        <Button
+        <ExportButton
           className="ml-auto"
+          onClick={() => setExportDialogOpen(true)}
+          disabled={!words?.totalCount && !isFiltered}
+        />
+
+        <Button
           onClick={() => {
             setEditingTranslation(undefined);
             setIsEditDialogOpen(true);
@@ -182,6 +194,19 @@ export const VocabularyPage = () => {
         onOpenChange={setDeleteDialogOpen}
         wordCount={selectedCount}
         onDelete={deleteSelected}
+      />
+
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+        selectedIds={Object.keys(rowSelection).map(Number)}
+        filter={{
+          search: searchFilter,
+          sourceLanguageId: languageFilter?.sourceLanguageId ?? null,
+          targetLanguageId: languageFilter?.targetLanguageId ?? null,
+        }}
+        isFiltered={isFiltered}
+        filteredCount={words?.totalCount ?? 0}
       />
 
       <AddEditWordDialog

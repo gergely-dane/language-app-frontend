@@ -5,6 +5,7 @@ import { Fraunces, Instrument_Sans, Spline_Sans_Mono } from "next/font/google";
 
 import { AppProvider } from "@/app/provider";
 import { BaseContentLayout } from "@/components/layouts/base-content-layout";
+import { APP_NAME } from "@/constants";
 import { BottomNavbar } from "@/features/navigation/components/bottom-navbar/bottom-navbar";
 import { Navbar } from "@/features/navigation/components/navbar";
 import { Sidebar } from "@/features/navigation/components/sidebar";
@@ -26,7 +27,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Kartei",
+  title: APP_NAME,
   description: "",
 };
 

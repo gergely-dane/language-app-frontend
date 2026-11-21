@@ -7,6 +7,7 @@ type TooltipTabsOption<T> = {
   value: T;
   label: string;
   tooltip: string;
+  disabled?: boolean;
 };
 
 type TooltipTabsProps<T> = {
@@ -38,7 +39,10 @@ export const TooltipTabs = <T extends string | number | boolean>({
       <TabsList className="w-full">
         {options.map((option) => (
           <Tooltip key={String(option.value)} content={option.tooltip}>
-            <TabsTrigger value={String(option.value)} disabled={disabled}>
+            <TabsTrigger
+              value={String(option.value)}
+              disabled={disabled || option.disabled}
+            >
               {option.label}
             </TabsTrigger>
           </Tooltip>

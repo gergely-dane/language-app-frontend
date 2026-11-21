@@ -2,10 +2,10 @@
 
 import { useMemo } from "react";
 
+import { LabeledGroup } from "@/components/common/labeled-group";
 import { useFlashcardDueCounts } from "@/features/flashcards/api/get-flashcard-due-counts";
 import { CardDirectionSelector } from "@/features/flashcards/components/card-direction-selector";
 import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
-import { DeckSetting } from "@/features/flashcards/components/deck-setting";
 import { DeckSummary } from "@/features/flashcards/components/deck-summary";
 import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
 import type { PracticeMode } from "@/features/flashcards/types";
@@ -60,7 +60,7 @@ export const DeckPanel = ({
         />
       }
     >
-      <DeckSetting label={t("flashcards.languages")}>
+      <LabeledGroup label={t("flashcards.languages")}>
         <LanguagePairSelector
           className="w-full"
           value={languagePair}
@@ -70,22 +70,22 @@ export const DeckPanel = ({
           pairCounts={leftCounts}
           countLabel={t("flashcards.left")}
         />
-      </DeckSetting>
+      </LabeledGroup>
 
       <div className="flex flex-wrap gap-2 lg:contents">
-        <DeckSetting className="grow" label={t("flashcards.practice")}>
+        <LabeledGroup className="grow" label={t("flashcards.practice")}>
           <PracticeModeSelector
             value={practiceMode}
             onChange={onPracticeModeChange}
           />
-        </DeckSetting>
+        </LabeledGroup>
 
-        <DeckSetting className="grow" label={t("flashcards.cardDirection")}>
+        <LabeledGroup className="grow" label={t("flashcards.cardDirection")}>
           <CardDirectionSelector
             isReverse={isReverse}
             onChange={onReverseChange}
           />
-        </DeckSetting>
+        </LabeledGroup>
       </div>
     </CollapsibleSection>
   );
