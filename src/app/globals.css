@@ -7,6 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-flashcard-outline: var(--flashcard-outline);
   --font-sans: var(--font-instrument);
   --font-mono: var(--font-spline-mono);
   --font-display: var(--font-fraunces);
@@ -68,6 +69,7 @@
   --secondary: #eeeee7;
   --background: #f2f2ed;
   --foreground: #21252f;
+  --flashcard-outline: oklch(from var(--primary) calc(l - 0.2) c h);
   --muted: oklch(from var(--background) calc(l - 0.08) c h);
   --muted-foreground: #646876;
   --destructive: #bb3f2e;
@@ -90,6 +92,7 @@
 .dark {
   --background: #131419;
   --foreground: #e9e7df;
+  --flashcard-outline: oklch(from var(--primary) calc(l + 0.32) c h);
   --secondary: #22232c;
   --muted: oklch(from var(--background) calc(l + 0.08) c h);
   --muted-foreground: #a3a5ae;

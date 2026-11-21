@@ -29,7 +29,7 @@ export const FlashcardStackLayer = ({
   return (
     <motion.div
       className={cn(
-        "ring-foreground absolute inset-x-0 top-0 h-50 rounded-xl ring-2 will-change-transform md:h-66 lg:h-76",
+        "ring-flashcard-outline absolute inset-x-0 top-0 h-50 rounded-xl ring-2 will-change-transform md:h-66 lg:h-76",
         colorClass,
       )}
       style={{ transition: STACK_COLOR_TRANSITION }}

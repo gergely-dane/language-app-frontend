@@ -28,7 +28,7 @@ export const FlashcardSide = ({
 
   return (
     <div
-      className="text-primary-foreground ring-foreground absolute inset-0 rounded-xl bg-gradient-to-br from-[oklch(from_var(--color-primary)_calc(l+0.05)_c_h)] to-[oklch(from_var(--color-primary)_calc(l-0.09)_c_h)] p-2 ring-2 backface-hidden"
+      className="text-primary-foreground ring-flashcard-outline absolute inset-0 rounded-xl bg-gradient-to-br from-[oklch(from_var(--color-primary)_calc(l+0.05)_c_h)] to-[oklch(from_var(--color-primary)_calc(l-0.09)_c_h)] p-2 ring-2 backface-hidden"
       style={{
         // slight z-separation prevents z-fighting between the coplanar faces.
         transform: isFront
