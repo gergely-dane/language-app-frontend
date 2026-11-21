@@ -1,10 +1,13 @@
 "use client";
 
 import { type TablerIcon } from "@tabler/icons-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const MotionLink = motion.create(Link);
 
 type BottomNavbarButtonProps = {
   href: string;
@@ -24,17 +27,23 @@ export const BottomNavbarButton = ({
   className,
 }: BottomNavbarButtonProps) => {
   return (
-    <Link href={href} className="flex-1">
-      <Button
-        variant="ghost"
-        rippleClassName={cn(isActive && "bg-primary-foreground/40")}
-        className={cn(
-          "flex h-full w-full rounded-md px-1 transition-colors duration-500",
-          isActive
-            ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-            : "text-muted-foreground",
-          className,
-        )}
+    <Button
+      asChild
+      variant="ghost"
+      ripple
+      rippleClassName={cn(isActive && "bg-primary-foreground/40")}
+      className={cn(
+        "flex h-full flex-1 rounded-md px-1 transition-colors duration-500",
+        isActive
+          ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+          : "text-muted-foreground",
+        className,
+      )}
+    >
+      <MotionLink
+        href={href}
+        aria-current={isActive ? "page" : undefined}
+        whileTap={{ scale: 0.98 }}
       >
         <span className="flex flex-col items-center gap-0.5 text-[11px] font-medium">
           <Icon className="size-5" strokeWidth={isActive ? 2.25 : 2} />
@@ -54,7 +63,7 @@ export const BottomNavbarButton = ({
             </span>
           )}
         </span>
-      </Button>
-    </Link>
+      </MotionLink>
+    </Button>
   );
 };

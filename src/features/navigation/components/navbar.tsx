@@ -51,15 +51,16 @@ export const Navbar = () => {
 
           {isAuthenticated && (
             <>
-              <Link href="/settings">
-                <Button
-                  aria-label={t("settings.title")}
-                  size="icon"
-                  variant="ghost"
-                >
+              <Button
+                asChild
+                aria-label={t("settings.title")}
+                size="icon"
+                variant="ghost"
+              >
+                <Link href="/settings">
                   <IconSettings className="scale-130" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               <UserButton />
             </>

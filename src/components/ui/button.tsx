@@ -1,6 +1,6 @@
 "use client";
 
-import { Slot } from "@radix-ui/react-slot";
+import { Slot, Slottable } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, type Transition } from "motion/react";
 import * as React from "react";
@@ -18,7 +18,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-background shadow-md hover:bg-accent hover:text-accent-foreground dark:border-input dark:hover:bg-accent",
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:hover:bg-accent",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/70",
         ghost:
@@ -56,7 +56,9 @@ const rippleVariants = cva("absolute rounded-full size-5 pointer-events-none", {
   },
 });
 
-type Ripple = { id: number; x: number; y: number };
+type Ripple = { id: number; x: number; y: number; className: string };
+
+const MotionButton: React.ElementType = motion.button;
 
 export type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -73,99 +75,89 @@ const Button = ({
   variant,
   size,
   asChild = false,
-  ripple = true,
+  ripple = false,
   rippleClassName,
   scale = 10,
   transition = { duration: 0.55, ease: "easeOut" },
-  onClick,
+  onPointerDown,
   children,
-  ref,
   isLoading = false,
   disabled,
   ...props
 }: ButtonProps) => {
-  const Comp: React.ElementType = asChild ? Slot : motion.button;
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [ripples, setRipples] = React.useState<Ripple[]>([]);
 
-  const setButtonRef = (node: HTMLButtonElement | null) => {
-    buttonRef.current = node;
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (ripple && event.button === 0) {
+      const rect = event.currentTarget.getBoundingClientRect();
 
-    if (typeof ref === "function") {
-      ref(node);
-    } else if (ref) {
-      ref.current = node;
-    }
-  };
+      // lock color at press time so it can't change mid-animation
+      const newRipple: Ripple = {
+        id: Date.now(),
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        className: cn(rippleVariants({ variant }), rippleClassName),
+      };
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (ripple) {
-      const button = buttonRef.current;
-      if (button) {
-        const rect = button.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+      setRipples((prev) => [...prev, newRipple]);
 
-        const newRipple: Ripple = {
-          id: Date.now(),
-          x,
-          y,
-        };
-
-        setRipples((prev) => [...prev, newRipple]);
-
-        setTimeout(() => {
-          setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-        }, 600);
-      }
+      setTimeout(() => {
+        setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+      }, 600);
     }
 
-    onClick?.(event);
+    onPointerDown?.(event);
   };
+
+  const rippleElements =
+    ripple &&
+    ripples.map((r) => (
+      <motion.span
+        key={r.id}
+        initial={{ scale: 0, opacity: 0.5 }}
+        animate={{ scale, opacity: 0 }}
+        transition={transition}
+        className={r.className}
+        style={{
+          top: r.y - 10,
+          left: r.x - 10,
+        }}
+      />
+    ));
+
+  const sharedProps = {
+    "data-slot": "button",
+    onPointerDown: handlePointerDown,
+    className: cn(buttonVariants({ variant, size, className })),
+    disabled: disabled || isLoading,
+    ...props,
+  };
+
+  if (asChild) {
+    return (
+      <Slot {...sharedProps}>
+        <Slottable>{children}</Slottable>
+        {rippleElements}
+      </Slot>
+    );
+  }
 
   return (
-    <Comp
-      ref={setButtonRef}
-      data-slot="button"
-      onClick={handleClick}
-      {...(asChild ? {} : { whileTap: { scale: 0.97 } })}
-      className={cn(buttonVariants({ variant, size, className }))}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      {asChild ? (
-        children
-      ) : (
-        <>
-          <span
-            data-slot="button-content"
-            className={cn(
-              "flex items-center gap-[inherit]",
-              isLoading && "invisible",
-            )}
-          >
-            {children}
-          </span>
+    <MotionButton whileTap={{ scale: 0.98 }} {...sharedProps}>
+      <span
+        data-slot="button-content"
+        className={cn(
+          "flex items-center gap-[inherit]",
+          isLoading && "invisible",
+        )}
+      >
+        {children}
+      </span>
 
-          {isLoading && <Loader className="absolute inset-0" />}
+      {isLoading && <Loader className="absolute inset-0" />}
 
-          {ripple &&
-            ripples.map((r) => (
-              <motion.span
-                key={r.id}
-                initial={{ scale: 0, opacity: 0.5 }}
-                animate={{ scale, opacity: 0 }}
-                transition={transition}
-                className={cn(rippleVariants({ variant }), rippleClassName)}
-                style={{
-                  top: r.y - 10,
-                  left: r.x - 10,
-                }}
-              />
-            ))}
-        </>
-      )}
-    </Comp>
+      {rippleElements}
+    </MotionButton>
   );
 };
 
