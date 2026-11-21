@@ -21,17 +21,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PaginationNavigator } from "@/features/vocabulary/components/table/pagination-navigator";
-import { type Translation } from "@/features/vocabulary/types";
+import { type TranslationListItem } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 import { cn } from "@/lib/utils";
 import { type PaginatedResponse } from "@/types";
 
-const EMPTY_DATA: Translation[] = [];
+const EMPTY_DATA: TranslationListItem[] = [];
 
 type VocabularyTableProps<TValue> = {
-  columns: ColumnDef<Translation, TValue>[];
-  words: PaginatedResponse<Translation> | undefined;
+  columns: ColumnDef<TranslationListItem, TValue>[];
+  words: PaginatedResponse<TranslationListItem> | undefined;
   isLoading?: boolean;
   isRefreshing?: boolean;
   sorting: SortingState;
@@ -66,9 +66,9 @@ export const VocabularyTable = <TValue,>({
     state: {
       sorting,
       rowSelection,
-      columnVisibility: { createdAt: !isMobile },
+      columnVisibility: { nextReview: !isMobile, createdAt: !isMobile },
     },
-    getRowId: (row: Translation) => row.id.toString(),
+    getRowId: (row: TranslationListItem) => row.id.toString(),
   });
 
   return (

@@ -3,12 +3,14 @@
 import type { HeaderContext } from "@tanstack/react-table";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import type { Translation } from "@/features/vocabulary/types";
+import type { TranslationListItem } from "@/features/vocabulary/types";
 import { useI18n } from "@/hooks/use-i18n";
 
 import { SortableTableHeaderText } from "./sortable-table-header-text";
 
-export const WordHeader = ({ column }: HeaderContext<Translation, unknown>) => {
+export const WordHeader = ({
+  column,
+}: HeaderContext<TranslationListItem, unknown>) => {
   const t = useI18n();
   return (
     <SortableTableHeaderText headerName={t("general.word")} column={column} />
@@ -24,9 +26,21 @@ export const TranslationsHeader = () => {
   );
 };
 
+export const NextReviewHeader = ({
+  column,
+}: HeaderContext<TranslationListItem, unknown>) => {
+  const t = useI18n();
+  return (
+    <SortableTableHeaderText
+      headerName={t("vocabulary.nextReview.title")}
+      column={column}
+    />
+  );
+};
+
 export const AddedOnHeader = ({
   column,
-}: HeaderContext<Translation, unknown>) => {
+}: HeaderContext<TranslationListItem, unknown>) => {
   const t = useI18n();
   return (
     <SortableTableHeaderText
@@ -38,7 +52,7 @@ export const AddedOnHeader = ({
 
 export const SelectHeader = ({
   table,
-}: HeaderContext<Translation, unknown>) => {
+}: HeaderContext<TranslationListItem, unknown>) => {
   const t = useI18n();
 
   return (

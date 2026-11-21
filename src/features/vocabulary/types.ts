@@ -17,6 +17,13 @@ export const translationSchema = baseEntitySchema.extend({
   definition: z.string().nullish(),
 });
 
+export const translationListItemSchema = translationSchema.extend({
+  nextReviewDate: z.string().nullish(),
+  reverseNextReviewDate: z.string().nullish(),
+});
+
 export type Word = z.infer<typeof wordSchema>;
 
 export type Translation = z.infer<typeof translationSchema>;
+
+export type TranslationListItem = z.infer<typeof translationListItemSchema>;

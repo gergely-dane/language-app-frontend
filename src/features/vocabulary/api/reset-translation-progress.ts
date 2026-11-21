@@ -12,6 +12,7 @@ export const useResetTranslationProgress = (id?: number) => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["flashcards"] });
       void queryClient.invalidateQueries({ queryKey: ["statistics"] });
+      void queryClient.invalidateQueries({ queryKey: ["translations"] });
     },
   });
 };

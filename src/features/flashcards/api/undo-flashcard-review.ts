@@ -32,6 +32,7 @@ export const useUndoFlashcardReview = () => {
     },
     onSuccess: (queue, variables) => {
       void queryClient.invalidateQueries({ queryKey: ["statistics"] });
+      void queryClient.invalidateQueries({ queryKey: ["translations"] });
 
       queryClient.setQueryData(
         getFlashcardQueueQueryKey(

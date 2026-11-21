@@ -33,6 +33,7 @@ export const useRespondToFlashcard = () => {
     },
     onSuccess: (nextQueue, variables) => {
       void queryClient.invalidateQueries({ queryKey: ["statistics"] });
+      void queryClient.invalidateQueries({ queryKey: ["translations"] });
 
       queryClient.setQueryData(
         getFlashcardQueueQueryKey(

@@ -7,21 +7,26 @@ import {
   AddedOnCell,
   DefinitionCell,
   EditCell,
+  NextReviewCell,
   SelectCell,
   TranslationsCell,
   WordCell,
 } from "@/features/vocabulary/components/table/column-cells";
 import {
   AddedOnHeader,
+  NextReviewHeader,
   SelectHeader,
   TranslationsHeader,
   WordHeader,
 } from "@/features/vocabulary/components/table/column-headers";
-import type { Translation } from "@/features/vocabulary/types";
+import type {
+  Translation,
+  TranslationListItem,
+} from "@/features/vocabulary/types";
 
 export const useColumns = (
   onEdit: (translation: Translation) => void,
-): ColumnDef<Translation>[] => {
+): ColumnDef<TranslationListItem>[] => {
   return useMemo(
     () => [
       {
@@ -51,11 +56,19 @@ export const useColumns = (
         },
       },
       {
+        id: "nextReview",
+        header: NextReviewHeader,
+        cell: NextReviewCell,
+        meta: {
+          className: "w-1/4",
+        },
+      },
+      {
         accessorKey: "createdAt",
         header: AddedOnHeader,
         cell: AddedOnCell,
         meta: {
-          className: "w-1/3",
+          className: "w-1/5",
         },
       },
       {

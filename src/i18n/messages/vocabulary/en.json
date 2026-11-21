@@ -33,6 +33,14 @@
   "last": "Last",
   "mostUsed": "Most used",
   "next": "Next",
+  "nextReview": {
+    "title": "Next review",
+    "normal": "Normal",
+    "reverse": "Reverse",
+    "new": "New",
+    "due": "Due",
+    "exactDate": "Next review on {date}"
+  },
   "noLanguagesFound": "No languages found.",
   "noResults": "No results.",
   "previous": "Previous",

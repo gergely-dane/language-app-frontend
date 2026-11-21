@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { translationSchema } from "@/features/vocabulary/types";
+import { translationListItemSchema } from "@/features/vocabulary/types";
 import { apiClient } from "@/lib/api-client";
 import { paginatedResponseSchema } from "@/types";
 
@@ -21,6 +21,6 @@ export const useTranslations = (params: GetTranslationsQuery) =>
       const { data } = await apiClient.get<unknown>("/translations", {
         params,
       });
-      return paginatedResponseSchema(translationSchema).parse(data);
+      return paginatedResponseSchema(translationListItemSchema).parse(data);
     },
   });
