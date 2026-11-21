@@ -3,11 +3,11 @@
 import { useMemo } from "react";
 
 import { useFlashcardDueCounts } from "@/features/flashcards/api/get-flashcard-due-counts";
+import { CardDirectionSelector } from "@/features/flashcards/components/card-direction-selector";
 import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
 import { DeckSetting } from "@/features/flashcards/components/deck-setting";
 import { DeckSummary } from "@/features/flashcards/components/deck-summary";
 import { PracticeModeSelector } from "@/features/flashcards/components/practice-mode-selector";
-import { ShowFirstSelector } from "@/features/flashcards/components/show-first-selector";
 import type { PracticeMode } from "@/features/flashcards/types";
 import { getLanguagePairLeftCounts } from "@/features/flashcards/utils";
 import { LanguagePairSelector } from "@/features/languages/components/language-pair-selector";
@@ -80,8 +80,11 @@ export const DeckPanel = ({
           />
         </DeckSetting>
 
-        <DeckSetting className="grow" label={t("flashcards.showFirst")}>
-          <ShowFirstSelector isReverse={isReverse} onChange={onReverseChange} />
+        <DeckSetting className="grow" label={t("flashcards.cardDirection")}>
+          <CardDirectionSelector
+            isReverse={isReverse}
+            onChange={onReverseChange}
+          />
         </DeckSetting>
       </div>
     </CollapsibleSection>

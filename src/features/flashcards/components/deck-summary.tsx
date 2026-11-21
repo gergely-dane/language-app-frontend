@@ -4,8 +4,8 @@ import { IconArrowNarrowRight } from "@tabler/icons-react";
 
 import { SummaryDot } from "@/features/flashcards/components/summary-dot";
 import {
+  CARD_DIRECTION_OPTIONS,
   PRACTICE_MODE_OPTIONS,
-  SHOW_FIRST_OPTIONS,
 } from "@/features/flashcards/constants";
 import type { PracticeMode } from "@/features/flashcards/types";
 import { useLanguages } from "@/features/languages/api/get-languages";
@@ -32,7 +32,7 @@ export const DeckSummary = ({
   const practiceOption = PRACTICE_MODE_OPTIONS.find(
     (option) => option.value === practiceMode,
   );
-  const showFirstOption = SHOW_FIRST_OPTIONS.find(
+  const cardDirectionOption = CARD_DIRECTION_OPTIONS.find(
     (option) => option.value === isReverse,
   );
 
@@ -54,12 +54,12 @@ export const DeckSummary = ({
         </>
       )}
 
-      {showFirstOption && (
+      {cardDirectionOption && (
         <>
           <SummaryDot />
 
           <span className="truncate">
-            {t(`flashcards.${showFirstOption.summary}`)}
+            {t(`flashcards.${cardDirectionOption.label}`)}
           </span>
         </>
       )}

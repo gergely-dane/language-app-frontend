@@ -134,18 +134,16 @@ export const PRACTICE_MODE_OPTIONS = [
   },
 ] as const;
 
-export const SHOW_FIRST_OPTIONS = [
+export const CARD_DIRECTION_OPTIONS = [
   {
     value: false,
-    label: "showFirstWord",
-    tooltip: "showFirstWordTooltip",
-    summary: "wordFirst",
+    label: "cardDirectionNormal",
+    tooltip: "cardDirectionNormalTooltip",
   },
   {
     value: true,
-    label: "showFirstTranslation",
-    tooltip: "showFirstTranslationTooltip",
-    summary: "translationFirst",
+    label: "cardDirectionReverse",
+    tooltip: "cardDirectionReverseTooltip",
   },
 ] as const;
 
