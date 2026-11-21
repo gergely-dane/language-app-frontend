@@ -42,7 +42,11 @@ export const CollapsibleSection = ({
           <span className="shrink-0">{title}</span>
 
           <span className="flex min-w-0 items-center gap-2">
-            {isCollapsed && summary}
+            {isCollapsed && summary && (
+              <span className="text-foreground/80 flex min-w-0 items-center gap-1.5 text-xs font-normal tracking-normal normal-case">
+                {summary}
+              </span>
+            )}
 
             <IconChevronDown
               size={16}

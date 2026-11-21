@@ -2,6 +2,7 @@
 
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 
+import { SummaryDot } from "@/features/flashcards/components/summary-dot";
 import {
   PRACTICE_MODE_OPTIONS,
   SHOW_FIRST_OPTIONS,
@@ -16,13 +17,6 @@ type DeckSummaryProps = {
   practiceMode: PracticeMode;
   isReverse: boolean;
 };
-
-const SummaryDot = () => (
-  <span
-    aria-hidden
-    className="bg-muted-foreground size-0.5 shrink-0 rounded-full"
-  />
-);
 
 export const DeckSummary = ({
   languagePair,
@@ -43,7 +37,7 @@ export const DeckSummary = ({
   );
 
   return (
-    <span className="text-foreground/80 flex min-w-0 items-center gap-1.5 text-xs font-normal tracking-normal normal-case">
+    <>
       <span className="flex shrink-0 items-center gap-0.5">
         {getLanguageLabel(languagePair?.sourceLanguageId)}
         <IconArrowNarrowRight size={12} />
@@ -69,6 +63,6 @@ export const DeckSummary = ({
           </span>
         </>
       )}
-    </span>
+    </>
   );
 };

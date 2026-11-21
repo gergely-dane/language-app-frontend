@@ -1,6 +1,7 @@
 "use client";
 
 import { CollapsibleSection } from "@/features/flashcards/components/collapsible-section";
+import { SessionSummary } from "@/features/flashcards/components/session-summary";
 import {
   FLASHCARD_DIRECTIONS,
   FLASHCARD_RATING_META,
@@ -40,6 +41,13 @@ export const SessionPanel = ({
     <CollapsibleSection
       section="session"
       title={t("flashcards.session")}
+      summary={
+        <SessionSummary
+          reviewedCount={reviewedCount}
+          remainingCount={remainingCount}
+          remainingLabel={remainingLabel}
+        />
+      }
       defaultCollapsedOnShortScreen
     >
       <div className="flex gap-y-1 max-lg:flex-wrap max-lg:items-baseline max-lg:gap-x-4 lg:flex-col">
