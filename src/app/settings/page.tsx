@@ -6,6 +6,7 @@ import {
 
 import { SettingsPage } from "@/app/settings/_components/settings-page";
 import { getFsrsOptimizationStatusQueryOptions } from "@/features/settings/api/get-fsrs-optimization-status";
+import { getUserSettingsQueryOptions } from "@/features/settings/api/get-user-settings";
 import { getUserQueryOptions } from "@/features/user/api/get-user";
 
 export default async function Page() {
@@ -14,6 +15,7 @@ export default async function Page() {
   await Promise.all([
     queryClient.prefetchQuery(getUserQueryOptions()),
     queryClient.prefetchQuery(getFsrsOptimizationStatusQueryOptions()),
+    queryClient.prefetchQuery(getUserSettingsQueryOptions()),
   ]);
 
   return (

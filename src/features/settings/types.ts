@@ -19,3 +19,9 @@ export const fsrsOptimizationStatusSchema = z.object({
 export type FsrsOptimizationStatus = z.infer<
   typeof fsrsOptimizationStatusSchema
 >;
+
+export const userSettingsSchema = z.object({
+  fsrsFuzzingEnabled: z.boolean(),
+});
+
+export type UserSettings = z.infer<typeof userSettingsSchema>;
