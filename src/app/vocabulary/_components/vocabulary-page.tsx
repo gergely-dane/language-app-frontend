@@ -19,6 +19,8 @@ import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add
 import { DeleteWordDialog } from "@/features/vocabulary/components/delete-word-dialog";
 import { ExportButton } from "@/features/vocabulary/components/export/export-button";
 import { ExportDialog } from "@/features/vocabulary/components/export/export-dialog";
+import { ImportButton } from "@/features/vocabulary/components/import/import-button";
+import { ImportDialog } from "@/features/vocabulary/components/import/import-dialog";
 import { SearchInput } from "@/features/vocabulary/components/search-input";
 import { VocabularyTable } from "@/features/vocabulary/components/table/vocabulary-table";
 import { useColumns } from "@/features/vocabulary/hooks/use-columns";
@@ -46,6 +48,7 @@ export const VocabularyPage = () => {
   const { showAlert } = useAlert();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const selectedCount = Object.keys(rowSelection).length;
   const isFiltered =
@@ -141,8 +144,13 @@ export const VocabularyPage = () => {
           onChange={onLanguageFilterChange}
         />
 
+        <ImportButton
+          className="ml-auto max-lg:hidden"
+          onClick={() => setImportDialogOpen(true)}
+        />
+
         <ExportButton
-          className="ml-auto"
+          className="max-lg:ml-auto"
           onClick={() => setExportDialogOpen(true)}
           disabled={!words?.totalCount && !isFiltered}
         />
@@ -207,6 +215,11 @@ export const VocabularyPage = () => {
         }}
         isFiltered={isFiltered}
         filteredCount={words?.totalCount ?? 0}
+      />
+
+      <ImportDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
       />
 
       <AddEditWordDialog

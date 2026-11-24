@@ -47,7 +47,12 @@
   },
   "first": "First",
   "howWellDoYouKnowTheWord": "How well do you know the word?",
-  "import": "Import",
+  "import": {
+    "button": "Import",
+    "title": "Import translations",
+    "description": "Add translations in bulk from a spreadsheet. Files exported from here use the same layout, so they can be imported as they are.",
+    "confirm": "Import"
+  },
   "justLearnedIt": "Just learned it",
   "knowItVeryWell": "Know it very well",
   "last": "Last",

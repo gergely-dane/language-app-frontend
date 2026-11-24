@@ -14,17 +14,17 @@ import { LanguageSelector } from "@/features/languages/components/language-selec
 import { type Language } from "@/features/languages/types";
 import { useCreateTranslation } from "@/features/vocabulary/api/create-translation";
 import { useDeleteTranslation } from "@/features/vocabulary/api/delete-translation";
-import { useImportSpreadsheet } from "@/features/vocabulary/api/import-spreadsheet";
 import { useTranslateWord } from "@/features/vocabulary/api/translate-word";
 import { useUpdateTranslation } from "@/features/vocabulary/api/update-translation";
 import { InlineTagInput } from "@/features/vocabulary/components/add-edit/inline-tag-input";
 import { ResetProgressButton } from "@/features/vocabulary/components/add-edit/reset-progress-button";
-import { ImportDropzone } from "@/features/vocabulary/components/import-dropzone";
+import { ImportDropzone } from "@/features/vocabulary/components/import/import-dropzone";
 import {
   LAST_ADDED_SOURCE_LANGUAGE_KEY,
   LAST_ADDED_TARGET_LANGUAGE_KEY,
   MAX_TRANSLATION_CACHE_ENTRIES,
 } from "@/features/vocabulary/constants";
+import { useImportFile } from "@/features/vocabulary/hooks/use-import-file";
 import { type Translation } from "@/features/vocabulary/types";
 import {
   getStoredLanguageId,
@@ -33,6 +33,7 @@ import {
   storeLastAddedLanguageId,
 } from "@/features/vocabulary/utils";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 const translationCache = new Map<string, string[]>();
 
@@ -62,8 +63,14 @@ export const AddEditFormContent = ({
     flashcardQueryKey,
   });
   const deleteTranslation = useDeleteTranslation(currentTranslation?.id);
-  const importSpreadsheet = useImportSpreadsheet();
   const translateWord = useTranslateWord();
+  const {
+    file,
+    setFile,
+    importFile,
+    isPending: isImportPending,
+  } = useImportFile(onClose);
+  const isMobile = useIsMobileScreen();
 
   const [sourceLanguageId, setSourceLanguageId] = useState<number | null>(
     () =>
@@ -100,7 +107,9 @@ export const AddEditFormContent = ({
     currentTranslation?.definition || "",
   );
   const [knowledgeLevel, setKnowledgeLevel] = useState<number[]>([0]);
-  const [file, setFile] = useState<File | null>(null);
+  const [tab, setTab] = useState("addWord");
+
+  const showImportTab = !editMode && isMobile;
 
   const effectiveSourceLanguageId =
     sourceLanguageId ?? languages?.[0]?.id ?? null;
@@ -225,26 +234,6 @@ export const AddEditFormContent = ({
     }
   };
 
-  const handleImport = async () => {
-    if (!file) return;
-
-    try {
-      const response = await importSpreadsheet.mutateAsync({ file });
-      onClose();
-      showAlert({
-        title: `${t("vocabulary.successfullyImported")} ${response.importedCount} ${t("vocabulary.translations")}.`,
-        variant: "default",
-      });
-    } catch (error: any) {
-      showAlert({
-        title:
-          (error.response?.data?.message as string) ||
-          t("vocabulary.anErrorOccurredWhileImportingTranslations"),
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleTranslate = async () => {
     const firstWordToTranslate =
       [...wordList, ...(word ? [word.trim()] : [])][0] || "";
@@ -305,178 +294,201 @@ export const AddEditFormContent = ({
   };
 
   return (
-    <Tabs className="mt-4" defaultValue="addWord">
-      {!editMode && (
+    <Tabs
+      className="mt-4"
+      value={showImportTab ? tab : "addWord"}
+      onValueChange={setTab}
+    >
+      {showImportTab && (
         <TabsList className="mb-1 w-full">
           <TabsTrigger value="addWord">{t("vocabulary.addWord")}</TabsTrigger>
-          <TabsTrigger value="import">{t("vocabulary.import")}</TabsTrigger>
+
+          <TabsTrigger value="import">
+            {t("vocabulary.import.button")}
+          </TabsTrigger>
         </TabsList>
       )}
 
-      <TabsContent
-        className="flex flex-col"
-        value="addWord"
-        onKeyDown={formOnKeyDown}
-      >
-        <div className="grid gap-3">
-          <div className="flex items-center gap-2">
-            <InlineTagInput
-              id="name"
-              autoFocus={true}
-              enterKeyHint="done"
-              autoCapitalize="none"
-              placeholder={t("vocabulary.enterTheWord")}
-              tags={wordList}
-              onTagsChange={setWordList}
-              inputValue={word}
-              onInputValueChange={setWord}
-              onEmptyEnter={handleEmptyEnter}
-              addonEnd={
-                <Tooltip
-                  content={t.rich("vocabulary.translateWordInto", {
-                    word: [...wordList, ...(word ? [word] : [])][0] || "...",
-                    targetLanguage: targetLanguage?.englishName || "...",
-                    bold: (chunks) => (
-                      <span className="font-semibold">{chunks}</span>
-                    ),
-                  })}
-                >
-                  <InputGroupButton
-                    className="border-input size-9 shrink-0 rounded-md border p-0 shadow-xs"
-                    variant="outline"
-                    onClick={() => void handleTranslate()}
-                    isLoading={translateWord.isPending}
-                    disabled={
-                      (!word.trim() && !wordList.length) ||
-                      !effectiveSourceLanguageId ||
-                      !effectiveTargetLanguageId
-                    }
+      <div className="grid">
+        <TabsContent
+          className="col-start-1 row-start-1 flex flex-col data-[state=inactive]:invisible"
+          value="addWord"
+          forceMount
+          onKeyDown={formOnKeyDown}
+        >
+          <div className="grid gap-3">
+            <div className="flex items-center gap-2">
+              <InlineTagInput
+                id="name"
+                autoFocus={true}
+                enterKeyHint="done"
+                autoCapitalize="none"
+                placeholder={t("vocabulary.enterTheWord")}
+                tags={wordList}
+                onTagsChange={setWordList}
+                inputValue={word}
+                onInputValueChange={setWord}
+                onEmptyEnter={handleEmptyEnter}
+                addonEnd={
+                  <Tooltip
+                    content={t.rich("vocabulary.translateWordInto", {
+                      word: [...wordList, ...(word ? [word] : [])][0] || "...",
+                      targetLanguage: targetLanguage?.englishName || "...",
+                      bold: (chunks) => (
+                        <span className="font-semibold">{chunks}</span>
+                      ),
+                    })}
                   >
-                    <IconLanguage className="text-primary size-4" />
-                  </InputGroupButton>
-                </Tooltip>
-              }
-            />
-
-            <LanguageSelector
-              className="w-14 lg:w-32"
-              role="source"
-              value={sourceLanguage}
-              onChange={(value) => handleLanguageChange(value, false)}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <InlineTagInput
-              placeholder={t("vocabulary.enterTheTranslation")}
-              enterKeyHint="done"
-              autoCapitalize="none"
-              tags={translationList}
-              onTagsChange={setTranslationList}
-              inputValue={translation}
-              onInputValueChange={setTranslation}
-              onEmptyEnter={handleEmptyEnter}
-            />
-
-            <LanguageSelector
-              className="w-14 lg:w-32"
-              role="target"
-              value={targetLanguage}
-              onChange={(value) => handleLanguageChange(value, true)}
-            />
-          </div>
-
-          <Textarea
-            placeholder={t("vocabulary.enterDefinition")}
-            value={definition}
-            onChange={(e) => setDefinition(e.target.value)}
-            maxLength={500}
-          />
-        </div>
-
-        {!editMode && (
-          <div className="mt-3">
-            <div className="flex">
-              <Label htmlFor="knowledgeLevelSlider">
-                {t("vocabulary.howWellDoYouKnowTheWord")}
-              </Label>
-
-              <Tooltip content={t("vocabulary.adjustTheSlider")}>
-                <IconHelp className="text-muted-foreground ml-1" size={18} />
-              </Tooltip>
-            </div>
-
-            <div>
-              <Slider
-                className="h-8"
-                id="knowledgeLevelSlider"
-                value={knowledgeLevel}
-                onValueChange={setKnowledgeLevel}
-                min={0}
-                max={3}
-                step={1}
+                    <InputGroupButton
+                      className="border-input size-9 shrink-0 rounded-md border p-0 shadow-xs"
+                      variant="outline"
+                      onClick={() => void handleTranslate()}
+                      isLoading={translateWord.isPending}
+                      disabled={
+                        (!word.trim() && !wordList.length) ||
+                        !effectiveSourceLanguageId ||
+                        !effectiveTargetLanguageId
+                      }
+                    >
+                      <IconLanguage className="text-primary size-4" />
+                    </InputGroupButton>
+                  </Tooltip>
+                }
               />
 
-              <div className="-mt-1 flex text-xs">
-                <div>{t("vocabulary.justLearnedIt")}</div>
-                <div className="ml-auto">{t("vocabulary.knowItVeryWell")}</div>
+              <LanguageSelector
+                className="w-14 lg:w-32"
+                role="source"
+                value={sourceLanguage}
+                onChange={(value) => handleLanguageChange(value, false)}
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <InlineTagInput
+                placeholder={t("vocabulary.enterTheTranslation")}
+                enterKeyHint="done"
+                autoCapitalize="none"
+                tags={translationList}
+                onTagsChange={setTranslationList}
+                inputValue={translation}
+                onInputValueChange={setTranslation}
+                onEmptyEnter={handleEmptyEnter}
+              />
+
+              <LanguageSelector
+                className="w-14 lg:w-32"
+                role="target"
+                value={targetLanguage}
+                onChange={(value) => handleLanguageChange(value, true)}
+              />
+            </div>
+
+            <Textarea
+              placeholder={t("vocabulary.enterDefinition")}
+              value={definition}
+              onChange={(e) => setDefinition(e.target.value)}
+              maxLength={500}
+            />
+          </div>
+
+          {!editMode && (
+            <div className="mt-3">
+              <div className="flex">
+                <Label htmlFor="knowledgeLevelSlider">
+                  {t("vocabulary.howWellDoYouKnowTheWord")}
+                </Label>
+
+                <Tooltip content={t("vocabulary.adjustTheSlider")}>
+                  <IconHelp className="text-muted-foreground ml-1" size={18} />
+                </Tooltip>
+              </div>
+
+              <div>
+                <Slider
+                  className="h-8"
+                  id="knowledgeLevelSlider"
+                  value={knowledgeLevel}
+                  onValueChange={setKnowledgeLevel}
+                  min={0}
+                  max={3}
+                  step={1}
+                />
+
+                <div className="-mt-1 flex text-xs">
+                  <div>{t("vocabulary.justLearnedIt")}</div>
+                  <div className="ml-auto">
+                    {t("vocabulary.knowItVeryWell")}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        <div className="relative mt-4 flex">
-          <Button
-            className="mx-auto w-30"
-            variant="outline"
-            onClick={() => void handleSave()}
-            isLoading={
-              createTranslation.isPending || updateTranslation.isPending
-            }
-            disabled={
-              createTranslation.isPending ||
-              updateTranslation.isPending ||
-              (!word && !wordList.length) ||
-              (!translationList.length && !translation)
-            }
-          >
-            {t("general.save")}
-          </Button>
-
-          {editMode && (
-            <div className="absolute flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => void handleDelete()}
-              >
-                <IconTrash className="text-destructive" />
-              </Button>
-
-              <ResetProgressButton
-                translationId={currentTranslation?.id}
-                onReset={() => {
-                  onProgressReset?.();
-                  onClose();
-                }}
-              />
-            </div>
           )}
-        </div>
-      </TabsContent>
 
-      <TabsContent className="flex flex-col" value="import">
-        <ImportDropzone file={file} onChange={setFile} />
+          <div className="relative mt-4 flex">
+            <Button
+              className="mx-auto w-30"
+              variant="outline"
+              onClick={() => void handleSave()}
+              isLoading={
+                createTranslation.isPending || updateTranslation.isPending
+              }
+              disabled={
+                createTranslation.isPending ||
+                updateTranslation.isPending ||
+                (!word && !wordList.length) ||
+                (!translationList.length && !translation)
+              }
+            >
+              {t("general.save")}
+            </Button>
 
-        <Button
-          className="mx-auto mt-4 w-30"
-          variant="outline"
-          onClick={() => void handleImport()}
-          disabled={!file}
-        >
-          {t("vocabulary.import")}
-        </Button>
-      </TabsContent>
+            {editMode && (
+              <div className="absolute flex gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => void handleDelete()}
+                >
+                  <IconTrash className="text-destructive" />
+                </Button>
+
+                <ResetProgressButton
+                  translationId={currentTranslation?.id}
+                  onReset={() => {
+                    onProgressReset?.();
+                    onClose();
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        {showImportTab && (
+          <TabsContent
+            className="col-start-1 row-start-1 flex flex-col data-[state=inactive]:invisible"
+            value="import"
+            forceMount
+          >
+            <ImportDropzone
+              className="mt-2 flex-1"
+              file={file}
+              onChange={setFile}
+            />
+
+            <Button
+              className="mx-auto mt-4 w-30"
+              variant="outline"
+              onClick={() => void importFile()}
+              isLoading={isImportPending}
+              disabled={!file}
+            >
+              {t("vocabulary.import.button")}
+            </Button>
+          </TabsContent>
+        )}
+      </div>
     </Tabs>
   );
 };

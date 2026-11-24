@@ -50,7 +50,7 @@ export const ImportDropzone = ({
       <div
         {...getRootProps()}
         className={cn(
-          "mt-2 flex h-57 w-full cursor-pointer flex-col items-center justify-center rounded-md border border-2 border-dashed transition-colors duration-200",
+          "flex w-full cursor-pointer flex-col items-center justify-center self-stretch rounded-md border border-2 border-dashed transition-colors duration-200",
           isDragActive ? "border-primary bg-primary/15" : "",
           fileNotAllowed ? "border-destructive/50 bg-destructive/10" : "",
         )}
