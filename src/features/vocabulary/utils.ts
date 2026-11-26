@@ -108,3 +108,29 @@ export const getDefaultExportScope = (
   if (isFiltered && counts.filtered > 0) return EXPORT_SCOPE.Filtered;
   return EXPORT_SCOPE.All;
 };
+
+const range = (start: number, end: number) =>
+  Array.from({ length: end - start + 1 }, (_, i) => start + i);
+
+export const getPaginationItems = (
+  currentPage: number,
+  totalPages: number,
+  siblings: number,
+): (number | "start-ellipsis" | "end-ellipsis")[] => {
+  // first page, edge slot, sibling window, edge slot, last page
+  if (totalPages <= siblings * 2 + 5) return range(1, totalPages);
+
+  const windowStart = Math.min(
+    Math.max(currentPage - siblings, 3),
+    totalPages - 2 - siblings * 2,
+  );
+  const windowEnd = windowStart + siblings * 2;
+
+  return [
+    1,
+    windowStart > 3 ? "start-ellipsis" : 2,
+    ...range(windowStart, windowEnd),
+    windowEnd < totalPages - 2 ? "end-ellipsis" : totalPages - 1,
+    totalPages,
+  ];
+};

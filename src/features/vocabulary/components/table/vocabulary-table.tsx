@@ -72,7 +72,7 @@ export const VocabularyTable = <TValue,>({
   });
 
   return (
-    <div className="flex flex-1 flex-col justify-between">
+    <div>
       <div>
         <Table className="table-fixed" aria-busy={isRefreshing}>
           <TableHeader>
@@ -155,7 +155,7 @@ export const VocabularyTable = <TValue,>({
         </Table>
       </div>
 
-      {onPageChange && words && (
+      {onPageChange && words && words.totalPages > 1 && (
         <PaginationNavigator
           className="mt-4"
           currentPage={words.currentPage}

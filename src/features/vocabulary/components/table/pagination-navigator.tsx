@@ -2,13 +2,16 @@ import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
-  PaginationFirst,
   PaginationItem,
-  PaginationLast,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  PAGINATION_SIBLINGS_DESKTOP,
+  PAGINATION_SIBLINGS_MOBILE,
+} from "@/features/vocabulary/constants";
+import { getPaginationItems } from "@/features/vocabulary/utils";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
 
 type PaginationNavigatorProps = {
@@ -25,34 +28,15 @@ export const PaginationNavigator = ({
   onChange,
 }: PaginationNavigatorProps) => {
   const isMobile = useIsMobileScreen();
-  const siblings = isMobile ? 1 : 2;
-  const visiblePages = siblings * 2 + 1;
-
-  let startPage = Math.max(1, currentPage - siblings);
-  let endPage = Math.min(totalPages, startPage + visiblePages - 1);
-  if (endPage - startPage + 1 < visiblePages) {
-    startPage = Math.max(1, endPage - visiblePages + 1);
-  }
-
-  if (totalPages === 0) {
-    startPage = 1;
-    endPage = 0;
-  }
-
-  const pages = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, i) => startPage + i,
+  const items = getPaginationItems(
+    currentPage,
+    totalPages,
+    isMobile ? PAGINATION_SIBLINGS_MOBILE : PAGINATION_SIBLINGS_DESKTOP,
   );
 
   return (
     <Pagination className={className}>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationFirst
-            disabled={currentPage <= 1}
-            onClick={() => onChange(1)}
-          />
-        </PaginationItem>
+      <PaginationContent className="max-sm:gap-0.5">
         <PaginationItem>
           <PaginationPrevious
             disabled={currentPage <= 1}
@@ -60,39 +44,25 @@ export const PaginationNavigator = ({
           />
         </PaginationItem>
 
-        {startPage > 1 && (
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-        )}
-
-        {pages.map((page) => (
-          <PaginationItem key={page}>
-            <PaginationLink
-              isActive={currentPage === page}
-              onClick={() => onChange(page)}
-            >
-              {page}
-            </PaginationLink>
+        {items.map((item) => (
+          <PaginationItem key={item}>
+            {typeof item === "number" ? (
+              <PaginationLink
+                isActive={currentPage === item}
+                onClick={() => onChange(item)}
+              >
+                {item}
+              </PaginationLink>
+            ) : (
+              <PaginationEllipsis className="max-sm:w-6" />
+            )}
           </PaginationItem>
         ))}
 
-        {endPage > 0 && endPage < totalPages && (
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-        )}
-
         <PaginationItem>
           <PaginationNext
-            disabled={currentPage >= totalPages || totalPages === 0}
+            disabled={currentPage >= totalPages}
             onClick={() => onChange(currentPage + 1)}
-          />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLast
-            disabled={currentPage >= totalPages || totalPages === 0}
-            onClick={() => onChange(totalPages > 0 ? totalPages : 1)}
           />
         </PaginationItem>
       </PaginationContent>

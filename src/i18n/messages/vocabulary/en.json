@@ -45,7 +45,6 @@
     "success": "Exported {count, plural, one {# translation} other {# translations}}",
     "error": "Could not export translations"
   },
-  "first": "First",
   "howWellDoYouKnowTheWord": "How well do you know the word?",
   "import": {
     "button": "Import",
@@ -55,7 +54,6 @@
   },
   "justLearnedIt": "Just learned it",
   "knowItVeryWell": "Know it very well",
-  "last": "Last",
   "mostUsed": "Most used",
   "next": "Next",
   "nextReview": {

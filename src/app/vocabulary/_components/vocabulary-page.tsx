@@ -6,7 +6,7 @@ import {
   type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table";
-import { useCallback, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import { ScrollToTopButton } from "@/components/common/scroll-to-top-button";
 import { Button } from "@/components/ui/button";
@@ -89,6 +89,34 @@ export const VocabularyPage = () => {
     sortAscending: sorting[0] ? !sorting[0].desc : false,
   });
   const isRefreshing = useDebounce(isPlaceholderData) && isPlaceholderData;
+
+  if (
+    words &&
+    !isPlaceholderData &&
+    words.totalPages > 0 &&
+    pageNumber > words.totalPages
+  ) {
+    setPageNumber(words.totalPages);
+  }
+
+  const scrollToBottomOnLoad = useRef(false);
+
+  useLayoutEffect(() => {
+    if (!scrollToBottomOnLoad.current || isPlaceholderData) return;
+
+    scrollToBottomOnLoad.current = false;
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "instant",
+    });
+  }, [words, isPlaceholderData]);
+
+  const onPageChange = (page: number) => {
+    if (page === pageNumber) return;
+
+    scrollToBottomOnLoad.current = true;
+    setPageNumber(page);
+  };
 
   const onSearchChange = (value: string) => {
     setSearchFilter(value);
@@ -238,7 +266,7 @@ export const VocabularyPage = () => {
         onSortingChange={onSortingChange}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
-        onPageChange={(page) => setPageNumber(page)}
+        onPageChange={onPageChange}
       />
 
       <ScrollToTopButton />

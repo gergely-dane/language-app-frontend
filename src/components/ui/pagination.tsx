@@ -1,8 +1,6 @@
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
   IconDots,
 } from "@tabler/icons-react";
 import * as React from "react";
@@ -72,31 +70,6 @@ function PaginationLink({
   );
 }
 
-function PaginationFirst({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) {
-  const t = useI18n();
-
-  return (
-    <PaginationLink
-      aria-label="Go to first page"
-      size="default"
-      className={cn(
-        "gap-1 px-2.5 select-none sm:pl-2.5",
-        buttonVariants({
-          variant: "outline",
-        }),
-        className,
-      )}
-      {...props}
-    >
-      <IconChevronsLeft className="mt-0.5" />
-      <span className="hidden sm:block">{t("vocabulary.first")}</span>
-    </PaginationLink>
-  );
-}
-
 function PaginationPrevious({
   className,
   ...props
@@ -147,31 +120,6 @@ function PaginationNext({
   );
 }
 
-function PaginationLast({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) {
-  const t = useI18n();
-
-  return (
-    <PaginationLink
-      aria-label="Go to last page"
-      size="default"
-      className={cn(
-        "gap-1 px-2.5 select-none sm:pr-2.5",
-        buttonVariants({
-          variant: "outline",
-        }),
-        className,
-      )}
-      {...props}
-    >
-      <span className="hidden sm:block">{t("vocabulary.last")}</span>
-      <IconChevronsRight className="mt-0.5" />
-    </PaginationLink>
-  );
-}
-
 function PaginationEllipsis({
   className,
   ...props
@@ -192,9 +140,7 @@ export {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
-  PaginationFirst,
   PaginationItem,
-  PaginationLast,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
