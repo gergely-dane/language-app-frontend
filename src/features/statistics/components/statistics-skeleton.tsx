@@ -14,7 +14,7 @@ export const StatisticsSkeleton = ({ className }: StatisticsSkeletonProps) => {
         ))}
       </div>
 
-      <Skeleton className="hidden h-[210px] w-full rounded-lg md:block lg:h-70" />
+      <Skeleton className="h-[195px] w-full rounded-lg md:h-[210px] lg:h-70" />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Skeleton className="h-[310px] rounded-lg" />

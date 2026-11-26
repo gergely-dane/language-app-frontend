@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 
 import { Tooltip } from "@/components/ui/tooltip";
 import {
@@ -21,6 +21,12 @@ type ActivityHeatmapProps = {
 
 export const ActivityHeatmap = ({ stats, className }: ActivityHeatmapProps) => {
   const t = useI18n();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const element = scrollRef.current;
+    if (element) element.scrollLeft = element.scrollWidth;
+  }, []);
 
   const { grid, maxCount } = useMemo(() => {
     const activityMap = new Map<
@@ -106,17 +112,20 @@ export const ActivityHeatmap = ({ stats, className }: ActivityHeatmapProps) => {
   return (
     <div
       className={cn(
-        "bg-card hidden w-full flex-col overflow-x-auto rounded-lg border p-4 shadow-sm md:flex",
+        "bg-card flex w-full flex-col rounded-lg border p-4 shadow-sm",
         className,
       )}
     >
       <h2 className="shrink-0 text-sm">{t("statistics.heatmap.title")}</h2>
 
-      <div className="flex min-h-0 w-full flex-1 items-center justify-center pt-4">
+      <div
+        ref={scrollRef}
+        className="flex min-h-0 w-full flex-1 items-center overflow-x-auto pt-4"
+      >
         <svg
-          width="100%"
+          width={svgWidth}
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="block"
+          className="block shrink-0 md:w-full md:shrink"
           role="img"
           aria-label={t("statistics.heatmap.title")}
         >
