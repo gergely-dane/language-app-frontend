@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { CardShuffleSection } from "@/features/settings/components/card-shuffle-section";
 import { FsrsOptimizationSection } from "@/features/settings/components/fsrs/fsrs-optimization-section";
 import { UserSettingSwitch } from "@/features/settings/components/user-setting-switch";
 import { useI18n } from "@/hooks/use-i18n";
@@ -32,6 +33,10 @@ export const FlashcardSettingsCard = () => {
           enabledMessage={t("settings.fuzzingEnabled")}
           disabledMessage={t("settings.fuzzingDisabled")}
         />
+
+        <Separator />
+
+        <CardShuffleSection />
 
         <Separator />
 

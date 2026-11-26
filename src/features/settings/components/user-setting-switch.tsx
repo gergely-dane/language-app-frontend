@@ -11,8 +11,12 @@ import { useUpdateUserSettings } from "@/features/settings/api/update-user-setti
 import { type UserSettings } from "@/features/settings/types";
 import { useI18n } from "@/hooks/use-i18n";
 
+type BooleanUserSetting = {
+  [K in keyof UserSettings]: UserSettings[K] extends boolean ? K : never;
+}[keyof UserSettings];
+
 type UserSettingSwitchProps = {
-  setting: keyof UserSettings;
+  setting: BooleanUserSetting;
   title: string;
   description: string;
   enabledMessage: string;

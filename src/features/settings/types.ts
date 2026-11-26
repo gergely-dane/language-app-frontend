@@ -23,6 +23,8 @@ export type FsrsOptimizationStatus = z.infer<
 export const userSettingsSchema = z.object({
   fsrsFuzzingEnabled: z.boolean(),
   showNativeLanguageNames: z.boolean(),
+  cardShuffleEnabled: z.boolean(),
+  cardShufflePoolSize: z.number(),
 });
 
 export type UserSettings = z.infer<typeof userSettingsSchema>;
