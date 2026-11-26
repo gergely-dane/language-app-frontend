@@ -133,7 +133,7 @@ export const FsrsOptimizationSection = () => {
   if (isError || !status) {
     return (
       <section className="flex flex-col gap-4">
-        <h3 className="text-sm font-semibold">
+        <h3 className="font-sans text-sm font-semibold tracking-normal">
           {t("settings.optimizationTitle")}
         </h3>
         <p className="text-muted-foreground text-sm">
@@ -218,7 +218,7 @@ export const FsrsOptimizationSection = () => {
       <section className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-col gap-1">
-            <h3 className="text-sm font-semibold">
+            <h3 className="font-sans text-sm font-semibold tracking-normal">
               {t("settings.optimizationTitle")}
             </h3>
             <p className="text-muted-foreground text-sm">

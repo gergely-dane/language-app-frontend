@@ -56,7 +56,7 @@ export const AddEditFormContent = ({
 }: AddEditFormContentProps) => {
   const t = useI18n();
   const { showAlert } = useAlert();
-  const { data: languages } = useLanguages();
+  const { data: languages, getLanguageName } = useLanguages();
 
   const createTranslation = useCreateTranslation();
   const updateTranslation = useUpdateTranslation(currentTranslation?.id, {
@@ -286,7 +286,8 @@ export const AddEditFormContent = ({
       showAlert({
         title: t("vocabulary.errorTranslatingWord", {
           word: firstWordToTranslate,
-          targetLanguage: targetLanguage?.englishName || "...",
+          targetLanguage:
+            (targetLanguage && getLanguageName(targetLanguage)) || "...",
         }),
         variant: "destructive",
       });
@@ -333,7 +334,9 @@ export const AddEditFormContent = ({
                   <Tooltip
                     content={t.rich("vocabulary.translateWordInto", {
                       word: [...wordList, ...(word ? [word] : [])][0] || "...",
-                      targetLanguage: targetLanguage?.englishName || "...",
+                      targetLanguage:
+                        (targetLanguage && getLanguageName(targetLanguage)) ||
+                        "...",
                       bold: (chunks) => (
                         <span className="font-semibold">{chunks}</span>
                       ),

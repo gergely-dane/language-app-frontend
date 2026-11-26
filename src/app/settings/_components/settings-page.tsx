@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAlert } from "@/context/alert-context";
+import { DisplaySettingsCard } from "@/features/settings/components/display-settings-card";
 import { FlashcardSettingsCard } from "@/features/settings/components/flashcard-settings-card";
 import { useGetUser } from "@/features/user/api/get-user";
 import { useUpdateUser } from "@/features/user/api/update-user";
@@ -119,6 +120,8 @@ export const SettingsPage = () => {
             </form>
           </CardContent>
         </Card>
+
+        <DisplaySettingsCard />
 
         <FlashcardSettingsCard />
       </div>

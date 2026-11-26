@@ -21,7 +21,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguagePairs } from "@/features/languages/api/get-language-pairs";
 import { useLanguages } from "@/features/languages/api/get-languages";
-import { LANGUAGES } from "@/features/languages/constants";
 import { type Language } from "@/features/languages/types";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobileScreen } from "@/hooks/use-is-mobile-screen";
@@ -42,7 +41,11 @@ export const LanguageSelector = ({
 }: LanguageSelectorProps) => {
   const t = useI18n();
   const isMobile = useIsMobileScreen();
-  const { data: languages, isLoading: isLanguagesLoading } = useLanguages();
+  const {
+    data: languages,
+    isLoading: isLanguagesLoading,
+    getLanguageName,
+  } = useLanguages();
   const { data: languagePairs } = useLanguagePairs();
 
   const [open, setOpen] = useState(false);
@@ -56,7 +59,7 @@ export const LanguageSelector = ({
     }
 
     const byName = (a: Language, b: Language) =>
-      (LANGUAGES[a.code] || "").localeCompare(LANGUAGES[b.code] || "");
+      getLanguageName(a).localeCompare(getLanguageName(b));
 
     const used = (languages || [])
       .filter((lang) => counts.has(lang.id))
@@ -66,12 +69,13 @@ export const LanguageSelector = ({
       .sort(byName);
 
     return { usedLanguages: used, otherLanguages: other };
-  }, [languages, languagePairs, role]);
+  }, [languages, languagePairs, role, getLanguageName]);
 
   const renderLanguageItem = (language: Language) => (
     <CommandItem
       key={language.id}
-      value={LANGUAGES[language.code]}
+      value={getLanguageName(language)}
+      keywords={[language.englishName, language.nativeName]}
       className={cn(
         value?.id === language.id &&
           "text-primary data-[selected=true]:text-primary",
@@ -81,7 +85,7 @@ export const LanguageSelector = ({
         setOpen(false);
       }}
     >
-      {LANGUAGES[language.code]}
+      {getLanguageName(language)}
     </CommandItem>
   );
 
@@ -107,7 +111,7 @@ export const LanguageSelector = ({
             <p>
               {value
                 ? !isMobile
-                  ? LANGUAGES[value.code]
+                  ? getLanguageName(value)
                   : value.code.toUpperCase()
                 : t("vocabulary.selectLanguage")}
             </p>

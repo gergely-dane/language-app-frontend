@@ -22,6 +22,7 @@ export type FsrsOptimizationStatus = z.infer<
 
 export const userSettingsSchema = z.object({
   fsrsFuzzingEnabled: z.boolean(),
+  showNativeLanguageNames: z.boolean(),
 });
 
 export type UserSettings = z.infer<typeof userSettingsSchema>;
