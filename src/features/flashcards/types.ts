@@ -52,6 +52,7 @@ export type FlashcardSection = keyof FlashcardCollapsedSections;
 export const flashcardSchema = z.object({
   id: z.number(),
   translation: translationSchema,
+  isNew: z.boolean(),
   dontKnowNextReviewMinutes: z.number(),
   notSureNextReviewMinutes: z.number(),
   knowItNextReviewMinutes: z.number(),

@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionConfig } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
 import { DeckPanel } from "@/features/flashcards/components/deck-panel";
@@ -33,6 +34,7 @@ import {
 } from "@/features/flashcards/utils";
 import { useLanguages } from "@/features/languages/api/get-languages";
 import { type LanguageFilterValue } from "@/features/languages/types";
+import { useGetUserSettings } from "@/features/settings/api/get-user-settings";
 import { AddEditWordDialog } from "@/features/vocabulary/components/add-edit/add-edit-word-dialog";
 import { useI18n } from "@/hooks/use-i18n";
 
@@ -81,12 +83,24 @@ export const FlashcardsPage = () => {
 
   const deck = useFlashcardDeck(flashcardParams, recordResponse, undoResponse);
   const { isLoading: isLanguagesLoading } = useLanguages();
+  const { data: settings } = useGetUserSettings();
   const isLoading = deck.isLoading || isLanguagesLoading;
+
+  const disabledDirections: Direction[] =
+    settings?.disableEasyForNewCards && deck.dealtCard?.flashcard.isNew
+      ? ["up"]
+      : [];
+
+  const respond = (direction: Direction) => {
+    if (disabledDirections.includes(direction)) return;
+
+    deck.respond(direction);
+  };
 
   useFlashcardShortcuts({
     enabled: !editDialogOpen,
     onFlip: deck.flip,
-    onRespond: deck.respond,
+    onRespond: respond,
   });
 
   const [lastCounts, setLastCounts] = useState({
@@ -151,100 +165,105 @@ export const FlashcardsPage = () => {
   };
 
   return (
-    <div className="flex w-full flex-col self-stretch">
-      <h1 className="text-3xl max-lg:sr-only">{t("flashcards.title")}</h1>
+    <MotionConfig
+      reducedMotion={settings?.disableFlashcardAnimations ? "always" : "never"}
+    >
+      <div className="flex w-full flex-col self-stretch">
+        <h1 className="text-3xl max-lg:sr-only">{t("flashcards.title")}</h1>
 
-      <p className="text-muted-foreground short:hidden font-semibold max-lg:hidden">
-        {t("flashcards.practiceYourWords")}
-      </p>
+        <p className="text-muted-foreground short:hidden font-semibold max-lg:hidden">
+          {t("flashcards.practiceYourWords")}
+        </p>
 
-      <div className="mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-0 max-lg:flex-col max-lg:gap-2.5 lg:mx-0">
-        <aside className="max-lg:short:gap-2 flex w-full flex-col gap-4 max-lg:mx-auto max-lg:max-w-120 max-lg:gap-3 lg:w-60 lg:shrink-0">
-          <DeckPanel
-            languagePair={languagePair}
-            practiceMode={practiceMode}
-            isReverse={isReverse}
-            onLanguagePairChange={onLanguagePairChange}
-            onPracticeModeChange={onPracticeModeChange}
-            onReverseChange={onReverseChange}
-          />
-
-          <ShortcutsPanel ratingLabels={ratingLabels} />
-        </aside>
-
-        <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
-          <SessionPanel
-            reviewedCount={sessionHistory.length}
-            remainingCount={getRemainingCount(lastCounts, practiceMode)}
-            practiceMode={practiceMode}
-            tally={tally}
-          />
-        </aside>
-
-        <main className="flex min-w-0 flex-1 flex-col">
-          <div className="mx-auto flex w-full max-w-120 flex-col gap-3.5 max-lg:gap-2.5">
-            <FlashcardToolbar
-              canUndo={deck.canUndo}
-              canEdit={!!deck.flashcard}
-              onUndo={deck.undo}
-              onEdit={onEditClick}
+        <div className="mx-auto mt-6 flex w-full max-w-250 gap-5 max-lg:mt-0 max-lg:flex-col max-lg:gap-2.5 lg:mx-0">
+          <aside className="max-lg:short:gap-2 flex w-full flex-col gap-4 max-lg:mx-auto max-lg:max-w-120 max-lg:gap-3 lg:w-60 lg:shrink-0">
+            <DeckPanel
+              languagePair={languagePair}
+              practiceMode={practiceMode}
+              isReverse={isReverse}
+              onLanguagePairChange={onLanguagePairChange}
+              onPracticeModeChange={onPracticeModeChange}
+              onReverseChange={onReverseChange}
             />
 
-            {isLoading ? (
-              <FlashcardSkeleton />
-            ) : (
-              <FlashcardDeck
-                dealtCard={deck.dealtCard}
-                flipped={deck.flipped}
-                exitDirections={deck.exitDirections}
-                stack={deck.stack}
-                emptyState={
-                  deck.isEmpty && (
-                    <FlashcardEmptyState
-                      hasError={!!deck.error}
-                      practiceMode={practiceMode}
-                      newCount={lastCounts.newCount}
-                      existingCount={lastCounts.existingCount}
-                      isRefreshing={deck.isFetching}
-                      onRefresh={() => void deck.refetch()}
-                      onPracticeModeChange={onPracticeModeChange}
-                    />
-                  )
-                }
-                onFlip={deck.flip}
-                onSwipe={deck.respond}
-                onExitComplete={deck.clearExitDirections}
-                onCardEntered={deck.onCardEntered}
-                isReverse={isReverse}
-              />
-            )}
+            <ShortcutsPanel ratingLabels={ratingLabels} />
+          </aside>
 
-            {isLoading ? (
-              <FlashcardResponseButtonsSkeleton />
-            ) : (
-              <FlashcardResponseButtons
-                flashcard={deck.flashcard}
-                labels={ratingLabels}
-                isHidden={!deck.flashcard}
-                areTimesHidden={!deck.dealtCard}
-                onRespond={deck.respond}
-              />
-            )}
-          </div>
-        </main>
+          <aside className="flex w-full flex-col max-lg:mx-auto max-lg:max-w-120 lg:order-last lg:w-60 lg:shrink-0">
+            <SessionPanel
+              reviewedCount={sessionHistory.length}
+              remainingCount={getRemainingCount(lastCounts, practiceMode)}
+              practiceMode={practiceMode}
+              tally={tally}
+            />
+          </aside>
 
-        {!!deck.flashcard && (
-          <AddEditWordDialog
-            open={editDialogOpen}
-            onOpenChange={(open) => setEditDialogOpen(open)}
-            editMode={true}
-            currentTranslation={deck.flashcard.translation}
-            flashcardQueryKey={deck.flashcardQueryKey}
-            onDeleted={deck.redeal}
-            onProgressReset={deck.redeal}
-          />
-        )}
+          <main className="flex min-w-0 flex-1 flex-col">
+            <div className="mx-auto flex w-full max-w-120 flex-col gap-3.5 max-lg:gap-2.5">
+              <FlashcardToolbar
+                canUndo={deck.canUndo}
+                canEdit={!!deck.flashcard}
+                onUndo={deck.undo}
+                onEdit={onEditClick}
+              />
+
+              {isLoading ? (
+                <FlashcardSkeleton />
+              ) : (
+                <FlashcardDeck
+                  dealtCard={deck.dealtCard}
+                  flipped={deck.flipped}
+                  exitDirections={deck.exitDirections}
+                  stack={deck.stack}
+                  emptyState={
+                    deck.isEmpty && (
+                      <FlashcardEmptyState
+                        hasError={!!deck.error}
+                        practiceMode={practiceMode}
+                        newCount={lastCounts.newCount}
+                        existingCount={lastCounts.existingCount}
+                        isRefreshing={deck.isFetching}
+                        onRefresh={() => void deck.refetch()}
+                        onPracticeModeChange={onPracticeModeChange}
+                      />
+                    )
+                  }
+                  onFlip={deck.flip}
+                  onSwipe={respond}
+                  onExitComplete={deck.clearExitDirections}
+                  onCardEntered={deck.onCardEntered}
+                  isReverse={isReverse}
+                />
+              )}
+
+              {isLoading ? (
+                <FlashcardResponseButtonsSkeleton />
+              ) : (
+                <FlashcardResponseButtons
+                  flashcard={deck.flashcard}
+                  labels={ratingLabels}
+                  isHidden={!deck.flashcard}
+                  areTimesHidden={!deck.dealtCard}
+                  disabledDirections={disabledDirections}
+                  onRespond={respond}
+                />
+              )}
+            </div>
+          </main>
+
+          {!!deck.flashcard && (
+            <AddEditWordDialog
+              open={editDialogOpen}
+              onOpenChange={(open) => setEditDialogOpen(open)}
+              editMode={true}
+              currentTranslation={deck.flashcard.translation}
+              flashcardQueryKey={deck.flashcardQueryKey}
+              onDeleted={deck.redeal}
+              onProgressReset={deck.redeal}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </MotionConfig>
   );
 };

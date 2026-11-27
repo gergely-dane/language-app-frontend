@@ -6,3 +6,7 @@ export const isFsrsOptimizationInProgress = (
 ) =>
   status?.state === FSRS_OPTIMIZATION_STATE.Pending ||
   status?.state === FSRS_OPTIMIZATION_STATE.Running;
+
+export const formatPercent = (value: number) => `${Math.round(value * 100)}%`;
+
+export const formatSpeakingRate = (value: number) => `${value.toFixed(2)}x`;

@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 
+import { useGetUserSettings } from "@/features/settings/api/get-user-settings";
 import { useSynthesizeSpeech } from "@/features/vocabulary/api/synthesize-speech";
 import { MAX_AUDIO_CACHE_ENTRIES } from "@/features/vocabulary/constants";
 import { setWithEvictOldest } from "@/features/vocabulary/utils";
@@ -33,6 +34,7 @@ export const usePlayAudio = (text: string, languageCode: string) => {
   );
 
   const synthesizeSpeech = useSynthesizeSpeech();
+  const { data: settings } = useGetUserSettings();
 
   const cleanup = () => {
     setIsThisPlaying(false);
@@ -40,7 +42,7 @@ export const usePlayAudio = (text: string, languageCode: string) => {
   };
 
   const getAudioUrl = async () => {
-    const cacheKey = `${text}_${languageCode}`;
+    const cacheKey = `${text}_${languageCode}_${settings?.ttsSpeakingRate}`;
 
     const cached = audioCache.get(cacheKey);
     if (cached) return cached;

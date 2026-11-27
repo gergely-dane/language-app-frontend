@@ -25,6 +25,11 @@ export const userSettingsSchema = z.object({
   showNativeLanguageNames: z.boolean(),
   cardShuffleEnabled: z.boolean(),
   cardShufflePoolSize: z.number(),
+  fsrsDesiredRetention: z.number(),
+  fsrsMaximumIntervalDays: z.number(),
+  disableEasyForNewCards: z.boolean(),
+  disableFlashcardAnimations: z.boolean(),
+  ttsSpeakingRate: z.number(),
 });
 
 export type UserSettings = z.infer<typeof userSettingsSchema>;

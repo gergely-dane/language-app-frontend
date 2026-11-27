@@ -2,12 +2,12 @@
 
 import { useId } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useAlert } from "@/context/alert-context";
 import { useGetUserSettings } from "@/features/settings/api/get-user-settings";
 import { useUpdateUserSettings } from "@/features/settings/api/update-user-settings";
+import { UserSettingLoadError } from "@/features/settings/components/user-setting-load-error";
 import { type UserSettings } from "@/features/settings/types";
 import { useI18n } from "@/hooks/use-i18n";
 
@@ -56,23 +56,7 @@ export const UserSettingSwitch = ({
 
   if (!isLoading && (isError || !settings)) {
     return (
-      <section className="flex flex-col gap-4">
-        <h3 className="font-sans text-sm font-semibold tracking-normal">
-          {title}
-        </h3>
-
-        <p className="text-muted-foreground text-sm">
-          {t("settings.settingsLoadError")}
-        </p>
-
-        <Button
-          variant="outline"
-          className="w-fit"
-          onClick={() => void refetch()}
-        >
-          {t("settings.retry")}
-        </Button>
-      </section>
+      <UserSettingLoadError title={title} onRetry={() => void refetch()} />
     );
   }
 

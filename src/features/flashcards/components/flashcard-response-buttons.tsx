@@ -13,6 +13,7 @@ type FlashcardResponseButtonsProps = {
   labels: Record<Direction, string>;
   isHidden: boolean;
   areTimesHidden: boolean;
+  disabledDirections: Direction[];
   onRespond: (direction: Direction) => void;
 };
 
@@ -21,6 +22,7 @@ export const FlashcardResponseButtons = ({
   labels,
   isHidden,
   areTimesHidden,
+  disabledDirections,
   onRespond,
 }: FlashcardResponseButtonsProps) => (
   <div
@@ -38,10 +40,11 @@ export const FlashcardResponseButtons = ({
           key={direction}
           type="button"
           className={cn(
-            "bg-card max-lg:short:py-2 flex cursor-pointer flex-col items-center gap-1 px-2 py-3 transition-colors",
+            "bg-card max-lg:short:py-2 flex cursor-pointer flex-col items-center gap-1 px-2 py-3 transition-colors disabled:pointer-events-none disabled:opacity-40",
             meta.hoverClass,
             meta.mobileOrderClass,
           )}
+          disabled={disabledDirections.includes(direction)}
           onClick={() => onRespond(direction)}
         >
           <span className="flex items-center gap-1.5 text-sm font-medium">
